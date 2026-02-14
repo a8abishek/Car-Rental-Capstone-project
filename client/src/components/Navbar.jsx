@@ -10,7 +10,7 @@ function Navbar() {
           <CarFront color="white" />
         </div>
         <p className="font-bold text-xl">
-          Driver<span className="text-blue-600">Eite</span>
+          Car<span className="text-blue-600">Rental</span>
         </p>
       </div>
       {/*menu*/}
