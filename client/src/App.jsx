@@ -9,6 +9,8 @@ import {
   TicketPlus,
   Headset,
   X,
+  CarFront,
+  SendHorizontal,
 } from "lucide-react";
 // import
 import Navbar from "./components/Navbar";
@@ -168,6 +170,87 @@ function App() {
               for a full refund.
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="mx-18 bg-[#137fec] px-10 py-10  space-x-28 rounded-2xl flex mb-10">
+        <div className="flex flex-col justify-center ml-10">
+          <h1 className="text-white font-bold text-5xl">
+            Ready to hit the road?
+          </h1>
+          <p className="text-gray-200 py-2.5">
+            Join thousands of happy travels who trust CarRental for their
+            adventures
+          </p>
+          <div className="flex space-x-5 mt-5">
+            <button className="px-8 py-2 rounded-md bg-white text-blue-600 font-bold">
+              Join Us
+            </button>
+            <button className="px-8 border py-2 rounded-md text-white font-bold">
+              Contacts Us
+            </button>
+          </div>
+        </div>
+        <div>
+          <img
+            src="https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Punch/13254/1768985724266/rear-view-119.jpg"
+            className="w-140 h-90 rounded-2xl "
+            alt="Car image"
+          />
+        </div>
+      </div>
+      {/*Footer*/}
+      <div className="bg-black text-white flex justify-between px-28 py-10">
+        <div>
+          <div className="flex items-center space-x-1">
+            <div className="bg-blue-600 p-1.5 rounded-md">
+              <CarFront color="white" />
+            </div>
+            <p className="font-bold text-xl">CarRental</p>
+          </div>
+          <p className="w-80 mt-4.5 text-gray-500">
+            The premier choice for luxury and premium car rentals
+            worldwide.Making every journey a memory worth Keeping.
+          </p>
+          <p className="text-gray-500 mt-2">
+            © {new Date().getFullYear()} CarRentals. All rights reserved.
+          </p>
+        </div>
+
+        <div>
+          <h1 className="font-bold">Quick Links</h1>
+          <ul className="mt-4.5">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              OurFleet
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Special Offers
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              RentalLocations
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Career
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h1 className="font-bold">Support</h1>
+          <ul className="mt-4.5">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Help Center
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Privacy Policy
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Terms of Service
+            </li>
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+              Cookie Policy
+            </li>
+          </ul>
         </div>
       </div>
     </div>
