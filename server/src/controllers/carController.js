@@ -14,9 +14,11 @@ export const addCar = async (req, res) => {
       carCompany,
       carNumber,
       transmission,
+      carRunning,     // ✅ ADDED
       carType,
       seatingCapacity,
       pricePerDay,
+      carFeatures,    // ✅ ADDED
       carImage,
     } = req.body;
 
@@ -36,9 +38,11 @@ export const addCar = async (req, res) => {
       carCompany,
       carNumber: carNumber.toUpperCase(),
       transmission,
+      carRunning,          // ✅ IMPORTANT
       carType,
       seatingCapacity,
       pricePerDay,
+      carFeatures: carFeatures || [], // ✅ SAFE DEFAULT
       carImage,
       createdBy: req.user._id,
       createdRole: req.user.role,
@@ -58,6 +62,7 @@ export const addCar = async (req, res) => {
   }
 };
 
+
 /* ================= UPDATE CAR ================= */
 export const updateCar = async (req, res) => {
   try {
@@ -74,6 +79,11 @@ export const updateCar = async (req, res) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
+    // Prevent changing owner or role
+    delete req.body.createdBy;
+    delete req.body.createdRole;
+    delete req.body.status;
+
     Object.assign(car, req.body);
 
     await car.save();
@@ -84,6 +94,7 @@ export const updateCar = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /* ================= DELETE CAR ================= */
 export const deleteCar = async (req, res) => {
@@ -109,6 +120,7 @@ export const deleteCar = async (req, res) => {
   }
 };
 
+
 /* ================= DEALER VIEW OWN CARS ================= */
 export const getDealerCars = async (req, res) => {
   try {
@@ -122,6 +134,7 @@ export const getDealerCars = async (req, res) => {
   }
 };
 
+
 /* ================= GET APPROVED CARS ================= */
 export const getApprovedCars = async (req, res) => {
   try {
@@ -132,6 +145,7 @@ export const getApprovedCars = async (req, res) => {
   }
 };
 
+
 /* ================= GET PENDING CARS ================= */
 export const getPendingCars = async (req, res) => {
   try {
@@ -141,6 +155,7 @@ export const getPendingCars = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /* ================= APPROVE CAR ================= */
 export const approveCar = async (req, res) => {
@@ -159,6 +174,8 @@ export const approveCar = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 /* ================= GET ALL CARS (ADMIN) ================= */
 export const getAllCars = async (req, res) => {
   try {

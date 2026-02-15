@@ -113,7 +113,7 @@ function Login() {
             Welcome Back
           </h1>
           <p className="text-slate-500 text-sm mt-2 font-medium">
-            Log in to manage your bookings.
+            Log in to {role.toLowerCase()} Portal.
           </p>
         </div>
 
@@ -220,7 +220,7 @@ function Login() {
           </button>
         </form>
 
-        {/* ✅ Register Section (Hidden for Admin) */}
+        {/*Register Section (Hidden for Admin) */}
         {role !== "admin" && (
           <div className="mt-10 text-center">
             <p

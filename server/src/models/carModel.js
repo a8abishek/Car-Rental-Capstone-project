@@ -11,17 +11,19 @@ const carSchema = new Schema(
     brand: {
       type: String,
       required: true,
+      trim: true,
     },
 
     carCompany: {
       type: String,
       required: true,
+      trim: true,
     },
 
     carNumber: {
       type: String,
       required: true,
-      unique: true,   // 🔥 UNIQUE NUMBER PLATE
+      unique: true,
       uppercase: true,
       trim: true,
     },
@@ -29,6 +31,13 @@ const carSchema = new Schema(
     transmission: {
       type: String,
       enum: ["manual", "automatic"],
+      required: true,
+    },
+
+    /* 🔥 NEW FIELD: Fuel Type */
+    carRunning: {
+      type: String,
+      enum: ["petrol", "diesel", "electric", "hybrid"],
       required: true,
     },
 
@@ -41,15 +50,23 @@ const carSchema = new Schema(
     seatingCapacity: {
       type: Number,
       required: true,
+      min: 4,
     },
 
     pricePerDay: {
       type: Number,
       required: true,
+      min: 0,
+    },
+
+    /* 🔥 NEW FIELD: Car Features */
+    carFeatures: {
+      type: [String],   // Array of features
+      default: [],
     },
 
     carImage: {
-      type: String,
+      type: String,  // store image URL
       required: true,
     },
 
@@ -83,4 +100,4 @@ const carSchema = new Schema(
 
 const carModel = model("Car", carSchema);
 
-export default carModel
+export default carModel;

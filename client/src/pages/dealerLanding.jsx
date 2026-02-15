@@ -1,20 +1,9 @@
 import react from "react";
-import { Link } from "react-router";
-import {
-  CircleStar,
-  MapPin,
-  Calendar,
-  CalendarArrowDown,
-  ArrowRight,
-  TicketPlus,
-  Headset,
-  X,
-} from "lucide-react";
+import { CircleStar, MapPin, Calendar, CalendarArrowDown } from "lucide-react";
 // import
-import Navbar from "./components/Navbar";
-import LandingCars from "./pages/landing_pages/carFeatyure";
+import Navbar from "../components/Navbar";
 
-function App() {
+function DriveEliteLanding() {
   return (
     <div className="bg-gray-50">
       <Navbar />
@@ -95,14 +84,20 @@ function App() {
             <Calendar strokeWidth={2} size={20} color="#2b7fff" />
             <p className="text-gray-500">Pick-up Date</p>
           </div>
-          <input type="Date" className="outline-none text-gray-500" />
+          <input
+            type="Date" 
+            className="outline-none text-gray-500"
+          />
         </div>
         <div>
           <div className="flex items-center space-x-1 mb-2.5">
             <CalendarArrowDown strokeWidth={2} size={20} color="#2b7fff" />
             <p className="text-gray-500">Return Date</p>
           </div>
-          <input type="Date" className="outline-none text-gray-500" />
+          <input
+            type="Date"
+            className="outline-none text-gray-500"
+          />
         </div>
         <div>
           <button className="bg-blue-600 px-8 py-2 rounded-md text-white cursor-pointer ">
@@ -111,67 +106,9 @@ function App() {
         </div>
       </div>
       {/*Our featyred Car */}
-      <div className="px-16 my-8 bg-white py-10">
-        <h1 className="text-3xl font-bold py-1">Our Featured Fleet</h1>
-        <div className="flex justify-between">
-          <p className="text-gray-500 pb-5">
-            choose from our selection of premium and exotic Vehicles.
-          </p>
-          <Link to={"/cars"}>
-            <div className="flex items-center space-x-1">
-              <div className="text-blue-600">View car</div>
-              <div>
-                <ArrowRight size={18} color="#1781ec" />
-              </div>
-            </div>
-          </Link>
-        </div>
-        <LandingCars />
-      </div>
-      {/*why choose DriveElite */}
-      <div className="mx-18 pb-8">
-        <h1 className="text-xl font-bold flex justify-center">
-          Why Choose DriveElite ?
-        </h1>
-        <p className="text-gray-500 flex justify-center">
-          We provide the best rental experience with premium benefits 24/7
-          support.
-        </p>
-        <div className="flex justify-between space-x-10 items-center py-10">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <TicketPlus color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">Best Price Guarantee</h1>
-            <p className="text-gray-500 text-center">
-              Find a lower price elsewhere and we'll beat it by 10%.No hidden
-              fees,ever.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <Headset color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">24/7 Roasside Assist</h1>
-            <p className="text-gray-500 text-center">
-              Drive with peace of mind knowing our support team is just one call
-              away,anytime.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <X color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">Free cancellation</h1>
-            <p className="text-gray-500 text-center">
-              Plan changed ? Cancel your booking up to 24 hours before pick-up
-              for a full refund.
-            </p>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 }
 
-export default App;
+export default DriveEliteLanding;

@@ -45,7 +45,7 @@ function Navbar() {
 
             <li>
               <NavLink
-                to="/car"
+                to="/cars"
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"

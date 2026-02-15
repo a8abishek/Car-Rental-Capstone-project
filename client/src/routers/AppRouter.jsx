@@ -11,6 +11,7 @@ import About from "../pages/landing_pages/About";
 import Car from "../pages/landing_pages/Car";
 import Services from "../pages/landing_pages/Services";
 import Contacts from "../pages/landing_pages/Contacts";
+import DriveEliteLanding from "../pages/dealerLanding";
 
 const AppRouter = createBrowserRouter([
   {
@@ -70,7 +71,7 @@ const AppRouter = createBrowserRouter([
     element: <About />,
   },
   {
-    path: "/car",
+    path: "/cars",
     element: <Car />,
   },
   {
@@ -81,6 +82,10 @@ const AppRouter = createBrowserRouter([
     path: "contacts",
     element: <Contacts />,
   },
+  {
+    path : "/dealer",
+    element : <DriveEliteLanding />
+  }
 ]);
 
 export default AppRouter;
