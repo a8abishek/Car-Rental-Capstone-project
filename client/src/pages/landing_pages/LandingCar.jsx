@@ -12,7 +12,7 @@ const LandingCars = () => {
       try {
         const data = await apiFetch("/api/cars/approved");
 
-        // 🔥 Show only first 3 cars
+        //Show only first 3 cars
         setCars(data.slice(0, 3));
 
       } catch (error) {

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 // import
 import Navbar from "./components/Navbar";
-import LandingCars from "./pages/landing_pages/carFeatyure";
+import LandingCars from "./pages/landing_pages/LandingCar";
 
 function App() {
   return (
