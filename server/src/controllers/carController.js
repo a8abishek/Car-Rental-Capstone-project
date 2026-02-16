@@ -1,7 +1,7 @@
 import carModel from "../models/carModel.js";
 import { validationResult } from "express-validator";
 
-/* ================= ADD CAR ================= */
+//ADD CAR
 export const addCar = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -14,14 +14,15 @@ export const addCar = async (req, res) => {
       carCompany,
       carNumber,
       transmission,
-      carRunning,     // ✅ ADDED
+      carRunning,     
       carType,
       seatingCapacity,
       pricePerDay,
-      carFeatures,    // ✅ ADDED
+      carFeatures,   
       carImage,
     } = req.body;
 
+    //validation
     const existingCar = await carModel.findOne({ carNumber });
 
     if (existingCar)
@@ -38,11 +39,11 @@ export const addCar = async (req, res) => {
       carCompany,
       carNumber: carNumber.toUpperCase(),
       transmission,
-      carRunning,          // ✅ IMPORTANT
+      carRunning,
       carType,
       seatingCapacity,
       pricePerDay,
-      carFeatures: carFeatures || [], // ✅ SAFE DEFAULT
+      carFeatures: carFeatures || [],
       carImage,
       createdBy: req.user._id,
       createdRole: req.user.role,
@@ -63,7 +64,7 @@ export const addCar = async (req, res) => {
 };
 
 
-/* ================= UPDATE CAR ================= */
+//UPDATE CAR 
 export const updateCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
@@ -96,7 +97,7 @@ export const updateCar = async (req, res) => {
 };
 
 
-/* ================= DELETE CAR ================= */
+//DELETE CAR
 export const deleteCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
@@ -121,7 +122,7 @@ export const deleteCar = async (req, res) => {
 };
 
 
-/* ================= DEALER VIEW OWN CARS ================= */
+//DEALER VIEW OWN CARS
 export const getDealerCars = async (req, res) => {
   try {
     const cars = await carModel.find({
@@ -135,7 +136,7 @@ export const getDealerCars = async (req, res) => {
 };
 
 
-/* ================= GET APPROVED CARS ================= */
+//GET APPROVED CARS
 export const getApprovedCars = async (req, res) => {
   try {
     const cars = await carModel.find({ status: "approved" });
@@ -146,7 +147,7 @@ export const getApprovedCars = async (req, res) => {
 };
 
 
-/* ================= GET PENDING CARS ================= */
+//GET PENDING CARS
 export const getPendingCars = async (req, res) => {
   try {
     const cars = await carModel.find({ status: "pending" });
@@ -157,7 +158,7 @@ export const getPendingCars = async (req, res) => {
 };
 
 
-/* ================= APPROVE CAR ================= */
+//APPROVE CAR
 export const approveCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
@@ -176,7 +177,7 @@ export const approveCar = async (req, res) => {
 };
 
 
-/* ================= GET ALL CARS (ADMIN) ================= */
+//GET ALL CARS (ADMIN)
 export const getAllCars = async (req, res) => {
   try {
     const cars = await carModel

@@ -1,19 +1,16 @@
 import { body } from "express-validator";
 
-/* ================= ADD CAR VALIDATOR ================= */
+//ADD CAR VALIDATOR
 export const carValidator = [
+  body("carName").notEmpty().withMessage("Car name is required"),
 
-  body("carName")
-    .notEmpty().withMessage("Car name is required"),
+  body("brand").notEmpty().withMessage("Brand is required"),
 
-  body("brand")
-    .notEmpty().withMessage("Brand is required"),
-
-  body("carCompany")
-    .notEmpty().withMessage("Car company is required"),
+  body("carCompany").notEmpty().withMessage("Car company is required"),
 
   body("carNumber")
-    .notEmpty().withMessage("Car number is required")
+    .notEmpty()
+    .withMessage("Car number is required")
     .matches(/^[A-Z0-9-]+$/i)
     .withMessage("Invalid car number format"),
 
@@ -21,7 +18,7 @@ export const carValidator = [
     .isIn(["manual", "automatic"])
     .withMessage("Transmission must be manual or automatic"),
 
-  /* 🔥 NEW: Fuel Type Validation */
+  //Fuel Type Validation
   body("carRunning")
     .isIn(["petrol", "diesel", "electric", "hybrid"])
     .withMessage("Car running must be petrol, diesel, electric or hybrid"),
@@ -34,11 +31,9 @@ export const carValidator = [
     .isInt({ min: 1 })
     .withMessage("Seating capacity must be at least 1"),
 
-  body("pricePerDay")
-    .isFloat({ min: 0 })
-    .withMessage("Price must be positive"),
+  body("pricePerDay").isFloat({ min: 0 }).withMessage("Price must be positive"),
 
-  /* 🔥 NEW: Features Validation */
+  //Features Validation
   body("carFeatures")
     .optional()
     .isArray()
@@ -49,15 +44,11 @@ export const carValidator = [
     .isString()
     .withMessage("Each feature must be a string"),
 
-  body("carImage")
-    .isURL()
-    .withMessage("Valid image URL required"),
+  body("carImage").isURL().withMessage("Valid image URL required"),
 ];
 
-
-/* ================= UPDATE CAR VALIDATOR ================= */
+//UPDATE CAR VALIDATOR
 export const updateCarValidator = [
-
   body("carName").optional().notEmpty(),
 
   body("brand").optional().notEmpty(),
@@ -69,9 +60,7 @@ export const updateCarValidator = [
     .matches(/^[A-Z0-9-]+$/i)
     .withMessage("Invalid car number format"),
 
-  body("transmission")
-    .optional()
-    .isIn(["manual", "automatic"]),
+  body("transmission").optional().isIn(["manual", "automatic"]),
 
   body("carRunning")
     .optional()
@@ -81,23 +70,13 @@ export const updateCarValidator = [
     .optional()
     .isIn(["mid-size", "standard", "premium", "luxury"]),
 
-  body("seatingCapacity")
-    .optional()
-    .isInt({ min: 1 }),
+  body("seatingCapacity").optional().isInt({ min: 1 }),
 
-  body("pricePerDay")
-    .optional()
-    .isFloat({ min: 0 }),
+  body("pricePerDay").optional().isFloat({ min: 0 }),
 
-  body("carFeatures")
-    .optional()
-    .isArray(),
+  body("carFeatures").optional().isArray(),
 
-  body("carFeatures.*")
-    .optional()
-    .isString(),
+  body("carFeatures.*").optional().isString(),
 
-  body("carImage")
-    .optional()
-    .isURL(),
+  body("carImage").optional().isURL(),
 ];

@@ -1,4 +1,5 @@
 import express from "express";
+// import
 import { register,login } from "../controllers/authController.js";
 import {registerValidator,loginValidator} from '../validators/authValidator.js'
 

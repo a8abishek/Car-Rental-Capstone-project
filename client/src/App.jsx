@@ -1,4 +1,3 @@
-import react from "react";
 import { Link } from "react-router";
 import {
   CircleStar,
@@ -10,7 +9,6 @@ import {
   Headset,
   X,
   CarFront,
-  SendHorizontal,
 } from "lucide-react";
 // import
 import Navbar from "./components/Navbar";
@@ -130,10 +128,10 @@ function App() {
         </div>
         <LandingCars />
       </div>
-      {/*why choose DriveElite */}
+      {/*why choose CarRental */}
       <div className="mx-18 pb-8">
         <h1 className="text-xl font-bold flex justify-center">
-          Why Choose DriveElite ?
+          Why Choose CarRental ?
         </h1>
         <p className="text-gray-500 flex justify-center">
           We provide the best rental experience with premium benefits 24/7
@@ -183,12 +181,16 @@ function App() {
             adventures
           </p>
           <div className="flex space-x-5 mt-5">
-            <button className="px-8 py-2 rounded-md bg-white text-blue-600 font-bold">
-              Join Us
-            </button>
-            <button className="px-8 border py-2 rounded-md text-white font-bold">
-              Contacts Us
-            </button>
+            <Link to={"/register"}>
+              <button className="px-8 py-2 rounded-md bg-white text-blue-600 font-bold">
+                Join Us
+              </button>
+            </Link>
+            <Link to={"/contacts"}>
+              <button className="px-8 border py-2 rounded-md text-white font-bold">
+                Contacts Us
+              </button>
+            </Link>
           </div>
         </div>
         <div>
@@ -221,7 +223,7 @@ function App() {
           <h1 className="font-bold">Quick Links</h1>
           <ul className="mt-4.5">
             <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
-              OurFleet
+              cars
             </li>
             <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
               Special Offers

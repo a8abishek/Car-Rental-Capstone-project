@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 
+//register validation
 export const registerValidator = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Valid email required"),
@@ -11,6 +12,7 @@ export const registerValidator = [
     .withMessage("Role must be customer or dealer"),
 ];
 
+//login validation
 export const loginValidator = [
   body("email").isEmail().withMessage("Valid email required"),
   body("password").notEmpty().withMessage("Password required"),

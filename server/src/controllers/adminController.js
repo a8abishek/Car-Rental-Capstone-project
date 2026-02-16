@@ -1,3 +1,4 @@
+// import
 import userModel from "../models/userModel.js";
 
 export const approveDealer = async (req, res) => {

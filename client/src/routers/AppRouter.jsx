@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
 // import
 import App from "../App";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
 import AdminDashboard from "./../pages/dashboard/AdminDashboard";
 import DealerDoashboard from "./../pages/dashboard/DealerDoashboard";
 import CustomerDashboard from "../pages/dashboard/customerDashboard";
@@ -79,7 +79,7 @@ const AppRouter = createBrowserRouter([
     element: <Services />,
   },
   {
-    path: "contacts",
+    path: "/contacts",
     element: <Contacts />,
   },
   {

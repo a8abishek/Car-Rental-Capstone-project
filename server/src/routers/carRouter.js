@@ -1,4 +1,5 @@
 import express from "express";
+// import
 import {
   addCar,
   updateCar,
@@ -7,7 +8,7 @@ import {
   getApprovedCars,
   getPendingCars,
   approveCar,
-  getAllCars
+  getAllCars,
 } from "../controllers/carController.js";
 
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
@@ -18,28 +19,27 @@ import {
 
 const carRouter = express.Router();
 
-
-/* Admin View All Cars */
+// Admin View All Cars
 carRouter.get("/all", protect, adminOnly, getAllCars);
-/* Add Car */
+// Add Car
 carRouter.post("/", protect, carValidator, addCar);
 
-/* Update Car */
+//Update Car
 carRouter.put("/:id", protect, updateCarValidator, updateCar);
 
-/* Delete Car */
+// Delete Car
 carRouter.delete("/:id", protect, deleteCar);
 
-/* Dealer Cars */
+// Dealer Cars
 carRouter.get("/my-cars", protect, getDealerCars);
 
-/* Approved Cars (Public) */
+//Approved Cars (Public)
 carRouter.get("/approved", getApprovedCars);
 
-/* Pending Cars (Admin) */
+// Pending Cars (Admin)
 carRouter.get("/pending", protect, adminOnly, getPendingCars);
 
-/* Approve Car */
+//Approve Car
 carRouter.put("/approve/:id", protect, adminOnly, approveCar);
 
 export default carRouter;

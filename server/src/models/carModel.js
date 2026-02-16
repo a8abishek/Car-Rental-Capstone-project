@@ -33,8 +33,6 @@ const carSchema = new Schema(
       enum: ["manual", "automatic"],
       required: true,
     },
-
-    /* 🔥 NEW FIELD: Fuel Type */
     carRunning: {
       type: String,
       enum: ["petrol", "diesel", "electric", "hybrid"],
@@ -59,14 +57,13 @@ const carSchema = new Schema(
       min: 0,
     },
 
-    /* 🔥 NEW FIELD: Car Features */
     carFeatures: {
-      type: [String],   // Array of features
+      type: [String],
       default: [],
     },
 
     carImage: {
-      type: String,  // store image URL
+      type: String,
       required: true,
     },
 
@@ -95,7 +92,7 @@ const carSchema = new Schema(
       default: "pending",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const carModel = model("Car", carSchema);
