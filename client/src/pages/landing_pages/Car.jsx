@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Search, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
-// import
+import {
+  Search,
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  Star,
+} from "lucide-react";
 import Navbar from "../../components/Navbar";
 import { apiFetch } from "../../api/apiFetch";
 import CarCards from "../../components/CarCards";
@@ -16,6 +21,7 @@ const Car = () => {
   const [transmission, setTransmission] = useState([]);
   const [carType, setCarType] = useState([]);
   const [fuelType, setFuelType] = useState([]);
+  const [selectedRatings, setSelectedRatings] = useState([]); // New State
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,11 +41,11 @@ const Car = () => {
     fetchCars();
   }, []);
 
-  //filter Logic
+  // Filter Logic
   useEffect(() => {
     let updated = [...cars];
 
-    //Search Logic
+    // Search Logic
     if (search.trim() !== "") {
       updated = updated.filter(
         (car) =>
@@ -48,7 +54,7 @@ const Car = () => {
       );
     }
 
-    //Price Logic
+    // Price Logic
     if (selectedPriceRanges.length > 0) {
       updated = updated.filter((car) => {
         const price = car.pricePerDay;
@@ -61,6 +67,14 @@ const Car = () => {
       });
     }
 
+    // Rating Logic (New)
+    if (selectedRatings.length > 0) {
+      updated = updated.filter((car) => {
+        const rating = Math.floor(car.rating || 0); // Round down to match star level
+        return selectedRatings.includes(rating.toString());
+      });
+    }
+
     // Transmission Filter
     if (transmission.length > 0) {
       updated = updated.filter((car) =>
@@ -68,14 +82,14 @@ const Car = () => {
       );
     }
 
-    //Car Type Filter
+    // Car Type Filter
     if (carType.length > 0) {
       updated = updated.filter((car) =>
         carType.includes(car.carType.toLowerCase()),
       );
     }
 
-    //Fuel Type Filter
+    // Fuel Type Filter
     if (fuelType.length > 0) {
       updated = updated.filter((car) =>
         fuelType.includes(car.carRunning.toLowerCase()),
@@ -84,11 +98,19 @@ const Car = () => {
 
     setFilteredCars(updated);
     setCurrentPage(1);
-  }, [search, selectedPriceRanges, transmission, carType, fuelType, cars]);
+  }, [
+    search,
+    selectedPriceRanges,
+    transmission,
+    carType,
+    fuelType,
+    selectedRatings,
+    cars,
+  ]);
 
-  //HANDLERS
+  // HANDLERS
   const handleCheckbox = (value, state, setState) => {
-    const lowerVal = value.toLowerCase();
+    const lowerVal = value.toString().toLowerCase();
     if (state.includes(lowerVal)) {
       setState(state.filter((item) => item !== lowerVal));
     } else {
@@ -102,10 +124,11 @@ const Car = () => {
     setTransmission([]);
     setCarType([]);
     setFuelType([]);
+    setSelectedRatings([]); // Reset ratings
     setCurrentPage(1);
   };
 
-  //PAGINATION
+  // PAGINATION
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentCars = filteredCars.slice(indexOfFirstItem, indexOfLastItem);
@@ -139,22 +162,53 @@ const Car = () => {
               </div>
 
               {/* Search */}
-              <div className="relative mb-10">
+              <div className="relative mb-8">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   size={18}
                 />
                 <input
                   type="text"
-                  placeholder="Search brand or model..."
+                  placeholder="Search brand..."
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
 
+              {/* Rating Filter */}
+              <div className="mb-8 border-b border-slate-100 pb-8">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
+                  Rating
+                </p>
+                <div className="space-y-4">
+                  {["5", "4", "3"].map((star) => (
+                    <label
+                      key={star}
+                      className="flex items-center cursor-pointer group"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedRatings.includes(star)}
+                        onChange={() =>
+                          handleCheckbox(
+                            star,
+                            selectedRatings,
+                            setSelectedRatings,
+                          )
+                        }
+                        className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="ml-3 text-slate-600 font-medium group-hover:text-blue-600 transition-colors">
+                        {star} Stars
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               {/* Price Range */}
-              <div className="mb-10">
+              <div className="mb-8 border-b border-slate-100 pb-8">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
                   Price Range
                 </p>
@@ -189,7 +243,7 @@ const Car = () => {
               </div>
 
               {/* Category */}
-              <div className="mb-10">
+              <div className="mb-8 border-b border-slate-100 pb-8">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
                   Category
                 </p>
@@ -215,12 +269,12 @@ const Car = () => {
                 </div>
               </div>
 
-              {/*Transmission Filter */}
-              <div className="mb-10">
+              {/* Transmission */}
+              <div className="mb-8 border-b border-slate-100 pb-8">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
                   Transmission
                 </p>
-                <div className="space-y-4">
+                <div className="space-y-4 text-sm">
                   {["Automatic", "Manual"].map((trans) => (
                     <label
                       key={trans}

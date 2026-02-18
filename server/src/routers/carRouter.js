@@ -9,6 +9,7 @@ import {
   getPendingCars,
   approveCar,
   getAllCars,
+  getSingleCar
 } from "../controllers/carController.js";
 
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
@@ -41,5 +42,8 @@ carRouter.get("/pending", protect, adminOnly, getPendingCars);
 
 //Approve Car
 carRouter.put("/approve/:id", protect, adminOnly, approveCar);
+
+//single car detail 
+carRouter.get("/:id", getSingleCar); 
 
 export default carRouter;

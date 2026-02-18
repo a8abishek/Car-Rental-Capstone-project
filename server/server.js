@@ -8,6 +8,8 @@ import DBConnection from "./src/config/dbConnection.js";
 import authRouter from "./src/routers/authRouer.js";
 import adminRouter from "./src/routers/adminRouter.js";
 import carRouter from "./src/routers/carRouter.js";
+import bookingRouter from "./src/routers/bookingRouter.js";
+import driverRouter from "./src/routers/driverRouter.js";
 
 //app Setup
 const app = express();
@@ -26,6 +28,8 @@ DBConnection();
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/cars", carRouter);
+app.use("/api/bookings", bookingRouter);
+app.use("/api/drivers", driverRouter);
 
 // Test Route
 app.get("/", (req, res) => {

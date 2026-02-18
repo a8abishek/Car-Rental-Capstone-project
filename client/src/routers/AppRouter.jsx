@@ -12,6 +12,9 @@ import Car from "../pages/landing_pages/Car";
 import Services from "../pages/landing_pages/Services";
 import Contacts from "../pages/landing_pages/Contacts";
 import DriveEliteLanding from "../pages/dealerLanding";
+import CarDetail from "../pages/CarDetail";
+import PaymentPage from "../pages/Payment";
+import DashboardLayout from "../pages/layouts/DashboardLayout";
 
 const AppRouter = createBrowserRouter([
   {
@@ -42,30 +45,41 @@ const AppRouter = createBrowserRouter([
     element: <Login />,
   },
   /*Dashboard*/
+ {
+  path: "/dashboard",
+  element: (
+    <ProtectedRoute role="customer">
+      <DashboardLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <CustomerDashboard /> },
+  ],
+},
   {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <CustomerDashboard />
-      </ProtectedRoute>
-    ),
-  },
+  path: "/dealer/dashboard",
+  element: (
+    <ProtectedRoute role="dealer">
+      <DashboardLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <DealerDoashboard /> },
+  ],
+},
+
   {
-    path: "/dealer/dashboard",
-    element: (
-      <ProtectedRoute>
-        <DealerDoashboard />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/dashboard",
-    element: (
-      <ProtectedRoute>
-        <AdminDashboard />
-      </ProtectedRoute>
-    ),
-  },
+  path: "/admin/dashboard",
+  element: (
+    <ProtectedRoute role="admin">
+      <DashboardLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <AdminDashboard /> },
+  ],
+},
+
   {
     path: "/about",
     element: <About />,
@@ -75,6 +89,11 @@ const AppRouter = createBrowserRouter([
     element: <Car />,
   },
   {
+    path: "/cars/:id",
+    element: <CarDetail />,
+  },
+
+  {
     path: "/services",
     element: <Services />,
   },
@@ -83,8 +102,12 @@ const AppRouter = createBrowserRouter([
     element: <Contacts />,
   },
   {
-    path : "/dealer",
-    element : <DriveEliteLanding />
+    path: "/dealer",
+    element: <DriveEliteLanding />,
+  },
+  {
+    path : "/payment",
+    element : <PaymentPage />
   }
 ]);
 
