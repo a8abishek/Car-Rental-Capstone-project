@@ -10,6 +10,7 @@ import adminRouter from "./src/routers/adminRouter.js";
 import carRouter from "./src/routers/carRouter.js";
 import bookingRouter from "./src/routers/bookingRouter.js";
 import driverRouter from "./src/routers/driverRouter.js";
+import userRouter from "./src/routers/userRouter.js";
 
 //app Setup
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/cars", carRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/drivers", driverRouter);
+app.use("/api/users", userRouter);
 
 // Test Route
 app.get("/", (req, res) => {

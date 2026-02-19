@@ -26,7 +26,7 @@ function App() {
             <CircleStar size={18} />
             <span>#Car Rental Service</span>
           </div>
-          <h1 className="text-6xl font-bold w-[50%]">
+          <h1 className=" text-6xl font-bold w-[50%]">
             Drive Your Dream :{" "}
             <span className="text-blue-500">Premium Rentals</span>
           </h1>{" "}

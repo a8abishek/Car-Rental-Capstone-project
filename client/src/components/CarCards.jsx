@@ -7,10 +7,10 @@ import {
   EvCharger,
   Star
 } from "lucide-react";
-import { useNavigate } from "react-router";   // ✅ ADD THIS
+import { useNavigate } from "react-router";
 
 const CarCards = ({ car }) => {
-  const navigate = useNavigate();   // ✅ ADD THIS
+  const navigate = useNavigate();
 
   const fuelType = car.carRunning?.toLowerCase();
 
@@ -59,9 +59,9 @@ const CarCards = ({ car }) => {
           </div>
 
           <div className="text-right flex flex-col items-end">
-            <div className="flex items-baseline text-blue-600">
+            <div className="flex items-center text-blue-600">
               <IndianRupee size={16} strokeWidth={3} className="mr-0.5" />
-              <span className="font-extrabold text-xl tracking-tight">
+              <span className="font-extrabold text-lg tracking-tight">
                 {car.pricePerDay}
               </span>
               <span className="text-gray-500 text-sm font-semibold ml-1">
