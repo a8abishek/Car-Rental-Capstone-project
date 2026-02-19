@@ -30,7 +30,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/cars", carRouter);
 app.use("/api/bookings", bookingRouter);
-app.use("/api/drivers", driverRouter);
+app.use("/api/driver", driverRouter);
 app.use("/api/users", userRouter);
 
 // Test Route
