@@ -17,16 +17,30 @@ export const createBooking = async (req, res) => {
     } = req.body;
 
     const car = await carModel.findById(carId);
-    if (!car) return res.status(404).json({ message: "Car not found" });
+    if (!car)
+      return res.status(404).json({ message: "Car not found" });
 
-    if (bookingType === "self" && !drivingLicense) {
+    // 🔥 CHECK DATE CONFLICT
+    const existingBooking = await bookingModel.findOne({
+      car: carId,
+      status: { $in: ["pending", "confirmed"] },
+      $or: [
+        {
+          pickupDate: { $lte: new Date(dropDate) },
+          dropDate: { $gte: new Date(pickupDate) },
+        },
+      ],
+    });
+
+    if (existingBooking) {
       return res.status(400).json({
-        message: "Driving license required for self drive",
+        message: "Car already booked for selected dates",
       });
     }
 
     const days =
-      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24);
+      (new Date(dropDate) - new Date(pickupDate)) /
+      (1000 * 60 * 60 * 24);
 
     if (days <= 0)
       return res.status(400).json({ message: "Invalid date selection" });
@@ -53,6 +67,7 @@ export const createBooking = async (req, res) => {
       message: "Booking created. Waiting for admin confirmation.",
       booking,
     });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -91,14 +106,21 @@ export const assignDriver = async (req, res) => {
 //ADMIN CONFIRM SELF BOOKING
 export const confirmBooking = async (req, res) => {
   try {
-    const booking = await bookingModel.findById(req.params.id);
+    const booking = await bookingModel.findById(req.params.id).populate("car");
 
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ message: "Booking not found" });
 
     booking.status = "confirmed";
     await booking.save();
 
+    // 🔥 Mark car as in_use
+    // const car = await carModel.findById(booking.car._id);
+    // car.status = "in_use";
+    // await car.save();
+
     res.json({ message: "Booking confirmed successfully" });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -178,6 +200,19 @@ export const adminCancelBooking = async (req, res) => {
     await booking.save();
 
     res.json({ message: "Booking cancelled by admin" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getCarUnavailableDates = async (req, res) => {
+  try {
+    const bookings = await bookingModel.find({
+      car: req.params.carId,
+      status: { $in: ["pending", "confirmed"] },
+    }).select("pickupDate dropDate");
+
+    res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

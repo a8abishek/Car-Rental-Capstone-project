@@ -1,9 +1,10 @@
 import { Outlet, useLocation } from "react-router";
+// import
 import AdminSidebar from "../../components/sidebar/AdminSidebar";
 import DealerSidebar from "../../components/sidebar/DealerSidebar";
 import CustomerSidebar from "../../components/sidebar/CustomerSidebar";
 
-const DashboardLayout = () => {
+function DashboardLayout() {
   const location = useLocation();
 
   const getSidebar = () => {

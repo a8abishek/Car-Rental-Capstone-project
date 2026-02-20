@@ -10,9 +10,10 @@ import {
   CarFront,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+// import
 import { apiFetch } from "../../api/apiFetch";
 
-const DealerSidebar = () => {
+function DealerSidebar() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -70,7 +71,7 @@ const DealerSidebar = () => {
           >
             <LayoutDashboard size={18} /> Overview
           </NavLink>
-          
+
           <NavLink
             to="/dealer/bookings"
             className={({ isActive }) =>
@@ -142,6 +143,6 @@ const DealerSidebar = () => {
       </div>
     </div>
   );
-};
+}
 
 export default DealerSidebar;

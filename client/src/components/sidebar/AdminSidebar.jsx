@@ -11,9 +11,10 @@ import {
   CarFront,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+// import
 import { apiFetch } from "../../api/apiFetch";
 
-const AdminSidebar = () => {
+function AdminSidebar() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -107,7 +108,6 @@ const AdminSidebar = () => {
             <CheckCircle size={18} /> Booking Requests
           </NavLink>
 
-          {/* Important for Admins: A section for things needing attention */}
           <NavLink
             to="/admin/verifications"
             className={({ isActive }) =>

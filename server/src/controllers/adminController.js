@@ -20,7 +20,7 @@ export const getAdminStats = async (req, res) => {
     //TOTAL REVENUE (Overall)
     const revenueData = await bookingModel.aggregate([
       { $match: { status: "confirmed" } },
-      { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } },
+     { $group: { _id: null, totalRevenue: { $sum: "$advancePaid" } } },
     ]);
     const totalRevenue =
       revenueData.length > 0 ? revenueData[0].totalRevenue : 0;
@@ -161,6 +161,20 @@ export const getPendingDealers = async (req, res) => {
       .lean();
 
     res.json(dealers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET ALL USERS
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await userModel
+      .find({ role: { $in: ["customer", "dealer"] } })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

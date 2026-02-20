@@ -9,6 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+// import
 import { apiFetch } from "../../api/apiFetch";
 
 const CustomerSidebar = () => {
@@ -30,7 +31,6 @@ const CustomerSidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    // Using navigate is cleaner than window.location.href in React
     navigate("/login");
   };
 

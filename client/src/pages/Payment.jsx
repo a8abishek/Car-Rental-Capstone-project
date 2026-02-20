@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 // import
 import { apiFetch } from '../api/apiFetch'
 
-const PaymentPage = () => {
+function PaymentPage() {
   const location = useLocation();
   const navigate = useNavigate();
 

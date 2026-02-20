@@ -5,7 +5,8 @@ import {
   confirmBooking,
   cancelBooking,
   getMyBookings,
-  adminCancelBooking
+  adminCancelBooking,
+  getCarUnavailableDates
 } from "../controllers/bookingController.js";
 
 import {protect} from '../middleware/authMiddleware.js'
@@ -43,5 +44,7 @@ bookingRouter.get("/my-bookings",
   protect,
   getMyBookings
 );
+
+bookingRouter.get("/unavailable/:carId", getCarUnavailableDates);
 
 export default bookingRouter;
