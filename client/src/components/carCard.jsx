@@ -7,7 +7,7 @@ import {
   EvCharger,
 } from "lucide-react";
 
-const CarCard = ({ car }) => {
+function CarCard ({ car }) {
   const fuelType = car.carRunning?.toLowerCase();
 
   const renderFuelIcon = () => {

@@ -1,7 +1,8 @@
-import carModel from "../models/carModel.js";
 import { validationResult } from "express-validator";
+// import
+import carModel from "../models/carModel.js";
 
-/* ================= ADD CAR ================= */
+// ADD CAR
 export const addCar = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -34,8 +35,7 @@ export const addCar = async (req, res) => {
       });
     }
 
-    const status =
-      req.user.role === "admin" ? "approved" : "pending";
+    const status = req.user.role === "admin" ? "approved" : "pending";
 
     const car = await carModel.create({
       carName,
@@ -61,36 +61,30 @@ export const addCar = async (req, res) => {
           : "Car added. Waiting for admin approval",
       car,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= GET SINGLE CAR ================= */
+//GET SINGLE CAR
 export const getSingleCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
-    if (!car)
-      return res.status(404).json({ message: "Car not found" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
     res.json(car);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= UPDATE CAR ================= */
+//UPDATE CAR
 export const updateCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
-    if (!car)
-      return res.status(404).json({ message: "Car not found" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
     if (
       req.user.role === "dealer" &&
@@ -112,20 +106,17 @@ export const updateCar = async (req, res) => {
     await car.save();
 
     res.json({ message: "Car updated successfully", car });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= DELETE CAR ================= */
+//DELETE CAR
 export const deleteCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
-    if (!car)
-      return res.status(404).json({ message: "Car not found" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
     if (
       req.user.role === "dealer" &&
@@ -137,14 +128,12 @@ export const deleteCar = async (req, res) => {
     await car.deleteOne();
 
     res.json({ message: "Car deleted successfully" });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= DEALER VIEW OWN CARS ================= */
+//DEALER VIEW OWN CARS
 export const getDealerCars = async (req, res) => {
   try {
     const cars = await carModel.find({
@@ -152,65 +141,53 @@ export const getDealerCars = async (req, res) => {
     });
 
     res.json(cars);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= GET APPROVED CARS ================= */
+//GET APPROVED CARS
 export const getApprovedCars = async (req, res) => {
   try {
     const cars = await carModel.find({ status: "approved" });
     res.json(cars);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= GET PENDING CARS ================= */
+//GET PENDING CARS
 export const getPendingCars = async (req, res) => {
   try {
     const cars = await carModel.find({ status: "pending" });
     res.json(cars);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= APPROVE CAR ================= */
+//APPROVE CAR
 export const approveCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
-    if (!car)
-      return res.status(404).json({ message: "Car not found" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
     car.status = "approved";
     await car.save();
 
     res.json({ message: "Car approved successfully", car });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= GET ALL CARS (ADMIN) ================= */
+//GET ALL CARS (ADMIN)
 export const getAllCars = async (req, res) => {
   try {
-    const cars = await carModel
-      .find()
-      .populate("createdBy", "name email role");
+    const cars = await carModel.find().populate("createdBy", "name email role");
 
     res.json(cars);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -1,6 +1,7 @@
+//import
 import driverModel from "../models/driverModel.js";
 
-/* ================= ADD DRIVER ================= */
+//ADD DRIVER
 export const addDriver = async (req, res) => {
   try {
     const driver = await driverModel.create(req.body);
@@ -10,7 +11,7 @@ export const addDriver = async (req, res) => {
   }
 };
 
-/* ================= GET ALL DRIVERS (ADMIN) ================= */
+//GET ALL DRIVERS (ADMIN)
 export const getAllDrivers = async (req, res) => {
   try {
     const drivers = await driverModel.find();
@@ -20,7 +21,7 @@ export const getAllDrivers = async (req, res) => {
   }
 };
 
-/* ================= GET ACTIVE DRIVERS ================= */
+//GET ACTIVE DRIVERS
 export const getActiveDrivers = async (req, res) => {
   try {
     const drivers = await driverModel.find({
@@ -33,19 +34,17 @@ export const getActiveDrivers = async (req, res) => {
   }
 };
 
-/* ================= TOGGLE DRIVER STATUS ================= */
+//TOGGLE DRIVER STATUS
 export const toggleDriverStatus = async (req, res) => {
   try {
     const driver = await driverModel.findById(req.params.id);
 
-    if (!driver)
-      return res.status(404).json({ message: "Driver not found" });
+    if (!driver) return res.status(404).json({ message: "Driver not found" });
 
     driver.isActive = !driver.isActive;
     await driver.save();
 
     res.json({ message: "Driver status updated", driver });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -5,6 +5,7 @@ import {
   confirmBooking,
   cancelBooking,
   getMyBookings,
+  adminCancelBooking
 } from "../controllers/bookingController.js";
 
 import {protect} from '../middleware/authMiddleware.js'
@@ -29,6 +30,13 @@ bookingRouter.put("/confirm/:id",
 bookingRouter.put("/cancel/:id",
   protect,
   cancelBooking
+);
+
+bookingRouter.put(
+  "/admin-cancel/:id",
+  protect,
+  authorize("admin"),
+  adminCancelBooking
 );
 
 bookingRouter.get("/my-bookings",

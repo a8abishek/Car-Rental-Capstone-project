@@ -20,7 +20,7 @@ const DashboardLayout = () => {
     <div className="flex">
       {getSidebar()}
 
-      <div className="ml-64 flex-1 bg-gray-100 min-h-screen p-8">
+      <div className="ml-64 flex-1 bg-gray-100 min-h-screen ">
         <Outlet />
       </div>
     </div>

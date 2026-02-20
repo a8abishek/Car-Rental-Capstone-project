@@ -1,61 +1,74 @@
+// import
 import userModel from "../models/userModel.js";
 import carModel from "../models/carModel.js";
 import bookingModel from "../models/bookingModel.js";
 
-/* =========================================================
-   ADMIN DASHBOARD STATS
-========================================================= */
+// ADMIN DASHBOARD STATS
 export const getAdminStats = async (req, res) => {
   try {
-    /* ================= BASIC COUNTS ================= */
-
-    // Customers + Dealers only
+    //BASIC COUNTS
     const totalUsers = await userModel.countDocuments({
       role: { $in: ["customer", "dealer"] },
     });
 
-    // Only approved cars visible to users
     const totalCars = await carModel.countDocuments({
       status: "approved",
     });
 
     const totalBookings = await bookingModel.countDocuments();
 
-    /* ================= TOTAL REVENUE ================= */
+    //TOTAL REVENUE (Overall)
     const revenueData = await bookingModel.aggregate([
       { $match: { status: "confirmed" } },
-      {
-        $group: {
-          _id: null,
-          totalRevenue: { $sum: "$totalAmount" },
-        },
-      },
+      { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } },
     ]);
-
     const totalRevenue =
       revenueData.length > 0 ? revenueData[0].totalRevenue : 0;
 
-    /* ================= RECENT BOOKINGS ================= */
+    //NEW: CHART DATA (Last 7 Days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const weeklyRevenue = await bookingModel.aggregate([
+      {
+        $match: {
+          status: "confirmed",
+          createdAt: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          total: { $sum: "$totalAmount" },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort by date ascending
+    ]);
+
+    //NEW: FLEET UTILIZATION
+
+    // Count how many cars are currently in a "confirmed" booking
+    const activeBookingsCount = await bookingModel.countDocuments({
+      status: "confirmed",
+    });
+    const idleCars = Math.max(0, totalCars - activeBookingsCount);
+
+    //RECENT LISTS
     const recentBookings = await bookingModel
       .find({ status: { $in: ["pending", "confirmed"] } })
       .sort({ createdAt: -1 })
       .limit(5)
       .populate("customer", "name email")
-      .populate("car", "carName carImage")
+      .populate("car", "carName carImage carType carRunning transmission")
       .lean();
 
-    /* ================= RECENT PENDING DEALERS ================= */
     const recentDealers = await userModel
-      .find({
-        role: "dealer",
-        status: "pending",
-      })
+      .find({ role: "dealer", status: "pending" })
       .sort({ createdAt: -1 })
       .limit(5)
       .select("name email status createdAt")
       .lean();
 
-    /* ================= RECENT CUSTOMERS ================= */
     const recentCustomers = await userModel
       .find({ role: "customer" })
       .sort({ createdAt: -1 })
@@ -63,6 +76,7 @@ export const getAdminStats = async (req, res) => {
       .select("name email createdAt")
       .lean();
 
+    //FINAL RESPONSE
     res.json({
       totalUsers,
       totalCars,
@@ -71,16 +85,18 @@ export const getAdminStats = async (req, res) => {
       recentBookings,
       recentDealers,
       recentCustomers,
+      weeklyRevenue,
+      utilization: {
+        onTrip: activeBookingsCount,
+        idle: idleCars,
+      },
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-/* =========================================================
-   APPROVE DEALER
-========================================================= */
+//APPROVE DEALER
 export const approveDealer = async (req, res) => {
   try {
     const dealer = await userModel.findById(req.params.id);
@@ -104,15 +120,12 @@ export const approveDealer = async (req, res) => {
       message: "Dealer approved successfully",
       dealerId: dealer._id,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-/* =========================================================
-   REVOKE DEALER APPROVAL (BACK TO PENDING)
-========================================================= */
+//REVOKE DEALER APPROVAL (BACK TO PENDING)
 export const revokeDealer = async (req, res) => {
   try {
     const dealer = await userModel.findById(req.params.id);
@@ -130,15 +143,12 @@ export const revokeDealer = async (req, res) => {
       message: "Dealer approval revoked",
       dealerId: dealer._id,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-/* =========================================================
-   GET ALL PENDING DEALERS
-========================================================= */
+//GET ALL PENDING DEALERS
 export const getPendingDealers = async (req, res) => {
   try {
     const dealers = await userModel
@@ -151,7 +161,6 @@ export const getPendingDealers = async (req, res) => {
       .lean();
 
     res.json(dealers);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

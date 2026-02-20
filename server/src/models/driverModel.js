@@ -19,18 +19,17 @@ const driverSchema = new Schema(
 
     isActive: {
       type: Boolean,
-      default: true, // Admin control
+      default: true,
     },
 
     isAvailable: {
       type: Boolean,
-      default: true, // Booking control
+      default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const driverModel  = model("Driver", driverSchema);
+const driverModel = model("Driver", driverSchema);
 
-export default driverModel
- 
+export default driverModel;

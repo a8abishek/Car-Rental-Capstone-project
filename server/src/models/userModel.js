@@ -8,7 +8,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
 
     password: { type: String, required: true },
@@ -16,16 +16,16 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: ["customer", "dealer", "admin"],
-      required: true
+      required: true,
     },
 
     status: {
       type: String,
       enum: ["pending", "approved"],
-      default: "approved"
-    }
+      default: "approved",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // unique email + role
@@ -33,4 +33,4 @@ userSchema.index({ email: 1, role: 1 }, { unique: true });
 
 const userModel = model("User", userSchema);
 
-export default userModel
+export default userModel;

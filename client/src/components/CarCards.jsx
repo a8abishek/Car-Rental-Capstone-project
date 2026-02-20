@@ -5,11 +5,11 @@ import {
   IndianRupee,
   Fuel,
   EvCharger,
-  Star
+  Star,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 
-const CarCards = ({ car }) => {
+function CarCards({ car }) {
   const navigate = useNavigate();
 
   const fuelType = car.carRunning?.toLowerCase();
@@ -27,7 +27,7 @@ const CarCards = ({ car }) => {
 
   return (
     <div
-      onClick={() => navigate(`/cars/${car._id}`)}   // ✅ CLICK NAVIGATION
+      onClick={() => navigate(`/cars/${car._id}`)}
       className="cursor-pointer bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group max-w-sm"
     >
       {/* Image Section */}
@@ -96,7 +96,7 @@ const CarCards = ({ car }) => {
 
         <button
           onClick={(e) => {
-            e.stopPropagation();   // ✅ Prevent double click issue
+            e.stopPropagation();
             navigate(`/cars/${car._id}`);
           }}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all active:scale-[0.98]"
@@ -106,6 +106,6 @@ const CarCards = ({ car }) => {
       </div>
     </div>
   );
-};
+}
 
 export default CarCards;

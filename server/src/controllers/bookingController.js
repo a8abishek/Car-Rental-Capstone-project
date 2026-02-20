@@ -1,8 +1,9 @@
+// import
 import bookingModel from "../models/bookingModel.js";
 import carModel from "../models/carModel.js";
 import driverModel from "../models/driverModel.js";
 
-/* ================= CREATE BOOKING ================= */
+//CREATE BOOKING
 export const createBooking = async (req, res) => {
   try {
     const {
@@ -16,8 +17,7 @@ export const createBooking = async (req, res) => {
     } = req.body;
 
     const car = await carModel.findById(carId);
-    if (!car)
-      return res.status(404).json({ message: "Car not found" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
     if (bookingType === "self" && !drivingLicense) {
       return res.status(400).json({
@@ -26,8 +26,7 @@ export const createBooking = async (req, res) => {
     }
 
     const days =
-      (new Date(dropDate) - new Date(pickupDate)) /
-      (1000 * 60 * 60 * 24);
+      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24);
 
     if (days <= 0)
       return res.status(400).json({ message: "Invalid date selection" });
@@ -47,29 +46,26 @@ export const createBooking = async (req, res) => {
       totalAmount,
       advancePaid,
       paymentStatus: "partial",
-      status: "pending", // Admin confirms
+      status: "pending",
     });
 
     res.status(201).json({
       message: "Booking created. Waiting for admin confirmation.",
       booking,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= ADMIN ASSIGN DRIVER ================= */
+// ADMIN ASSIGN DRIVER
 export const assignDriver = async (req, res) => {
   try {
     const { driverId } = req.body;
 
     const booking = await bookingModel.findById(req.params.id);
 
-    if (!booking)
-      return res.status(404).json({ message: "Booking not found" });
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
 
     const driver = await driverModel.findById(driverId);
 
@@ -87,44 +83,38 @@ export const assignDriver = async (req, res) => {
     res.json({
       message: "Driver assigned & booking confirmed",
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= ADMIN CONFIRM SELF BOOKING ================= */
+//ADMIN CONFIRM SELF BOOKING
 export const confirmBooking = async (req, res) => {
   try {
     const booking = await bookingModel.findById(req.params.id);
 
-    if (!booking)
-      return res.status(404).json({ message: "Booking not found" });
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
 
     booking.status = "confirmed";
     await booking.save();
 
     res.json({ message: "Booking confirmed successfully" });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= CANCEL BOOKING ================= */
+//CANCEL BOOKING (CUSTOMER)
 export const cancelBooking = async (req, res) => {
   try {
     const booking = await bookingModel.findById(req.params.id);
 
-    if (!booking)
-      return res.status(404).json({ message: "Booking not found" });
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
 
     const now = new Date();
     const pickup = new Date(booking.pickupDate);
     const hoursDiff = (pickup - now) / (1000 * 60 * 60);
-
+    // REFUND
     let refundAmount = booking.advancePaid;
 
     if (hoursDiff < 24) {
@@ -149,14 +139,12 @@ export const cancelBooking = async (req, res) => {
       message: "Booking cancelled successfully",
       refundAmount,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-/* ================= CUSTOMER BOOKINGS ================= */
+//CUSTOMER BOOKINGS
 export const getMyBookings = async (req, res) => {
   try {
     const bookings = await bookingModel
@@ -165,7 +153,31 @@ export const getMyBookings = async (req, res) => {
       .populate("driverAssigned");
 
     res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
+//ADMIN CANCEL BOOKING
+export const adminCancelBooking = async (req, res) => {
+  try {
+    const booking = await bookingModel.findById(req.params.id);
+
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+    // If driver assigned → make driver available again
+    if (booking.driverAssigned) {
+      const driver = await driverModel.findById(booking.driverAssigned);
+      if (driver) {
+        driver.isAvailable = true;
+        await driver.save();
+      }
+    }
+
+    booking.status = "cancelled";
+    await booking.save();
+
+    res.json({ message: "Booking cancelled by admin" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
