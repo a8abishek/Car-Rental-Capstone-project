@@ -44,6 +44,7 @@ function Login() {
       });
 
       localStorage.setItem("token", res.token);
+      localStorage.setItem("role", role);
 
       toast.success("Welcome back!");
       //dashboard Navigate

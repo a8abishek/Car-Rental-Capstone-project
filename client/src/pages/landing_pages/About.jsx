@@ -1,6 +1,15 @@
 import React from "react";
+import {
+  Eye,
+  Heart,
+  ArrowRight,
+  TicketPlus,
+  Headset,
+  X,
+  CarFront,
+} from "lucide-react";
+// import
 import Navbar from "../../components/Navbar";
-import { Eye, Heart, ArrowRight,TicketPlus,Headset,X ,CarFront} from "lucide-react";
 
 function About() {
   return (
@@ -136,7 +145,7 @@ function About() {
           </div>
         </div>
       </div>
-      {/*why choose DriveElite */}
+      {/*why choose CarRental */}
       <div className="px-18 py-8 bg-[#f9fafb]">
         <h1 className="text-xl font-bold flex justify-center">
           Why Choose CarRental ?
@@ -178,7 +187,7 @@ function About() {
           </div>
         </div>
       </div>
-      
+
       {/*Footer*/}
       <div className="bg-black text-white flex justify-between px-28 py-10">
         <div>

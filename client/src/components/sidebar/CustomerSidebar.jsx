@@ -34,7 +34,8 @@ const CustomerSidebar = () => {
     navigate("/login");
   };
 
-  const linkClass = "flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition font-medium";
+  const linkClass =
+    "flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition font-medium";
   const activeClass = "bg-blue-100 text-blue-600";
 
   return (
@@ -45,33 +46,68 @@ const CustomerSidebar = () => {
           <div className="bg-blue-600 p-1.5 rounded-lg">
             <Car size={20} className="text-white" />
           </div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight">DriveElite</h2>
+          <h2 className="text-xl font-bold text-slate-800 tracking-tight">
+            DriveElite
+          </h2>
         </div>
 
         <nav className="flex flex-col gap-1">
-          <NavLink to="/dashboard" end className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+          <NavLink
+            to="/dashboard"
+            end
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <LayoutDashboard size={18} /> Dashboard
           </NavLink>
-          
-          <NavLink to="/dashboard/booking" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+
+          <NavLink
+            to="/dashboard/booking"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <Car size={18} /> My Booking
           </NavLink>
 
-          <NavLink to="/dashboard/wishlist" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+          <NavLink
+            to="/dashboard/wishlist"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <Heart size={18} /> Saved Cars
           </NavLink>
 
-          <NavLink to="/dashboard/payments" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+          <NavLink
+            to="/dashboard/payments"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <CreditCard size={18} /> Payments history
           </NavLink>
 
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2 px-4">Support</p>
-          
-          <NavLink to="/dashboard/notification" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2 px-4">
+            Support
+          </p>
+
+          <NavLink
+            to="/dashboard/notification"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <HelpCircle size={18} /> notification
           </NavLink>
-          
-          <NavLink to="/dashboard/settings" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}>
+
+          <NavLink
+            to="/dashboard/settings"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
             <Settings size={18} /> Settings
           </NavLink>
         </nav>
@@ -85,7 +121,7 @@ const CustomerSidebar = () => {
             <div className="h-10 w-10 shrink-0 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
               {user?.name ? user.name.charAt(0).toUpperCase() : "?"}
             </div>
-            
+
             <div className="overflow-hidden">
               <p className="text-sm font-bold text-slate-800 truncate leading-tight">
                 {user?.name || "Loading..."}
@@ -96,7 +132,7 @@ const CustomerSidebar = () => {
             </div>
           </div>
 
-          <button 
+          <button
             onClick={handleLogout}
             className="text-slate-400 hover:text-red-500 transition-colors p-1"
             title="Logout"

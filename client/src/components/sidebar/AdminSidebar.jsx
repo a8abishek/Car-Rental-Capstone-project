@@ -1,4 +1,4 @@
-import { NavLink, useNavigate,useLocation} from "react-router";
+import { NavLink, useNavigate, useLocation } from "react-router";
 import {
   LayoutDashboard,
   Users,
@@ -105,16 +105,7 @@ function AdminSidebar() {
               `${linkClass} ${isActive ? activeClass : ""}`
             }
           >
-            <CheckCircle size={18} /> Booking Requests
-          </NavLink>
-
-          <NavLink
-            to="/admin/verifications"
-            className={({ isActive }) =>
-              `${linkClass} ${isActive ? activeClass : ""}`
-            }
-          >
-            <AlertCircle size={18} /> Pending Approvals
+            <CheckCircle size={18} /> Bookings
           </NavLink>
 
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2 px-4">
@@ -163,6 +154,6 @@ function AdminSidebar() {
       </div>
     </div>
   );
-};
+}
 
 export default AdminSidebar;

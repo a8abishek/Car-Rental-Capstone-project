@@ -1,8 +1,9 @@
 import { validationResult } from "express-validator";
-// import
 import carModel from "../models/carModel.js";
+import bookingModel from "../models/bookingModel.js";
 
-// ADD CAR
+/* ADD CAR- Admin → auto approved - Dealer → auto pending */
+
 export const addCar = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -35,6 +36,7 @@ export const addCar = async (req, res) => {
       });
     }
 
+    // ROLE BASED AUTO STATUS
     const status = req.user.role === "admin" ? "approved" : "pending";
 
     const car = await carModel.create({
@@ -56,7 +58,7 @@ export const addCar = async (req, res) => {
 
     res.status(201).json({
       message:
-        req.user.role === "admin"
+        status === "approved"
           ? "Car added and approved"
           : "Car added. Waiting for admin approval",
       car,
@@ -66,7 +68,7 @@ export const addCar = async (req, res) => {
   }
 };
 
-//GET SINGLE CAR
+/* GET SINGLE CAR */
 export const getSingleCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
@@ -79,13 +81,14 @@ export const getSingleCar = async (req, res) => {
   }
 };
 
-//UPDATE CAR
+/* UPDATE CAR-  Dealer can edit only own car  - Only admin can change status */
 export const updateCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
     if (!car) return res.status(404).json({ message: "Car not found" });
 
+    // Dealer can only edit own car
     if (
       req.user.role === "dealer" &&
       car.createdBy.toString() !== req.user._id.toString()
@@ -93,9 +96,14 @@ export const updateCar = async (req, res) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
+    // Only admin can modify status
+    if (req.user.role !== "admin") {
+      delete req.body.status;
+    }
+
+    // Prevent modifying protected fields
     delete req.body.createdBy;
     delete req.body.createdRole;
-    delete req.body.status;
 
     if (req.body.carNumber) {
       req.body.carNumber = req.body.carNumber.toUpperCase();
@@ -105,13 +113,16 @@ export const updateCar = async (req, res) => {
 
     await car.save();
 
-    res.json({ message: "Car updated successfully", car });
+    res.json({
+      message: "Car updated successfully",
+      car,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//DELETE CAR
+/*  DELETE CAR - Dealer can delete only own car - Admin can delete any*/
 export const deleteCar = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
@@ -133,7 +144,7 @@ export const deleteCar = async (req, res) => {
   }
 };
 
-//DEALER VIEW OWN CARS
+/*DEALER VIEW OWN CARS */
 export const getDealerCars = async (req, res) => {
   try {
     const cars = await carModel.find({
@@ -146,48 +157,97 @@ export const getDealerCars = async (req, res) => {
   }
 };
 
-//GET APPROVED CARS
+/* GET APPROVED CARS (Public) */
 export const getApprovedCars = async (req, res) => {
   try {
-    const cars = await carModel.find({ status: "approved" });
+    const cars = await carModel.find({
+      status: "approved",
+    });
+
     res.json(cars);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//GET PENDING CARS
+/* GET PENDING CARS (Admin)*/
 export const getPendingCars = async (req, res) => {
   try {
-    const cars = await carModel.find({ status: "pending" });
+    const cars = await carModel.find({
+      status: "pending",
+    });
+
     res.json(cars);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//APPROVE CAR
-export const approveCar = async (req, res) => {
+/* ADMIN TOGGLE STATUS - approved ⇄ pending */
+export const toggleCarStatus = async (req, res) => {
   try {
     const car = await carModel.findById(req.params.id);
 
     if (!car) return res.status(404).json({ message: "Car not found" });
 
-    car.status = "approved";
+    car.status = car.status === "approved" ? "pending" : "approved";
+
     await car.save();
 
-    res.json({ message: "Car approved successfully", car });
+    res.json({
+      message: "Car status updated successfully",
+      status: car.status,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//GET ALL CARS (ADMIN)
+/*ADMIN VIEW ALL CARS*/
 export const getAllCars = async (req, res) => {
   try {
     const cars = await carModel.find().populate("createdBy", "name email role");
 
     res.json(cars);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Add this to your controllers
+export const getDealerStats = async (req, res) => {
+  try {
+    const dealerId = req.user._id;
+
+    // 1. Get all cars owned by this dealer
+    const cars = await carModel.find({ createdBy: dealerId });
+    const carIds = cars.map((car) => car._id);
+
+    // 2. Get all confirmed bookings for these cars
+    const bookings = await bookingModel.find({
+      car: { $in: carIds },
+      status: "confirmed",
+    });
+
+    // 3. Calculate Revenue
+    const totalGrossRevenue = bookings.reduce(
+      (sum, b) => sum + b.totalAmount,
+      0,
+    );
+    const adminCommission = totalGrossRevenue * 0.3;
+    const dealerNet = totalGrossRevenue * 0.7;
+
+    res.json({
+      totalCars: cars.length,
+      activeCars: cars.filter((c) => c.status === "approved").length,
+      bookingCount: bookings.length,
+      revenue: {
+        gross: totalGrossRevenue,
+        commission: adminCommission,
+        net: dealerNet,
+      },
+      recentBookings: bookings.slice(0, 5),
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

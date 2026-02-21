@@ -1,20 +1,23 @@
 import express from "express";
+// import
 import {
   getAdminStats,
   approveDealer,
   revokeDealer,
   getPendingDealers,
-  getAllUsers
+  getAllUsers,
 } from "../controllers/adminController.js";
-
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
+//ROUTER SETUP
 const adminRouter = express.Router();
 
-/* ================= DASHBOARD ================= */
+//ROUTE SETUP
+
+/* DASHBOARD */
 adminRouter.get("/stats", protect, adminOnly, getAdminStats);
 
-/* ================= DEALER MANAGEMENT ================= */
+/*DEALER MANAGEMENT  */
 adminRouter.get("/pending-dealers", protect, adminOnly, getPendingDealers);
 
 adminRouter.put("/approve/:id", protect, adminOnly, approveDealer);

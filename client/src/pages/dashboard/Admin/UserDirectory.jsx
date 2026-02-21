@@ -1,8 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Search, CheckCircle, XCircle, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+// import
 import { apiFetch } from "../../../api/apiFetch";
 
-const UserDirectory = () => {
+function UserDirectory() {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,14 +21,13 @@ const UserDirectory = () => {
   const [page, setPage] = useState(1);
   const usersPerPage = 5;
 
-  // ✅ Fetch all users
+  // Fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
         const data = await apiFetch("/api/admin/users");
-        // FIX: Your backend returns { users: [...] }. Let's extract the array.
-        setAllUsers(data.users || data); 
+        setAllUsers(data.users || data);
       } catch (error) {
         console.error("Fetch Error:", error.message);
       } finally {
@@ -31,7 +38,7 @@ const UserDirectory = () => {
     fetchUsers();
   }, []);
 
-  // ✅ Apply Search + Filters (Frontend Side)
+  // Apply Search + Filters
   const filteredUsers = useMemo(() => {
     return allUsers.filter((user) => {
       const name = user.name || "";
@@ -41,8 +48,7 @@ const UserDirectory = () => {
         name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         email.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesRole =
-        roleFilter === "All" || user.role === roleFilter;
+      const matchesRole = roleFilter === "All" || user.role === roleFilter;
 
       const matchesStatus =
         statusFilter === "All" || user.status === statusFilter;
@@ -51,24 +57,30 @@ const UserDirectory = () => {
     });
   }, [allUsers, searchTerm, roleFilter, statusFilter]);
 
-  // ✅ Pagination Logic
-  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / usersPerPage));
+  //Pagination Logic
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredUsers.length / usersPerPage),
+  );
   const startIndex = (page - 1) * usersPerPage;
-  const currentUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
+  const currentUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + usersPerPage,
+  );
 
-  // ✅ Approve / Revoke Handler
+  // Approve / Revoke Handler
   const handleToggleStatus = async (userId, currentStatus) => {
     try {
       const action = currentStatus === "pending" ? "approve" : "revoke";
       await apiFetch(`/api/admin/${action}/${userId}`, { method: "PUT" });
 
-      // Update state locally so UI updates instantly without full reload
+      // Update state
       setAllUsers((prev) =>
         prev.map((u) =>
           u._id === userId
             ? { ...u, status: action === "approve" ? "approved" : "pending" }
-            : u
-        )
+            : u,
+        ),
       );
     } catch (error) {
       alert("Error: " + error.message);
@@ -84,7 +96,7 @@ const UserDirectory = () => {
         </span>
       </div>
 
-      {/* 🔍 Search & Filters Bar */}
+      {/*Search & Filters Bar */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex gap-4 flex-wrap items-center">
         <div className="relative flex-1 min-w-70">
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -127,7 +139,7 @@ const UserDirectory = () => {
         </select>
       </div>
 
-      {/* 📋 Table */}
+      {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-gray-50 text-gray-500 text-[11px] uppercase font-bold tracking-wider">
@@ -143,26 +155,39 @@ const UserDirectory = () => {
             {loading ? (
               <tr>
                 <td colSpan="4" className="text-center p-20">
-                  <Loader2 className="animate-spin mx-auto text-blue-500" size={30} />
-                  <p className="mt-2 text-gray-400 text-sm">Loading directory...</p>
+                  <Loader2
+                    className="animate-spin mx-auto text-blue-500"
+                    size={30}
+                  />
+                  <p className="mt-2 text-gray-400 text-sm">
+                    Loading directory...
+                  </p>
                 </td>
               </tr>
             ) : currentUsers.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center p-20 text-gray-400 text-sm">
+                <td
+                  colSpan="4"
+                  className="text-center p-20 text-gray-400 text-sm"
+                >
                   No users match your filters.
                 </td>
               </tr>
             ) : (
               currentUsers.map((user) => (
-                <tr key={user._id} className="hover:bg-blue-50/20 transition-colors">
+                <tr
+                  key={user._id}
+                  className="hover:bg-blue-50/20 transition-colors"
+                >
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-sm">
                         {user.name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">{user.name}</p>
+                        <p className="text-sm font-semibold text-gray-800">
+                          {user.name}
+                        </p>
                         <p className="text-xs text-gray-400">{user.email}</p>
                       </div>
                     </div>
@@ -194,7 +219,11 @@ const UserDirectory = () => {
                           ? "text-green-600 hover:bg-green-50"
                           : "text-red-400 hover:bg-red-50"
                       }`}
-                      title={user.status === "pending" ? "Approve User" : "Revoke User"}
+                      title={
+                        user.status === "pending"
+                          ? "Approve User"
+                          : "Revoke User"
+                      }
                     >
                       {user.status === "pending" ? (
                         <CheckCircle size={20} />
@@ -210,11 +239,13 @@ const UserDirectory = () => {
         </table>
       </div>
 
-      {/* 📄 Pagination Controls */}
+      {/* Pagination Controls */}
       {!loading && filteredUsers.length > 0 && (
         <div className="flex items-center justify-between mt-6 px-2">
           <p className="text-xs text-gray-500">
-            Showing {startIndex + 1} to {Math.min(startIndex + usersPerPage, filteredUsers.length)} of {filteredUsers.length} entries
+            Showing {startIndex + 1} to{" "}
+            {Math.min(startIndex + usersPerPage, filteredUsers.length)} of{" "}
+            {filteredUsers.length} entries
           </p>
           <div className="flex gap-2">
             <button
@@ -239,6 +270,6 @@ const UserDirectory = () => {
       )}
     </div>
   );
-};
+}
 
 export default UserDirectory;

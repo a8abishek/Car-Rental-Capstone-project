@@ -6,7 +6,7 @@ import bookingModel from "../models/bookingModel.js";
 // ADMIN DASHBOARD STATS
 export const getAdminStats = async (req, res) => {
   try {
-    //BASIC COUNTS
+    // BASIC COUNTS
     const totalUsers = await userModel.countDocuments({
       role: { $in: ["customer", "dealer"] },
     });
@@ -16,23 +16,31 @@ export const getAdminStats = async (req, res) => {
     });
 
     const totalBookings = await bookingModel.countDocuments();
-
-    //TOTAL REVENUE (Overall)
     const revenueData = await bookingModel.aggregate([
-      { $match: { status: "confirmed" } },
-     { $group: { _id: null, totalRevenue: { $sum: "$advancePaid" } } },
+      {
+        $match: {
+          status: { $in: ["confirmed", "completed"] },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalAmount" },
+        },
+      },
     ]);
+
     const totalRevenue =
       revenueData.length > 0 ? revenueData[0].totalRevenue : 0;
 
-    //NEW: CHART DATA (Last 7 Days)
+    // CHART DATA (Last 7 Days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     const weeklyRevenue = await bookingModel.aggregate([
       {
         $match: {
-          status: "confirmed",
+          status: { $in: ["confirmed", "completed"] },
           createdAt: { $gte: sevenDaysAgo },
         },
       },
@@ -42,20 +50,18 @@ export const getAdminStats = async (req, res) => {
           total: { $sum: "$totalAmount" },
         },
       },
-      { $sort: { _id: 1 } }, // Sort by date ascending
+      { $sort: { _id: 1 } },
     ]);
 
-    //NEW: FLEET UTILIZATION
-
-    // Count how many cars are currently in a "confirmed" booking
+    // FLEET UTILIZATION
     const activeBookingsCount = await bookingModel.countDocuments({
       status: "confirmed",
     });
     const idleCars = Math.max(0, totalCars - activeBookingsCount);
 
-    //RECENT LISTS
+    // RECENT LISTS
     const recentBookings = await bookingModel
-      .find({ status: { $in: ["pending", "confirmed"] } })
+      .find({ status: { $in: ["pending", "confirmed", "completed"] } })
       .sort({ createdAt: -1 })
       .limit(5)
       .populate("customer", "name email")
@@ -76,7 +82,7 @@ export const getAdminStats = async (req, res) => {
       .select("name email createdAt")
       .lean();
 
-    //FINAL RESPONSE
+    // FINAL RESPONSE
     res.json({
       totalUsers,
       totalCars,

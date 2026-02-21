@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Star,
 } from "lucide-react";
+// import
 import Navbar from "../../components/Navbar";
 import { apiFetch } from "../../api/apiFetch";
 import CarCards from "../../components/CarCards";
@@ -21,7 +22,7 @@ const Car = () => {
   const [transmission, setTransmission] = useState([]);
   const [carType, setCarType] = useState([]);
   const [fuelType, setFuelType] = useState([]);
-  const [selectedRatings, setSelectedRatings] = useState([]); // New State
+  const [selectedRatings, setSelectedRatings] = useState([]);
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,7 +125,7 @@ const Car = () => {
     setTransmission([]);
     setCarType([]);
     setFuelType([]);
-    setSelectedRatings([]); // Reset ratings
+    setSelectedRatings([]);
     setCurrentPage(1);
   };
 

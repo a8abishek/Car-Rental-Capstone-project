@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 //import
-import {apiFetch} from '../../api/apiFetch.js'
+import { apiFetch } from "../../api/apiFetch.js";
 import CarCard from "../../components/carCard.jsx";
 const LandingCars = () => {
   const [cars, setCars] = useState([]);
@@ -14,7 +14,6 @@ const LandingCars = () => {
 
         //Show only first 3 cars
         setCars(data.slice(0, 3));
-
       } catch (error) {
         toast.error(error.message);
       } finally {

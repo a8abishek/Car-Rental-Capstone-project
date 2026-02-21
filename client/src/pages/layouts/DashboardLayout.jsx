@@ -8,11 +8,9 @@ function DashboardLayout() {
   const location = useLocation();
 
   const getSidebar = () => {
-    if (location.pathname.startsWith("/admin"))
-      return <AdminSidebar />;
+    if (location.pathname.startsWith("/admin")) return <AdminSidebar />;
 
-    if (location.pathname.startsWith("/dealer"))
-      return <DealerSidebar />;
+    if (location.pathname.startsWith("/dealer")) return <DealerSidebar />;
 
     return <CustomerSidebar />;
   };
@@ -26,6 +24,6 @@ function DashboardLayout() {
       </div>
     </div>
   );
-};
+}
 
 export default DashboardLayout;
