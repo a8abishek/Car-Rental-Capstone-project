@@ -27,7 +27,7 @@ import AdminSetting from './../pages/dashboard/Admin/AdminSetting';
 
 //3.Dealer Dashboard
 import DealerDoashboard from "../pages/dashboard/dealer/DealerDoashboard";
-import Inquiries from './../pages/dashboard/dealer/Inquiries';
+import DealerAnalytics from '../pages/dashboard/dealer/DealerAnalytics';
 // import DMyFleet from './../pages/dashboard/dealer/DMyFleet';
 import DealerSetting from './../pages/dashboard/dealer/DealerSetting';
 import DAddCar from './../pages/dashboard/dealer/DAddCar';
@@ -105,7 +105,7 @@ const AppRouter = createBrowserRouter([
   ),
   children: [
     { path: "dashboard", element: <DealerDoashboard /> },
-    { path: "/dealer/bookings", element: <Inquiries /> },
+    { path: "/dealer/bookings", element: <DealerAnalytics /> },
     { path: "/dealer/my-cars", element: <FleetMananger /> },
     { path: "/dealer/add-cars", element: <DAddCar /> },
     { path: "/dealer/settings", element: <DealerSetting /> },

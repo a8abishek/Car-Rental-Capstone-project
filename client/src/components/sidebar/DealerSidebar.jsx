@@ -78,7 +78,7 @@ function DealerSidebar() {
               `${linkClass} ${isActive ? activeClass : ""}`
             }
           >
-            <ClipboardList size={18} /> Inquiries
+            <ClipboardList size={18} /> Analytics
           </NavLink>
 
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2 px-4">

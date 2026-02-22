@@ -122,7 +122,7 @@ const DealerDashboard = () => {
                         <div className="flex items-center gap-3">
                           <img
                             src={b.car?.carImage}
-                            alt=""
+                            alt="image"
                             className="w-10 h-10 rounded-lg object-cover"
                           />
                           <span className="font-bold text-sm">
@@ -131,7 +131,7 @@ const DealerDashboard = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-slate-600">
-                        {b.customer?.name}
+                        {b.customer?.name || "customer"}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium">
                         ₹{b.totalAmount}

@@ -223,30 +223,52 @@ export const getDealerStats = async (req, res) => {
     const cars = await carModel.find({ createdBy: dealerId });
     const carIds = cars.map((car) => car._id);
 
-    // 2. Get all confirmed bookings for these cars
-    const bookings = await bookingModel.find({
-      car: { $in: carIds },
-      status: "confirmed",
-    });
+    // 2. Get Weekly Revenue (Last 7 Days) for the Chart
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // 3. Calculate Revenue
-    const totalGrossRevenue = bookings.reduce(
-      (sum, b) => sum + b.totalAmount,
-      0,
-    );
-    const adminCommission = totalGrossRevenue * 0.3;
-    const dealerNet = totalGrossRevenue * 0.7;
+    const weeklyRevenue = await bookingModel.aggregate([
+      {
+        $match: {
+          car: { $in: carIds },
+          status: "confirmed", // or "completed"
+          createdAt: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          total: { $sum: "$totalAmount" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // 3. Get Recent Bookings with details
+    const recentBookings = await bookingModel.find({ 
+      car: { $in: carIds }, 
+      status: { $in: ["confirmed", "completed"] } 
+    })
+      .populate("car", "carName carImage")
+      .populate("customer", "name email")
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    // 4. Calculate Revenue Totals
+    const allBookings = await bookingModel.find({ car: { $in: carIds }, status: "confirmed" });
+    const totalGrossRevenue = allBookings.reduce((sum, b) => sum + b.totalAmount, 0);
 
     res.json({
       totalCars: cars.length,
       activeCars: cars.filter((c) => c.status === "approved").length,
-      bookingCount: bookings.length,
+      bookingCount: allBookings.length,
+      weeklyRevenue,
       revenue: {
         gross: totalGrossRevenue,
-        commission: adminCommission,
-        net: dealerNet,
+        commission: totalGrossRevenue * 0.3, // 30% Platform fee
+        net: totalGrossRevenue * 0.7,        // 70% Dealer take-home
       },
-      recentBookings: bookings.slice(0, 5),
+      recentBookings
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

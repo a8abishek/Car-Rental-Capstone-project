@@ -233,3 +233,60 @@ export const getAllBookings = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Add to bookingController.js
+export const getCustomerStats = async (req, res) => {
+  try {
+    const customerId = req.user._id;
+
+    // 1. Get Summary Counts
+    const totalBookings = await bookingModel.countDocuments({ customer: customerId });
+    const upcomingTrips = await bookingModel.countDocuments({ 
+      customer: customerId, 
+      status: "confirmed",
+      pickupDate: { $gt: new Date() }
+    });
+
+    // 2. Calculate Total Spent (Excluding Cancelled Bookings)
+    const spentData = await bookingModel.aggregate([
+      { 
+        $match: { 
+          customer: customerId, 
+          status: { $ne: "cancelled" } // Does NOT include cancelled bookings
+        } 
+      },
+      { 
+        $group: { 
+          _id: null, 
+          totalSpent: { $sum: "$totalAmount" } 
+        } 
+      }
+    ]);
+
+    const totalSpent = spentData.length > 0 ? spentData[0].totalSpent : 0;
+
+    // 3. Get the SINGLE latest active/confirmed rental
+    const activeRental = await bookingModel.findOne({ 
+      customer: customerId, 
+      status: "confirmed" 
+    })
+    .populate("car")
+    .sort({ pickupDate: -1 });
+
+    // 4. Get ONLY the latest 3 bookings for History
+    const bookingHistory = await bookingModel.find({ customer: customerId })
+      .populate("car", "carName carImage brand")
+      .sort({ createdAt: -1 })
+      .limit(3);
+
+    res.json({
+      totalBookings,
+      upcomingTrips,
+      totalSpent, // Calculated dynamically now
+      activeRental,
+      bookingHistory
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

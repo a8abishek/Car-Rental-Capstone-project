@@ -9,6 +9,7 @@ import {
   adminCancelBooking,
   getCarUnavailableDates,
   getAllBookings,
+  getCustomerStats
 } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/roleMiddleware.js";
@@ -37,5 +38,7 @@ bookingRouter.get("/my-bookings", protect, getMyBookings);
 bookingRouter.get("/unavailable/:carId", getCarUnavailableDates);
 
 bookingRouter.get("/all", protect, authorize("admin"), getAllBookings);
+
+bookingRouter.get("/customer/stats", protect, getCustomerStats);
 
 export default bookingRouter;
