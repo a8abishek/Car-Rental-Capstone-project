@@ -5,6 +5,8 @@ import {
   getProfile,
   changePassword,
   updateProfile,
+  toggleSavedCar,
+  getSavedCars
 } from "../controllers/userController.js";
 
 //ROUTER SETUP
@@ -18,5 +20,10 @@ userRouter.put("/update-profile", protect, updateProfile);
 
 // Change password
 userRouter.put("/change-password", protect, changePassword);
+
+// saved car
+userRouter.post("/toggle-favorite", protect, toggleSavedCar);
+
+userRouter.get("/saved-cars", protect, getSavedCars);
 
 export default userRouter;

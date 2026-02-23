@@ -18,7 +18,11 @@ const Car = () => {
 
   // Filter States
   const [search, setSearch] = useState("");
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+
+  // STYLE PRICE STATES
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(50000);
+
   const [transmission, setTransmission] = useState([]);
   const [carType, setCarType] = useState([]);
   const [fuelType, setFuelType] = useState([]);
@@ -55,23 +59,16 @@ const Car = () => {
       );
     }
 
-    // Price Logic
-    if (selectedPriceRanges.length > 0) {
-      updated = updated.filter((car) => {
-        const price = car.pricePerDay;
-        return selectedPriceRanges.some((range) => {
-          if (range === "0-2000") return price <= 2000;
-          if (range === "2000-5000") return price > 2000 && price <= 5000;
-          if (range === "5000+") return price > 5000;
-          return false;
-        });
-      });
-    }
+    // Range Price Logic
+    updated = updated.filter((car) => {
+      const price = car.pricePerDay;
+      return price >= minPrice && price <= maxPrice;
+    });
 
-    // Rating Logic (New)
+    // Rating Logic
     if (selectedRatings.length > 0) {
       updated = updated.filter((car) => {
-        const rating = Math.floor(car.rating || 0); // Round down to match star level
+        const rating = Math.floor(car.rating || 0);
         return selectedRatings.includes(rating.toString());
       });
     }
@@ -101,7 +98,8 @@ const Car = () => {
     setCurrentPage(1);
   }, [
     search,
-    selectedPriceRanges,
+    minPrice,
+    maxPrice,
     transmission,
     carType,
     fuelType,
@@ -121,7 +119,8 @@ const Car = () => {
 
   const resetFilters = () => {
     setSearch("");
-    setSelectedPriceRanges([]);
+    setMinPrice(0);
+    setMaxPrice(50000);
     setTransmission([]);
     setCarType([]);
     setFuelType([]);
@@ -138,7 +137,7 @@ const Car = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar />
-      <div className="max-w-360 mx-auto px-4 sm:px-8 lg:px-12 py-10">
+      <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-12 py-10">
         <header className="mb-10">
           <h2 className="text-4xl font-extrabold text-slate-900">
             Browse Our Fleet
@@ -177,6 +176,73 @@ const Car = () => {
                 />
               </div>
 
+              {/* PRICE FILTER */}
+              <div className="mb-8 border-b border-slate-100 pb-8">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
+                  Price Range
+                </p>
+
+                <div className="space-y-6">
+                  {/* Visual Slider */}
+                  <div className="relative h-1 w-full bg-slate-200 rounded-lg">
+                    <div
+                      className="absolute h-1 bg-blue-600 rounded-lg"
+                      style={{
+                        left: `${(minPrice / 50000) * 100}%`,
+                        right: `${100 - (maxPrice / 50000) * 100}%`,
+                      }}
+                    ></div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="50000"
+                      step="500"
+                      value={minPrice}
+                      onChange={(e) =>
+                        setMinPrice(
+                          Math.min(Number(e.target.value), maxPrice - 500),
+                        )
+                      }
+                      className="absolute w-full -top-1 h-1 appearance-none bg-transparent pointer-events-none cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="50000"
+                      step="500"
+                      value={maxPrice}
+                      onChange={(e) =>
+                        setMaxPrice(
+                          Math.max(Number(e.target.value), minPrice + 500),
+                        )
+                      }
+                      className="absolute w-full -top-1 h-1 appearance-none bg-transparent pointer-events-none cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
+                    />
+                  </div>
+
+                  {/* Price Inputs Boxes */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex-1">
+                      <label className="text-[10px] text-slate-400 uppercase font-bold">
+                        Min
+                      </label>
+                      <div className="border border-slate-200 rounded-lg px-2 py-1 text-sm text-slate-700 font-semibold">
+                        ₹{minPrice.toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="text-slate-300 mt-4">to</div>
+                    <div className="flex-1 text-right">
+                      <label className="text-[10px] text-slate-400 uppercase font-bold">
+                        Max
+                      </label>
+                      <div className="border border-slate-200 rounded-lg px-2 py-1 text-sm text-slate-700 font-semibold">
+                        ₹{maxPrice.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Rating Filter */}
               <div className="mb-8 border-b border-slate-100 pb-8">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
@@ -202,41 +268,6 @@ const Car = () => {
                       />
                       <span className="ml-3 text-slate-600 font-medium group-hover:text-blue-600 transition-colors">
                         {star} Stars
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Range */}
-              <div className="mb-8 border-b border-slate-100 pb-8">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">
-                  Price Range
-                </p>
-                <div className="space-y-4">
-                  {[
-                    { label: "Under ₹2,000", value: "0-2000" },
-                    { label: "₹2,000 - ₹5,000", value: "2000-5000" },
-                    { label: "Above ₹5,000", value: "5000+" },
-                  ].map((range) => (
-                    <label
-                      key={range.value}
-                      className="flex items-center cursor-pointer group"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedPriceRanges.includes(range.value)}
-                        onChange={() =>
-                          handleCheckbox(
-                            range.value,
-                            selectedPriceRanges,
-                            setSelectedPriceRanges,
-                          )
-                        }
-                        className="w-5 h-5 rounded border-slate-300 text-blue-600"
-                      />
-                      <span className="ml-3 text-slate-600 font-medium group-hover:text-blue-600">
-                        {range.label}
                       </span>
                     </label>
                   ))}

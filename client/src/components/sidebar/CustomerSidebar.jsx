@@ -7,6 +7,7 @@ import {
   HelpCircle,
   Settings,
   LogOut,
+  CarFront
 } from "lucide-react";
 import { useEffect, useState } from "react";
 // import
@@ -44,10 +45,10 @@ const CustomerSidebar = () => {
       <div className="overflow-y-auto custom-scrollbar">
         <div className="flex items-center gap-2 px-4 mb-8 mt-2">
           <div className="bg-blue-600 p-1.5 rounded-lg">
-            <Car size={20} className="text-white" />
+            <CarFront size={20} className="text-white" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-            DriveElite
+            CarRental
           </h2>
         </div>
 

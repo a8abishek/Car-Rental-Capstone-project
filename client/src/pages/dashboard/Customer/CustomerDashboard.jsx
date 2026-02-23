@@ -31,7 +31,7 @@ function CustomerDashboard() {
       try {
         await apiFetch(`/api/bookings/cancel/${id}`, { method: 'PUT' });
         alert("Booking cancelled successfully");
-        fetchDashboard(); // Refresh data
+        fetchDashboard(); 
       } catch (err) {
         alert(err.message);
       }
@@ -168,7 +168,7 @@ function CustomerDashboard() {
       <div className="bg-white rounded-[32px] shadow-sm border border-white overflow-hidden p-4">
         <div className="flex justify-between items-center p-4">
           <h3 className="text-lg font-black text-slate-800 tracking-tight">Recent History</h3>
-          <button onClick={() => navigate("/my-bookings")} className="text-indigo-600 text-xs font-black uppercase tracking-widest hover:bg-indigo-50 px-4 py-2 rounded-xl transition-all">View All Activity</button>
+          <button onClick={() => navigate("/dashboard/booking")} className="text-indigo-600 text-xs font-black uppercase tracking-widest hover:bg-indigo-50 px-4 py-2 rounded-xl transition-all">View All Activity</button>
         </div>
         <table className="w-full text-left">
           <thead>

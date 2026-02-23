@@ -24,6 +24,10 @@ const userSchema = new Schema(
       enum: ["pending", "approved"],
       default: "approved",
     },
+    savedCars: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Car" }],
+      default: []
+    },
   },
   { timestamps: true },
 );

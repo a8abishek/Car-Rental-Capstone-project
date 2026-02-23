@@ -56,3 +56,50 @@ export const changePassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//Saved Cars
+export const toggleSavedCar = async (req, res) => {
+  try {
+    const { carId } = req.body;
+    const user = await userModel.findById(req.user.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Ensure array exists
+    if (!user.savedCars) user.savedCars = [];
+
+    const isSaved = user.savedCars.some((id) => id.toString() === carId);
+
+    if (isSaved) {
+      // Remove: compare strings to strings
+      user.savedCars = user.savedCars.filter((id) => id.toString() !== carId);
+    } else {
+      // Add
+      user.savedCars.push(carId);
+    }
+
+    await user.save();
+    
+    // Return the updated array so frontend can sync if needed
+    res.json({ 
+      message: isSaved ? "Removed from favorites" : "Added to favorites",
+      savedCars: user.savedCars 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get the list of saved cars with full details
+export const getSavedCars = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.id).populate("savedCars");
+    
+    // Filter out nulls in case a car was deleted from the database
+    const validCars = user.savedCars.filter(car => car !== null);
+
+    res.json(validCars);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

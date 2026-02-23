@@ -282,7 +282,7 @@ export const getCustomerStats = async (req, res) => {
     res.json({
       totalBookings,
       upcomingTrips,
-      totalSpent, // Calculated dynamically now
+      totalSpent,
       activeRental,
       bookingHistory
     });
