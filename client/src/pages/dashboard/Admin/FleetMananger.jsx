@@ -71,13 +71,15 @@ function FleetManager({ user }) {
     }
   };
 
-  const processedCars = cars
-    .filter((c) => (filter === "all" ? true : c.status === filter))
-    .filter(
-      (c) =>
-        c.carName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.brand?.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+  //
+const processedCars = cars
+  .filter((c) => (filter === "all" ? true : c.status === filter))
+  .filter(
+    (c) =>
+      c.carName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.brand?.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+  .reverse(); 
 
   const totalPages = Math.ceil(processedCars.length / itemsPerPage);
   const currentData = processedCars.slice(
@@ -87,7 +89,7 @@ function FleetManager({ user }) {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen font-sans selection:bg-indigo-100 selection:text-indigo-700">
-      {/* Custom Scrollbar Styles for this component */}
+      {/* Custom Scrollbar */}
       <style
         dangerouslySetInnerHTML={{
           __html: `

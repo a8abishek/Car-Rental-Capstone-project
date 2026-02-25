@@ -19,7 +19,7 @@ export const createBooking = async (req, res) => {
     const car = await carModel.findById(carId);
     if (!car) return res.status(404).json({ message: "Car not found" });
 
-    //CHECK DATE CONFLICT
+    // CHECK DATE CONFLICT
     const existingBooking = await bookingModel.findOne({
       car: carId,
       status: { $in: ["pending", "confirmed"] },
@@ -37,14 +37,18 @@ export const createBooking = async (req, res) => {
       });
     }
 
-    const days =
-      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24);
+    const days = Math.ceil(
+      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)
+    );
 
     if (days <= 0)
       return res.status(400).json({ message: "Invalid date selection" });
 
+    // LOGIC CHANGE: Full amount calculation
     const totalAmount = days * car.pricePerDay;
-    const advancePaid = totalAmount * 0.5;
+    
+    // Set advancePaid to 100% of totalAmount
+    const advancePaid = totalAmount; 
 
     const booking = await bookingModel.create({
       car: carId,
@@ -56,13 +60,13 @@ export const createBooking = async (req, res) => {
       pickupDate,
       dropDate,
       totalAmount,
-      advancePaid,
-      paymentStatus: "partial",
+      advancePaid, 
+      paymentStatus: "paid",
       status: "pending",
     });
 
     res.status(201).json({
-      message: "Booking created. Waiting for admin confirmation.",
+      message: "Booking created with Full Payment. Waiting for confirmation.",
       booking,
     });
   } catch (error) {
@@ -126,10 +130,11 @@ export const cancelBooking = async (req, res) => {
     const pickup = new Date(booking.pickupDate);
     const hoursDiff = (pickup - now) / (1000 * 60 * 60);
 
-    // REFUND LOGIC: If less than 24h, deduct 3%
-    let refundAmount = booking.advancePaid;
+    // Since they paid 100%, we calculate refund from the total amount paid
+    let refundAmount = booking.advancePaid; 
     let penaltyApplied = false;
 
+    // REFUND LOGIC: If less than 24h, deduct 3% penalty from the full payment
     if (hoursDiff < 24 && booking.advancePaid > 0) {
       refundAmount = booking.advancePaid * 0.97; // 3% deduction
       penaltyApplied = true;
@@ -150,8 +155,8 @@ export const cancelBooking = async (req, res) => {
 
     res.json({
       message: penaltyApplied
-        ? "Cancelled with 3% penalty."
-        : "Cancelled with full refund.",
+        ? "Cancelled with 3% penalty deducted from full payment."
+        : "Cancelled with 100% full refund.",
       refundAmount: refundAmount.toFixed(2),
     });
   } catch (error) {
@@ -286,6 +291,23 @@ export const getCustomerStats = async (req, res) => {
       activeRental,
       bookingHistory
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET CUSTOMER PAYMENT HISTORY
+export const getPaymentHistory = async (req, res) => {
+  try {
+    const customerId = req.user._id;
+
+    // Fetch bookings that have a payment record
+    const payments = await bookingModel.find({ customer: customerId })
+      .populate("car", "carName brand carImage")
+      .select("totalAmount advancePaid paymentStatus status createdAt pickupDate")
+      .sort({ createdAt: -1 });
+
+    res.json(payments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

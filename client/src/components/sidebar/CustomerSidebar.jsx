@@ -7,7 +7,7 @@ import {
   HelpCircle,
   Settings,
   LogOut,
-  CarFront
+  CarFront,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 // import
@@ -93,15 +93,6 @@ const CustomerSidebar = () => {
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2 px-4">
             Support
           </p>
-
-          <NavLink
-            to="/dashboard/notification"
-            className={({ isActive }) =>
-              `${linkClass} ${isActive ? activeClass : ""}`
-            }
-          >
-            <HelpCircle size={18} /> notification
-          </NavLink>
 
           <NavLink
             to="/dashboard/settings"

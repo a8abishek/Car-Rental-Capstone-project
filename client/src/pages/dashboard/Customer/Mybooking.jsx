@@ -122,7 +122,7 @@ function Mybooking() {
       doc.text("For refund queries, contact admin@driveease.com", 105, 280, { align: "center" });
 
       doc.save(`${isCancelled ? 'Refund' : 'Invoice'}_${invoiceNo}.pdf`);
-      toast.success("Document downloaded!");
+      toast.success("Invoice downloaded!");
     } catch (err) {
       toast.error("Error generating PDF");
     }

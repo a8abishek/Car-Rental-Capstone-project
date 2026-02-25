@@ -38,7 +38,6 @@ import Mybooking from './../pages/dashboard/Customer/Mybooking';
 import  SaveCars from '../pages/dashboard/Customer/SaveCars'
 import PaymentHistory from './../pages/dashboard/Customer/PaymentHistory';
 import Setting from "../pages/dashboard/Customer/CDSetting";
-import Notification from "../pages/dashboard/Customer/Notification";
 
 // import
 import DriveEliteLanding from "../pages/dealerLanding";
@@ -93,7 +92,6 @@ const AppRouter = createBrowserRouter([
       {path : "/dashboard/wishlist", element : <SaveCars />},
       {path : "/dashboard/payments", element : <PaymentHistory />},
       {path : "/dashboard/settings",element : <Setting />},
-      {path : "/dashboard/notification", element : <Notification /> ,}
     ],
   },
   {
