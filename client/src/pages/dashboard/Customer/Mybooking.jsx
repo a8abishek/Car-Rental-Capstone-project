@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { apiFetch } from "../../../api/apiFetch";
 import { toast } from "react-hot-toast";
 import { 
-  Search, MapPin, Calendar, User as UserIcon, Phone, 
-  X, Car, ChevronDown, ChevronUp, Clock, CreditCard, Download,
-  AlertCircle, RefreshCcw
+  Search, MapPin, Calendar, X, Star, Download, ChevronDown, ChevronUp, RefreshCcw
 } from 'lucide-react';
-
-// PDF LIBRARIES
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -17,6 +13,10 @@ function Mybooking() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
+
+  // --- REVIEW STATES ---
+  const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const fetchMyBookings = async () => {
     try {
@@ -32,101 +32,33 @@ function Mybooking() {
 
   useEffect(() => { fetchMyBookings(); }, []);
 
-  // UPDATED: GENERATE INVOICE OR CANCELLATION SLIP
-  const generateInvoice = (item) => {
-    try {
-      const doc = new jsPDF();
-      const carName = item.car ? `${item.car.brand} ${item.car.carName}` : "N/A";
-      const invoiceNo = item._id?.slice(-6).toUpperCase() || 'N/A';
-      const isCancelled = item.status === 'cancelled';
+const handleReviewSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!reviewData.comment.trim()) {
+    return toast.error("Please add a comment");
+  }
 
-      // --- 1. Header Branding ---
-      doc.setFillColor(isCancelled ? 225 : 79, isCancelled ? 29 : 70, isCancelled ? 72 : 229); 
-      doc.rect(0, 0, 210, 45, 'F');
-      
-      doc.setFontSize(24);
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.text("DRIVE-EASE", 20, 25);
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(isCancelled ? "CANCELLATION & REFUND ADVISORY" : "PREMIUM CAR RENTALS", 20, 32);
-
-      // --- 2. Title & Meta ---
-      doc.setTextColor(40, 40, 40);
-      doc.setFontSize(20);
-      doc.setFont("helvetica", "bold");
-      doc.text(isCancelled ? "CREDIT NOTE" : "INVOICE", 140, 65);
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(100);
-      doc.text(`Doc No: #${isCancelled ? 'CN' : 'INV'}-${invoiceNo}`, 140, 75);
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 140, 80);
-
-      // --- 3. Bill To ---
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
-      doc.text("CUSTOMER DETAILS:", 20, 65);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(80);
-      doc.text(`Booking ID: ${item._id}`, 20, 72);
-      doc.text(`Pickup: ${item.pickupLocation}`, 20, 79);
-
-      // --- 4. Main Table ---
-      autoTable(doc, {
-        startY: 100,
-        head: [['Description', 'Booking Status', 'Total Value', 'Amount Paid']],
-        body: [[
-          carName, 
-          item.status.toUpperCase(), 
-          `INR ${item.totalAmount}`, 
-          `INR ${item.advancePaid}`
-        ]],
-        theme: 'striped',
-        headStyles: { fillColor: isCancelled ? [225, 29, 72] : [79, 70, 229] }
-      });
-
-      // --- 5. Financial Summary ---
-      const finalY = doc.lastAutoTable.finalY + 15;
-      doc.setFillColor(248, 250, 252);
-      doc.rect(120, finalY, 75, 45, 'F');
-      
-      doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text("Total Paid:", 125, finalY + 10);
-      doc.text(`INR ${item.advancePaid}`, 188, finalY + 10, { align: 'right' });
-      
-      if(isCancelled) {
-        doc.text("Cancellation Fee:", 125, finalY + 18);
-        doc.text(`- INR ${item.cancellationFee || 0}`, 188, finalY + 18, { align: 'right' });
-        
-        doc.setDrawColor(220);
-        doc.line(125, finalY + 23, 190, finalY + 23);
-        
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(225, 29, 72);
-        doc.text("REFUND AMOUNT:", 125, finalY + 32);
-        doc.text(`INR ${item.refundAmount || item.advancePaid}`, 188, finalY + 32, { align: 'right' });
-        doc.setFontSize(8);
-        doc.text(`Status: ${item.refundStatus || 'Processing'}`, 125, finalY + 38);
-      } else {
-        doc.text("Balance Due:", 125, finalY + 18);
-        doc.text(`INR ${item.totalAmount - item.advancePaid}`, 188, finalY + 18, { align: 'right' });
-      }
-
-      // --- 6. Footer ---
-      doc.setFontSize(8);
-      doc.setTextColor(160);
-      doc.text("For refund queries, contact admin@driveease.com", 105, 280, { align: "center" });
-
-      doc.save(`${isCancelled ? 'Refund' : 'Invoice'}_${invoiceNo}.pdf`);
-      toast.success("Invoice downloaded!");
-    } catch (err) {
-      toast.error("Error generating PDF");
-    }
-  };
+  try {
+    // We manually wrap the body in JSON.stringify because your apiFetch doesn't do it
+    await apiFetch("/api/review/addreview", {
+      method: "POST",
+      body: JSON.stringify({
+        carId: selectedBooking.car._id,
+        bookingId: selectedBooking._id,
+        rating: reviewData.rating,
+        comment: reviewData.comment
+      })
+    });
+    
+    toast.success("Thank you for your review!");
+    setSelectedBooking(null);
+    setReviewData({ rating: 5, comment: "" });
+    fetchMyBookings(); 
+  } catch (err) {
+    toast.error(err.message || "Failed to submit review");
+  }
+};
 
   const filteredBookings = bookings.filter((item) => {
     const isPast = new Date(item.dropDate) < new Date();
@@ -143,28 +75,14 @@ function Mybooking() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] p-4 md:p-10">
       <div className="max-w-7xl mx-auto">
-        
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Booking History</h1>
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search bookings..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm transition-all"
-            />
-          </div>
-        </div>
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-10">Booking History</h1>
 
         {/* TABS */}
         <div className="flex gap-8 mb-6 border-b border-gray-100">
           {['upcoming', 'completed', 'cancelled'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => { setActiveTab(tab); setExpandedRow(null); }}
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab)} 
               className={`pb-4 text-sm font-bold capitalize relative ${activeTab === tab ? "text-indigo-600" : "text-gray-400"}`}
             >
               {tab}
@@ -175,108 +93,102 @@ function Mybooking() {
 
         {/* TABLE */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="p-5 text-[11px] font-black text-gray-400 uppercase tracking-widest">Car Details</th>
-                <th className="p-5 text-[11px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                <th className="p-5 text-[11px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                <th className="p-5"></th>
+              <tr className="bg-gray-50/50 border-b border-gray-100 text-[11px] font-black text-gray-400 uppercase tracking-widest">
+                <th className="p-5">Car Details</th>
+                <th className="p-5">Amount</th>
+                <th className="p-5">Status</th>
+                <th className="p-5 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredBookings.map((item) => (
-                <React.Fragment key={item._id}>
-                  <tr 
-                    onClick={() => setExpandedRow(expandedRow === item._id ? null : item._id)}
-                    className="cursor-pointer hover:bg-gray-50 transition-all border-b border-gray-50"
-                  >
-                    <td className="p-5">
-                      <div className="flex items-center gap-4">
-                        <img src={item.car?.carImage} className="w-12 h-12 rounded-lg object-cover" alt="car" />
-                        <div>
-                          <p className="font-bold text-gray-900 text-sm">{item.car?.brand} {item.car?.carName}</p>
-                          <p className="text-[10px] text-gray-400 font-mono uppercase">#{item._id?.slice(-6)}</p>
-                        </div>
+                <tr key={item._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-all">
+                  <td className="p-5">
+                    <div className="flex items-center gap-4">
+                      <img src={item.car?.carImage} className="w-12 h-12 rounded-lg object-cover shadow-sm" alt="car" />
+                      <div>
+                        <p className="font-bold text-gray-900 text-sm">{item.car?.brand} {item.car?.carName}</p>
+                        <p className="text-[10px] text-gray-400 font-mono italic">#{item._id?.slice(-6)}</p>
                       </div>
-                    </td>
-                    <td className="p-5 text-sm font-black">₹{item.totalAmount}</td>
-                    <td className="p-5">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                        item.status === 'cancelled' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="p-5 text-right">
-                      {expandedRow === item._id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </td>
-                  </tr>
-
-                  {/* EXPANDED SECTION */}
-                  {expandedRow === item._id && (
-                    <tr className="bg-white">
-                      <td colSpan="4" className="p-8 border-b border-indigo-50 shadow-inner">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                          
-                          {/* INFO SECTION */}
-                          <div>
-                            <h4 className="text-[10px] font-black text-gray-400 uppercase mb-4">Trip Details</h4>
-                            <div className="space-y-3">
-                              <p className="text-xs font-bold flex items-center gap-2"><MapPin size={14} className="text-indigo-400"/> {item.pickupLocation}</p>
-                              <p className="text-xs font-bold flex items-center gap-2"><Calendar size={14} className="text-indigo-400"/> {new Date(item.pickupDate).toDateString()}</p>
-                            </div>
-                          </div>
-
-                          {/* REFUND / DRIVER SECTION */}
-                          <div>
-                            {item.status === 'cancelled' ? (
-                              <>
-                                <h4 className="text-[10px] font-black text-gray-400 uppercase mb-4 text-rose-500">Refund Information</h4>
-                                <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <RefreshCcw size={16} className="text-rose-600 animate-spin-slow" />
-                                    <p className="text-xs font-bold text-rose-700">Refund {item.refundStatus || 'Initiated'}</p>
-                                  </div>
-                                  <p className="text-[10px] text-rose-600">Refund will be credited to your original payment method within 5-7 business days.</p>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <h4 className="text-[10px] font-black text-gray-400 uppercase mb-4">Service Assigned</h4>
-                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
-                                  <UserIcon size={16} className="text-indigo-500" />
-                                  <p className="text-xs font-bold text-gray-600">{item.bookingType === 'driver' ? (item.driverAssigned?.name || "Allocation Pending") : "Self-Drive Mode"}</p>
-                                </div>
-                              </>
-                            )}
-                          </div>
-
-                          {/* FINANCIALS */}
-                          <div className={`p-6 rounded-2xl text-white ${item.status === 'cancelled' ? 'bg-rose-600' : 'bg-gray-900'}`}>
-                            <div className="flex justify-between text-xs mb-2">
-                              <span>{item.status === 'cancelled' ? 'Refundable Amount' : 'Paid Advance'}</span>
-                              <span className="font-bold">₹{item.status === 'cancelled' ? (item.refundAmount || item.advancePaid) : item.advancePaid}</span>
-                            </div>
-                            <div className="pt-3 border-t border-white/20">
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); generateInvoice(item); }}
-                                className="w-full bg-white text-gray-900 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-100 transition-all"
-                              >
-                                <Download size={14} /> {item.status === 'cancelled' ? 'Refund Receipt' : 'Get Invoice'}
-                              </button>
-                            </div>
-                          </div>
-
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
+                    </div>
+                  </td>
+                  <td className="p-5 text-sm font-black text-slate-700">₹{item.totalAmount}</td>
+                  <td className="p-5">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                      item.status === 'cancelled' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="p-5 text-right">
+                    {activeTab === 'completed' && (
+                      <button 
+                        onClick={() => setSelectedBooking(item)}
+                        className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xs border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                      >
+                        <Star size={14} /> Rate Trip
+                      </button>
+                    )}
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
+          {filteredBookings.length === 0 && !loading && (
+            <div className="p-20 text-center text-gray-400 font-medium">No bookings found in this category.</div>
+          )}
         </div>
+
+        {/* REVIEW MODAL */}
+        {selectedBooking && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-md shadow-2xl scale-in-center">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900">Rate your Experience</h3>
+                  <p className="text-xs text-gray-400 font-bold uppercase mt-1">{selectedBooking.car?.carName}</p>
+                </div>
+                <button onClick={() => setSelectedBooking(null)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <X size={20} className="text-gray-400" />
+                </button>
+              </div>
+
+              <form onSubmit={handleReviewSubmit} className="space-y-6">
+                <div className="text-center bg-slate-50 py-6 rounded-3xl">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-3">Overall Rating</label>
+                  <div className="flex justify-center gap-2">
+                    {[1,2,3,4,5].map(num => (
+                      <Star 
+                        key={num} 
+                        size={32} 
+                        className={`cursor-pointer transition-transform active:scale-90 ${reviewData.rating >= num ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`}
+                        onClick={() => setReviewData({...reviewData, rating: num})} 
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Your Feedback</label>
+                  <textarea 
+                    className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-2 outline-none focus:ring-2 focus:ring-indigo-100 text-sm font-medium transition-all"
+                    rows="4" 
+                    placeholder="How was the car and the service?"
+                    value={reviewData.comment}
+                    onChange={(e) => setReviewData({...reviewData, comment: e.target.value})}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 active:scale-[0.98]">
+                  Submit Review
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

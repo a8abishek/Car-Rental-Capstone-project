@@ -1,7 +1,15 @@
+import dotenv from 'dotenv'
+import Stripe from "stripe";
 // import
 import bookingModel from "../models/bookingModel.js";
 import carModel from "../models/carModel.js";
 import driverModel from "../models/driverModel.js";
+
+//config
+dotenv.config() 
+
+// import
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //CREATE BOOKING
 export const createBooking = async (req, res) => {
@@ -14,7 +22,11 @@ export const createBooking = async (req, res) => {
       dropLocation,
       pickupDate,
       dropDate,
+      paymentId, // RECEIVED FROM FRONTEND AFTER SUCCESSFUL STRIPE PAYMENT
     } = req.body;
+
+    // Validation
+    if (!paymentId) return res.status(400).json({ message: "Payment ID is required" });
 
     const car = await carModel.findById(carId);
     if (!car) return res.status(404).json({ message: "Car not found" });
@@ -32,23 +44,13 @@ export const createBooking = async (req, res) => {
     });
 
     if (existingBooking) {
-      return res.status(400).json({
-        message: "Car already booked for selected dates",
-      });
+      return res.status(400).json({ message: "Car already booked for selected dates" });
     }
 
-    const days = Math.ceil(
-      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)
-    );
+    const days = Math.ceil((new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24));
+    if (days <= 0) return res.status(400).json({ message: "Invalid date selection" });
 
-    if (days <= 0)
-      return res.status(400).json({ message: "Invalid date selection" });
-
-    // LOGIC CHANGE: Full amount calculation
     const totalAmount = days * car.pricePerDay;
-    
-    // Set advancePaid to 100% of totalAmount
-    const advancePaid = totalAmount; 
 
     const booking = await bookingModel.create({
       car: carId,
@@ -60,7 +62,8 @@ export const createBooking = async (req, res) => {
       pickupDate,
       dropDate,
       totalAmount,
-      advancePaid, 
+      advancePaid: totalAmount, // Full payment
+      paymentId, // SAVING STRIPE ID FOR REFUND LATER
       paymentStatus: "paid",
       status: "pending",
     });
@@ -125,28 +128,32 @@ export const cancelBooking = async (req, res) => {
   try {
     const booking = await bookingModel.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
+    if (booking.status === "cancelled") return res.status(400).json({ message: "Already cancelled" });
 
     const now = new Date();
     const pickup = new Date(booking.pickupDate);
     const hoursDiff = (pickup - now) / (1000 * 60 * 60);
 
-    // Since they paid 100%, we calculate refund from the total amount paid
-    let refundAmount = booking.advancePaid; 
+    let refundAmount = booking.advancePaid;
     let penaltyApplied = false;
 
-    // REFUND LOGIC: If less than 24h, deduct 3% penalty from the full payment
+    // REFUND LOGIC: If less than 24h, deduct 3% penalty
     if (hoursDiff < 24 && booking.advancePaid > 0) {
-      refundAmount = booking.advancePaid * 0.97; // 3% deduction
+      refundAmount = booking.advancePaid * 0.97;
       penaltyApplied = true;
     }
 
-    // Release Driver if assigned
+    // --- STRIPE REFUND ---
+    if (booking.paymentId) {
+      await stripe.refunds.create({
+        payment_intent: booking.paymentId,
+        amount: Math.round(refundAmount * 100), // Convert to paise/cents
+      });
+    }
+
+    // Release Driver
     if (booking.driverAssigned) {
-      const driver = await driverModel.findById(booking.driverAssigned);
-      if (driver) {
-        driver.isAvailable = true;
-        await driver.save();
-      }
+      await driverModel.findByIdAndUpdate(booking.driverAssigned, { isAvailable: true });
     }
 
     booking.status = "cancelled";
@@ -155,7 +162,7 @@ export const cancelBooking = async (req, res) => {
 
     res.json({
       message: penaltyApplied
-        ? "Cancelled with 3% penalty deducted from full payment."
+        ? "Cancelled with 3% penalty deducted from refund."
         : "Cancelled with 100% full refund.",
       refundAmount: refundAmount.toFixed(2),
     });
@@ -184,15 +191,16 @@ export const adminCancelBooking = async (req, res) => {
     const booking = await bookingModel.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
-    // ADMIN CANCELLATION IS ALWAYS 100% REFUND
-    let refundAmount = booking.advancePaid;
+    // ADMIN ALWAYS GIVES 100% REFUND
+    if (booking.paymentId && booking.paymentStatus === "paid") {
+      await stripe.refunds.create({
+        payment_intent: booking.paymentId,
+        amount: Math.round(booking.advancePaid * 100),
+      });
+    }
 
     if (booking.driverAssigned) {
-      const driver = await driverModel.findById(booking.driverAssigned);
-      if (driver) {
-        driver.isAvailable = true;
-        await driver.save();
-      }
+      await driverModel.findByIdAndUpdate(booking.driverAssigned, { isAvailable: true });
     }
 
     booking.status = "cancelled";
@@ -200,8 +208,8 @@ export const adminCancelBooking = async (req, res) => {
     await booking.save();
 
     res.json({
-      message: "Booking cancelled by admin. Full refund processed.",
-      refundAmount: refundAmount.toFixed(2),
+      message: "Booking cancelled by admin. Full refund processed via Stripe.",
+      refundAmount: booking.advancePaid.toFixed(2),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
