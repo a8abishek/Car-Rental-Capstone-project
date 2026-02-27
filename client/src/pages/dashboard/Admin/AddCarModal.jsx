@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { useForm } from "react-hook-form";
 import {
   X,
@@ -14,12 +14,30 @@ import { apiFetch } from "../../../api/apiFetch";
 
 function AddCarModal({ onClose, onRefresh, userRole }) {
   const [loading, setLoading] = useState(false);
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const isAdmin = userRole?.toLowerCase() === "admin";
+
+  // Added Logic to monitor theme changes instantly
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setTheme(localStorage.getItem("theme") || "light");
+    };
+
+    window.addEventListener("storage", handleThemeChange);
+    window.addEventListener("themeChanged", handleThemeChange);
+
+    return () => {
+      window.removeEventListener("storage", handleThemeChange);
+      window.removeEventListener("themeChanged", handleThemeChange);
+    };
+  }, []);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -34,7 +52,6 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
           : [],
         pricePerDay: Number(data.pricePerDay),
         seatingCapacity: Number(data.seatingCapacity),
-        // Admin posts are auto-approved, others are pending
         status: isAdmin ? "approved" : "pending",
       };
 
@@ -57,22 +74,48 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
     }
   };
 
-  const inputStyle =
-    "w-full bg-slate-50 border border-slate-200 p-3.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400";
-  const labelStyle =
-    "block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1";
+  // Dynamic styles based on theme while maintaining original layout
+  const inputStyle = `w-full border p-3.5 rounded-xl text-sm outline-none focus:ring-2 transition-all ${
+    theme === "dark"
+      ? "bg-slate-800 border-slate-700 text-white focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-500"
+      : "bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+  }`;
+
+  const labelStyle = `block text-[11px] font-bold uppercase tracking-wider mb-1.5 ml-1 ${
+    theme === "dark" ? "text-slate-400" : "text-slate-500"
+  }`;
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
+      <div
+        className={`w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 ${
+          theme === "dark" ? "bg-slate-900 border border-slate-800" : "bg-white"
+        }`}
+      >
         {/* Header */}
-        <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+        <div
+          className={`px-8 py-6 border-b flex justify-between items-center sticky top-0 z-10 ${
+            theme === "dark"
+              ? "bg-slate-900 border-slate-800"
+              : "bg-white border-slate-100"
+          }`}
+        >
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+            <div
+              className={`p-3 rounded-2xl ${
+                theme === "dark"
+                  ? "bg-blue-900/30 text-blue-400"
+                  : "bg-blue-50 text-blue-600"
+              }`}
+            >
               <Car size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-800">
+              <h2
+                className={`text-xl font-black ${
+                  theme === "dark" ? "text-white" : "text-slate-800"
+                }`}
+              >
                 Add New Vehicle
               </h2>
               <p className="text-xs text-slate-400 font-medium">
@@ -82,7 +125,11 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              theme === "dark"
+                ? "hover:bg-slate-800 text-slate-500"
+                : "hover:bg-slate-100 text-slate-400"
+            }`}
           >
             <X size={20} />
           </button>
@@ -170,7 +217,6 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
               </div>
               <div>
                 <label className={labelStyle}>Car Class</label>
-                {/*ENUM MATCH: mid-size, standard, premium, luxury */}
                 <select
                   {...register("carType", { required: true })}
                   className={inputStyle}
@@ -225,7 +271,7 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
                 <label className={labelStyle}>Key Features</label>
                 <textarea
                   {...register("carFeatures")}
-                  placeholder="GPS, Bluetooth, Sunroof, AC (Comma separated)"
+                  placeholder="GPS, Bluetooth, Sunroof, AC"
                   className={inputStyle + " h-24 resize-none"}
                 />
               </div>
@@ -234,11 +280,19 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
         </form>
 
         {/* Footer */}
-        <div className="p-8 bg-slate-50 border-t border-slate-100">
+        <div
+          className={`p-8 border-t transition-colors ${
+            theme === "dark"
+              ? "bg-slate-900 border-slate-800"
+              : "bg-slate-50 border-slate-100"
+          }`}
+        >
           <button
             disabled={loading}
             onClick={handleSubmit(onSubmit)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-blue-200 disabled:opacity-70"
+            className={`w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl disabled:opacity-70 ${
+              theme === "dark" ? "" : "shadow-blue-200"
+            }`}
           >
             {loading ? (
               "Processing..."

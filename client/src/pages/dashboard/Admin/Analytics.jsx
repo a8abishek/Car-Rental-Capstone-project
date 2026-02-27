@@ -31,6 +31,31 @@ import { apiFetch } from "../../../api/apiFetch";
 function Analytics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  // Logic to monitor theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
 
   const fetchAnalytics = async () => {
     try {
@@ -86,7 +111,6 @@ function Analytics() {
       79,
     );
 
-    // Table 1: Bookings
     const carBookingRows =
       data?.recentBookings?.map((b) => [
         b.car?.carName || "N/A",
@@ -108,7 +132,9 @@ function Analytics() {
 
   if (loading)
     return (
-      <div className="h-screen flex items-center justify-center bg-[#F8FAFC]">
+      <div
+        className={`h-screen flex items-center justify-center transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a]" : "bg-[#F8FAFC]"}`}
+      >
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-slate-400 font-bold text-xs uppercase tracking-widest text-center">
@@ -127,23 +153,32 @@ function Analytics() {
     })) || [];
 
   return (
-    <div className="p-6 md:p-10 bg-[#F8FAFC] min-h-screen font-sans text-slate-900">
+    <div
+      className={`p-6 md:p-10 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F8FAFC] text-slate-900"}`}
+    >
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900">
+          <h1
+            className={`text-3xl font-black tracking-tight ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+          >
             Data Insights
           </h1>
-          <p className="text-slate-500 font-medium">
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-slate-500"} font-medium`}
+          >
             Real-time financial and fleet breakdown.
           </p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={fetchAnalytics}
-            className="p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 shadow-sm transition-all"
+            className={`p-3 border rounded-2xl transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 hover:bg-slate-700" : "bg-white border-slate-200 hover:bg-slate-50 shadow-sm"}`}
           >
-            <RotateCcw size={18} className="text-slate-600" />
+            <RotateCcw
+              size={18}
+              className={theme === "dark" ? "text-slate-300" : "text-slate-600"}
+            />
           </button>
           <button
             onClick={downloadPDF}
@@ -155,21 +190,28 @@ function Analytics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* REVENUE CHART*/}
-        <div className="lg:col-span-3 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm min-w-0 overflow-hidden">
+        {/* REVENUE CHART */}
+        <div
+          className={`lg:col-span-3 p-8 rounded-[2.5rem] border shadow-sm min-w-0 overflow-hidden transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+        >
           <div className="flex justify-between items-start mb-10">
             <div>
-              <h3 className="text-lg font-bold">Revenue Flow</h3>
+              <h3
+                className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+              >
+                Revenue Flow
+              </h3>
               <p className="text-xs text-slate-400 font-semibold">
                 Weekly earnings trend
               </p>
             </div>
-            <div className="bg-blue-50 text-blue-700 p-3 rounded-2xl">
+            <div
+              className={`p-3 rounded-2xl ${theme === "dark" ? "bg-blue-900/30 text-blue-400" : "bg-blue-50 text-blue-700"}`}
+            >
               <TrendingUp size={20} />
             </div>
           </div>
 
-          {/* PARENT DIV WITH FIXED HEIGHT */}
           <div className="h-100 w-full min-h-100">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -192,7 +234,7 @@ function Analytics() {
                   <CartesianGrid
                     strokeDasharray="3 3"
                     vertical={false}
-                    stroke="#F1F5F9"
+                    stroke={theme === "dark" ? "#1e293b" : "#F1F5F9"}
                   />
                   <XAxis
                     dataKey="name"
@@ -207,17 +249,21 @@ function Analytics() {
                     tick={{ fontSize: 12, fill: "#94A3B8" }}
                   />
                   <Tooltip
-                    cursor={{ fill: "#f8fafc" }}
+                    cursor={{ fill: theme === "dark" ? "#1e293b" : "#f8fafc" }}
                     contentStyle={{
+                      backgroundColor: theme === "dark" ? "#0f172a" : "#fff",
                       borderRadius: "20px",
                       border: "none",
                       boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+                    }}
+                    itemStyle={{
+                      color: theme === "dark" ? "#3B82F6" : "#2563EB",
                     }}
                   />
                   <Bar
                     dataKey="revenue"
                     barSize={45}
-                    fill="#E2E8F0"
+                    fill={theme === "dark" ? "#1e293b" : "#E2E8F0"}
                     radius={[10, 10, 10, 10]}
                   />
                   <Area
@@ -239,7 +285,9 @@ function Analytics() {
 
         {/* SIDEBAR */}
         <div className="space-y-8 min-w-0">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col items-center">
+          <div
+            className={`p-8 rounded-[2.5rem] border shadow-sm flex flex-col items-center transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+          >
             <h4 className="font-bold text-sm mb-6 self-start uppercase tracking-widest text-slate-400">
               Live Fleet
             </h4>
@@ -256,13 +304,19 @@ function Analytics() {
                     paddingAngle={8}
                     dataKey="value"
                   >
-                    <Cell fill="#2563EB" cornerRadius={10} />
-                    <Cell fill="#F1F5F9" cornerRadius={10} />
+                    <Cell fill="#2563EB" stroke="none" cornerRadius={10} />
+                    <Cell
+                      fill={theme === "dark" ? "#1e293b" : "#F1F5F9"}
+                      stroke="none"
+                      cornerRadius={10}
+                    />
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-black text-slate-800">
+                <span
+                  className={`text-3xl font-black ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                >
                   {data?.utilization?.onTrip}
                 </span>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
@@ -282,7 +336,9 @@ function Analytics() {
                   %
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className={`w-full h-2 rounded-full overflow-hidden ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}
+              >
                 <div
                   className="h-full bg-blue-600 rounded-full transition-all duration-1000"
                   style={{
@@ -293,7 +349,7 @@ function Analytics() {
             </div>
           </div>
 
-          <div className="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-blue-100 flex flex-col justify-between min-h-50">
+          <div className="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-blue-900/20 flex flex-col justify-between min-h-50">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-lg">
                 <DollarSign size={20} />
@@ -317,18 +373,21 @@ function Analytics() {
       {/* FOOTER STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
         <MetricCard
+          theme={theme}
           icon={<Calendar />}
           label="Booking Frequency"
           value={data?.totalBookings}
           sub="Total Lifetime"
         />
         <MetricCard
+          theme={theme}
           icon={<Layers />}
           label="Fleet Size"
           value={data?.totalCars}
           sub="Approved Vehicles"
         />
         <MetricCard
+          theme={theme}
           icon={<Car />}
           label="Current Demand"
           value={data?.utilization?.onTrip}
@@ -339,10 +398,14 @@ function Analytics() {
   );
 }
 
-function MetricCard({ icon, label, value, sub }) {
+function MetricCard({ icon, label, value, sub, theme }) {
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 flex items-center gap-6 min-w-0">
-      <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+    <div
+      className={`p-8 rounded-[2.5rem] border flex items-center gap-6 min-w-0 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+    >
+      <div
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+      >
         {icon}
       </div>
       <div className="min-w-0">
@@ -350,7 +413,11 @@ function MetricCard({ icon, label, value, sub }) {
           {label}
         </p>
         <div className="flex items-baseline gap-2">
-          <h4 className="text-2xl font-black text-slate-800">{value}</h4>
+          <h4
+            className={`text-2xl font-black ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+          >
+            {value}
+          </h4>
           <span className="text-xs font-bold text-slate-400 truncate">
             {sub}
           </span>

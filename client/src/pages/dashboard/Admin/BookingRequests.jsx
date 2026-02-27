@@ -27,6 +27,32 @@ function BookingRequests() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const itemsPerPage = 8;
 
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  // Logic to monitor theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
   //FETCH DATA
   const fetchData = async () => {
     try {
@@ -44,19 +70,17 @@ function BookingRequests() {
     fetchData();
   }, []);
 
-  /*EXPORT PDF LOGIC  */
+  /*EXPORT PDF LOGIC   */
   const downloadReport = () => {
     const doc = new jsPDF();
     const monthName = new Date(0, filterMonth).toLocaleString("default", {
       month: "long",
     });
 
-    // Header
     doc.setFontSize(20);
     doc.setTextColor(30, 41, 59);
     doc.text(`Revenue Report: ${monthName} 2026`, 14, 20);
 
-    // Summary Stats
     doc.setFontSize(10);
     doc.text(
       `Gross Revenue: Rs. ${totalGrossAmount.toLocaleString("en-IN")}`,
@@ -133,20 +157,28 @@ function BookingRequests() {
 
   if (loading)
     return (
-      <div className="h-screen flex items-center justify-center text-slate-400 animate-pulse font-medium">
+      <div
+        className={`h-screen flex items-center justify-center transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-slate-400" : "bg-[#fbfcfd] text-slate-400"} animate-pulse font-medium`}
+      >
         Loading Dashboard...
       </div>
     );
 
   return (
-    <div className="p-4 md:p-8 bg-[#fbfcfd] min-h-screen font-sans text-slate-900">
+    <div
+      className={`p-4 md:p-8 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#fbfcfd] text-slate-900"}`}
+    >
       {/* HEADER */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1
+            className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+          >
             Revenue Overview
           </h1>
-          <p className="text-slate-500 text-sm">
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-slate-500"} text-sm`}
+          >
             Track and manage your bookings for 2026
           </p>
         </div>
@@ -154,7 +186,11 @@ function BookingRequests() {
           <select
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
-            className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            className={`rounded-xl px-4 py-2 text-sm font-semibold shadow-sm outline-none border transition-colors ${
+              theme === "dark"
+                ? "bg-slate-800 border-slate-700 text-white focus:ring-blue-500/50"
+                : "bg-white border-slate-200 text-slate-900 focus:ring-blue-500"
+            }`}
           >
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i} value={i}>
@@ -162,10 +198,9 @@ function BookingRequests() {
               </option>
             ))}
           </select>
-          {/* PDF DOWNLOAD BUTTON */}
           <button
             onClick={downloadReport}
-            className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black transition shadow-lg shadow-slate-200"
+            className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black transition"
           >
             <Download size={16} /> PDF
           </button>
@@ -178,57 +213,84 @@ function BookingRequests() {
           label="Gross Total"
           value={totalGrossAmount}
           icon={<TrendingUp size={18} />}
-          color="text-slate-600"
-          bg="bg-slate-100"
+          color={theme === "dark" ? "text-slate-200" : "text-slate-600"}
+          bg={theme === "dark" ? "bg-slate-800" : "bg-slate-100"}
+          theme={theme}
         />
         <StatCard
           label="Cancelled"
           value={totalCancelledAmount}
           icon={<XCircle size={18} />}
           color="text-red-600"
-          bg="bg-red-50"
+          bg={theme === "dark" ? "bg-red-900/20" : "bg-red-50"}
+          theme={theme}
         />
         <StatCard
           label="Net Revenue"
           value={netRevenue}
           icon={<Wallet size={18} />}
           color="text-blue-600"
-          bg="bg-blue-50"
+          bg={theme === "dark" ? "bg-blue-900/20" : "bg-blue-50"}
           isPrimary
+          theme={theme}
         />
       </div>
 
       {/* TABLE */}
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div
+        className={`max-w-6xl mx-auto rounded-2xl shadow-sm border overflow-hidden transition-colors ${
+          theme === "dark"
+            ? "bg-slate-900 border-slate-800"
+            : "bg-white border-slate-100"
+        }`}
+      >
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 border-b border-slate-100">
+          <thead
+            className={`${theme === "dark" ? "bg-slate-800/50 border-slate-800" : "bg-slate-50 border-slate-100"} border-b`}
+          >
             <tr>
-              <th className="p-4 font-semibold text-slate-500">
+              <th
+                className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+              >
                 Customer & Vehicle
               </th>
-              <th className="p-4 font-semibold text-slate-500">Amount</th>
-              <th className="p-4 font-semibold text-slate-500 text-center">
+              <th
+                className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+              >
+                Amount
+              </th>
+              <th
+                className={`p-4 font-semibold text-center ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+              >
                 Status
               </th>
-              <th className="p-4 font-semibold text-slate-500 text-right">
+              <th
+                className={`p-4 font-semibold text-right ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+              >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody
+            className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-slate-50"}`}
+          >
             {currentData.map((b) => (
               <tr
                 key={b._id}
-                className="hover:bg-blue-50/30 transition-colors cursor-pointer"
+                className={`transition-colors cursor-pointer ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-blue-50/30"}`}
                 onClick={() => setSelectedBooking(b)}
               >
                 <td className="p-4">
-                  <div className="font-semibold text-slate-800">
+                  <div
+                    className={`font-semibold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                  >
                     {b.customer?.name}
                   </div>
                   <div className="text-xs text-slate-500">{b.car?.carName}</div>
                 </td>
-                <td className="p-4 font-bold text-slate-700">
+                <td
+                  className={`p-4 font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+                >
                   ₹{Number(b.totalAmount).toLocaleString("en-IN")}
                 </td>
                 <td className="p-4 text-center">
@@ -252,7 +314,7 @@ function BookingRequests() {
                     {b.status === "pending" && (
                       <button
                         onClick={(e) => handleUpdateStatus(e, b._id, "confirm")}
-                        className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold"
+                        className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95 transition-transform"
                       >
                         Confirm
                       </button>
@@ -260,7 +322,11 @@ function BookingRequests() {
                     {b.status !== "cancelled" && (
                       <button
                         onClick={(e) => handleUpdateStatus(e, b._id, "cancel")}
-                        className="bg-white border border-slate-200 text-slate-500 px-3 py-1.5 rounded-lg text-xs font-bold hover:text-red-600"
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          theme === "dark"
+                            ? "bg-slate-800 border border-slate-700 text-slate-300 hover:text-red-400"
+                            : "bg-white border border-slate-200 text-slate-500 hover:text-red-600"
+                        }`}
                       >
                         Cancel
                       </button>
@@ -282,14 +348,22 @@ function BookingRequests() {
           <button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((p) => p - 1)}
-            className="p-2 rounded-lg bg-white border border-slate-200 disabled:opacity-30"
+            className={`p-2 rounded-lg border disabled:opacity-30 transition-colors ${
+              theme === "dark"
+                ? "bg-slate-800 border-slate-700 text-white"
+                : "bg-white border-slate-200 text-slate-500"
+            }`}
           >
             <ChevronLeft size={16} />
           </button>
           <button
             disabled={currentPage === totalPages || totalPages === 0}
             onClick={() => setCurrentPage((p) => p + 1)}
-            className="p-2 rounded-lg bg-white border border-slate-200 disabled:opacity-30"
+            className={`p-2 rounded-lg border disabled:opacity-30 transition-colors ${
+              theme === "dark"
+                ? "bg-slate-800 border-slate-700 text-white"
+                : "bg-white border-slate-200 text-slate-500"
+            }`}
           >
             <ChevronRight size={16} />
           </button>
@@ -298,13 +372,25 @@ function BookingRequests() {
 
       {/* DETAIL MODAL */}
       {selectedBooking && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-xl rounded-3xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-150">
-            <div className="p-6 border-b flex justify-between items-center bg-slate-50/50">
-              <h3 className="font-bold text-slate-800">Booking Summary</h3>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+          <div
+            className={`w-full max-w-xl rounded-3xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-150 transition-colors ${
+              theme === "dark"
+                ? "bg-slate-900 border border-slate-800"
+                : "bg-white"
+            }`}
+          >
+            <div
+              className={`p-6 border-b flex justify-between items-center ${theme === "dark" ? "bg-slate-800/50 border-slate-800" : "bg-slate-50/50 border-slate-100"}`}
+            >
+              <h3
+                className={`font-bold ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+              >
+                Booking Summary
+              </h3>
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="p-1.5 hover:bg-slate-200 rounded-full transition"
+                className={`p-1.5 rounded-full transition ${theme === "dark" ? "hover:bg-slate-800 text-slate-400" : "hover:bg-slate-200 text-slate-600"}`}
               >
                 <X size={18} />
               </button>
@@ -313,12 +399,14 @@ function BookingRequests() {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <InfoBox
+                  theme={theme}
                   icon={<User size={14} />}
                   label="Customer"
                   value={selectedBooking.customer?.name}
                   sub={selectedBooking.customer?.phone}
                 />
                 <InfoBox
+                  theme={theme}
                   icon={<Car size={14} />}
                   label="Vehicle"
                   value={selectedBooking.car?.carName}
@@ -326,8 +414,11 @@ function BookingRequests() {
                 />
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl grid grid-cols-2 gap-y-4">
+              <div
+                className={`p-4 rounded-2xl grid grid-cols-2 gap-y-4 transition-colors ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
+              >
                 <InfoBox
+                  theme={theme}
                   icon={<Calendar size={14} />}
                   label="Pickup Date"
                   value={new Date(
@@ -336,6 +427,7 @@ function BookingRequests() {
                   sub={selectedBooking.pickupTime}
                 />
                 <InfoBox
+                  theme={theme}
                   icon={<Calendar size={14} />}
                   label="Drop Date"
                   value={
@@ -346,11 +438,13 @@ function BookingRequests() {
                   sub={selectedBooking.dropTime}
                 />
                 <InfoBox
+                  theme={theme}
                   icon={<MapPin size={14} />}
                   label="Pickup Location"
                   value={selectedBooking.pickupLocation}
                 />
                 <InfoBox
+                  theme={theme}
                   icon={<Navigation size={14} />}
                   label="Drop Location"
                   value={selectedBooking.dropLocation}
@@ -368,7 +462,7 @@ function BookingRequests() {
                 </div>
                 <div className="text-right">
                   <span
-                    className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${selectedBooking.status === "confirmed" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                    className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${selectedBooking.status === "confirmed" ? "bg-green-100 text-green-700" : theme === "dark" ? "bg-slate-800 text-slate-400" : "bg-slate-100 text-slate-600"}`}
                   >
                     {selectedBooking.status}
                   </span>
@@ -382,10 +476,14 @@ function BookingRequests() {
   );
 }
 
-function StatCard({ label, value, icon, color, bg, isPrimary }) {
+function StatCard({ label, value, icon, color, bg, isPrimary, theme }) {
   return (
     <div
-      className={`p-6 rounded-2xl border border-slate-100 bg-white ${isPrimary ? "ring-2 ring-blue-500/10" : ""}`}
+      className={`p-6 rounded-2xl border transition-all ${
+        theme === "dark"
+          ? "bg-slate-900 border-slate-800"
+          : "bg-white border-slate-100"
+      } ${isPrimary ? (theme === "dark" ? "ring-2 ring-blue-500/20" : "ring-2 ring-blue-500/10") : ""}`}
     >
       <div
         className={`w-9 h-9 ${bg} ${color} rounded-xl flex items-center justify-center mb-3`}
@@ -395,14 +493,16 @@ function StatCard({ label, value, icon, color, bg, isPrimary }) {
       <p className="text-xs font-bold text-slate-400 uppercase tracking-tight">
         {label}
       </p>
-      <h2 className={`text-2xl font-bold mt-1 ${color}`}>
+      <h2
+        className={`text-2xl font-bold mt-1 ${theme === "dark" && color === "text-slate-600" ? "text-slate-200" : color}`}
+      >
         ₹{value.toLocaleString("en-IN")}
       </h2>
     </div>
   );
 }
 
-function InfoBox({ icon, label, value, sub }) {
+function InfoBox({ icon, label, value, sub, theme }) {
   return (
     <div className="flex gap-3">
       <div className="text-slate-400 mt-1">{icon}</div>
@@ -410,10 +510,18 @@ function InfoBox({ icon, label, value, sub }) {
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
           {label}
         </p>
-        <p className="text-sm font-semibold text-slate-700 leading-tight">
+        <p
+          className={`text-sm font-semibold leading-tight ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+        >
           {value}
         </p>
-        {sub && <p className="text-xs text-slate-500 font-medium">{sub}</p>}
+        {sub && (
+          <p
+            className={`text-xs font-medium ${theme === "dark" ? "text-slate-500" : "text-slate-500"}`}
+          >
+            {sub}
+          </p>
+        )}
       </div>
     </div>
   );

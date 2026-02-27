@@ -76,15 +76,29 @@ function DealerSetting() {
     }
   };
 
+  //THEME TOGGLE WITH INSTANT SIDEBAR UPDATE
   const toggleTheme = (mode) => {
     setTheme(mode);
     localStorage.setItem("theme", mode);
+
+    // Toggle HTML class for Tailwind dark mode
     document.documentElement.classList.toggle("dark", mode === "dark");
+
+    // DISPATCH CUSTOM EVENT: This tells the DealerSidebar to update instantly
+    window.dispatchEvent(new Event("themeChanged"));
+
+    toast.success(
+      `${mode.charAt(0).toUpperCase() + mode.slice(1)} mode activated`,
+    );
   };
 
   return (
     <div
-      className={`min-h-screen p-6 lg:p-10 transition-colors duration-300 ${theme === "dark" ? "bg-[#0F172A] text-white" : "bg-[#F8FAFC] text-slate-900"}`}
+      className={`min-h-screen p-6 lg:p-10 transition-all duration-500 ${
+        theme === "dark"
+          ? "bg-[#050810] text-white"
+          : "bg-[#F8FAFC] text-slate-900"
+      }`}
     >
       {/* HEADER */}
       <div className="max-w-6xl mx-auto flex justify-between items-end mb-10">
@@ -105,13 +119,13 @@ function DealerSetting() {
             onClick={() => toggleTheme("light")}
             className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${theme === "light" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
           >
-            <Sun size={14} /> Light
+            <Sun size={14} strokeWidth={3} /> Light
           </button>
           <button
             onClick={() => toggleTheme("dark")}
             className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${theme === "dark" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
           >
-            <Moon size={14} /> Dark
+            <Moon size={14} strokeWidth={3} /> Dark
           </button>
         </div>
       </div>
@@ -146,11 +160,11 @@ function DealerSetting() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* PROFILE CARD */}
           <div
-            className={`p-8 rounded-4xl border shadow-sm transition-all ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+            className={`p-8 rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
           >
             <div className="flex items-center gap-4 mb-8">
               <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                <User size={20} />
+                <User size={20} strokeWidth={2.5} />
               </div>
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">
                 Identity Details
@@ -168,7 +182,7 @@ function DealerSetting() {
                   onChange={(e) =>
                     setProfile({ ...profile, name: e.target.value })
                   }
-                  className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-blue-600" : "bg-slate-50 border-transparent focus:bg-white focus:border-blue-500"}`}
+                  className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-blue-600 text-white" : "bg-slate-50 border-transparent focus:bg-white focus:border-blue-500 text-slate-800"}`}
                 />
               </div>
               <div>
@@ -178,7 +192,7 @@ function DealerSetting() {
                 <div
                   className={`px-5 py-3.5 rounded-2xl text-sm font-medium flex items-center gap-3 border-2 ${theme === "dark" ? "bg-slate-950 border-slate-800 text-slate-500" : "bg-slate-100 border-transparent text-slate-400"}`}
                 >
-                  <Mail size={16} /> {profile.email}
+                  <Mail size={16} strokeWidth={2.5} /> {profile.email}
                 </div>
               </div>
               <button
@@ -186,18 +200,19 @@ function DealerSetting() {
                 disabled={loading}
                 className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
-                <Save size={16} /> {loading ? "Saving..." : "Save Profile"}
+                <Save size={16} strokeWidth={3} />{" "}
+                {loading ? "Saving..." : "Save Profile"}
               </button>
             </div>
           </div>
 
           {/* SECURITY CARD */}
           <div
-            className={`p-8 rounded-4xl border shadow-sm transition-all ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+            className={`p-8 rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
           >
             <div className="flex items-center gap-4 mb-8">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
-                <KeyRound size={20} />
+                <KeyRound size={20} strokeWidth={2.5} />
               </div>
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">
                 Security Access
@@ -215,7 +230,7 @@ function DealerSetting() {
                     currentPassword: e.target.value,
                   })
                 }
-                className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-emerald-600" : "bg-slate-50 border-transparent focus:bg-white focus:border-emerald-500"}`}
+                className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-emerald-600 text-white" : "bg-slate-50 border-transparent focus:bg-white focus:border-emerald-500 text-slate-800"}`}
               />
               <input
                 type="password"
@@ -224,24 +239,25 @@ function DealerSetting() {
                 onChange={(e) =>
                   setPasswords({ ...passwords, newPassword: e.target.value })
                 }
-                className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-emerald-600" : "bg-slate-50 border-transparent focus:bg-white focus:border-emerald-500"}`}
+                className={`w-full px-5 py-3.5 rounded-2xl text-sm font-bold outline-none border-2 transition-all ${theme === "dark" ? "bg-slate-800 border-slate-700 focus:border-emerald-600 text-white" : "bg-slate-50 border-transparent focus:bg-white focus:border-emerald-500 text-slate-800"}`}
               />
               <button
                 onClick={handleChangePassword}
                 disabled={loading}
-                className="w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-xl"
               >
-                <Lock size={16} /> {loading ? "Updating..." : "Update Password"}
+                <Lock size={16} strokeWidth={3} />{" "}
+                {loading ? "Updating..." : "Update Password"}
               </button>
             </div>
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div className="relative overflow-hidden p-8 rounded-4xl bg-slate-900 dark:bg-blue-600 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        {/* FOOTER SUPPORT */}
+        <div className="relative overflow-hidden p-8 rounded-4xl bg-slate-900 dark:bg-blue-600 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-300">
           <div className="relative z-10 flex items-center gap-5">
             <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
-              <Headphones size={28} />
+              <Headphones size={28} strokeWidth={2.5} />
             </div>
             <div>
               <p className="font-black text-lg tracking-tight">
@@ -252,7 +268,7 @@ function DealerSetting() {
               </p>
             </div>
           </div>
-          <button className="relative z-10 px-10 py-4 bg-white text-slate-900 font-black rounded-2xl text-[11px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl">
+          <button className="relative z-10 px-10 py-4 bg-white text-slate-900 font-black rounded-2xl text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl">
             Open Ticket
           </button>
           <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full" />

@@ -25,6 +25,32 @@ function AdminDashboard() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedDriverId, setSelectedDriverId] = useState("");
 
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  // Logic to monitor theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
   //FETCH DATA
   const fetchStats = async () => {
     try {
@@ -99,10 +125,14 @@ function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
+      <div
+        className={`h-screen flex items-center justify-center transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a]" : "bg-gray-50"}`}
+      >
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 font-medium animate-pulse text-sm uppercase tracking-widest">
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"} font-medium animate-pulse text-sm uppercase tracking-widest`}
+          >
             Initializing Dashboard...
           </p>
         </div>
@@ -111,20 +141,30 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 font-sans text-slate-900">
+    <div
+      className={`min-h-screen transition-colors duration-300 p-4 md:p-8 font-sans ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F8FAFC] text-slate-900"}`}
+    >
       {/*HEADER  */}
       <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1
+            className={`text-3xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+          >
             Master Admin
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-slate-500"} text-sm mt-1`}
+          >
             Manage your fleet, dealers, and customer bookings.
           </p>
         </div>
         <button
           onClick={fetchStats}
-          className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl shadow-sm border border-slate-200 transition-all active:scale-95"
+          className={`flex items-center justify-center gap-2 border px-5 py-2.5 rounded-xl transition-all active:scale-95 shadow-sm font-semibold ${
+            theme === "dark"
+              ? "bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700"
+              : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+          }`}
         >
           <RotateCcw size={18} /> Refresh Data
         </button>
@@ -134,24 +174,28 @@ function AdminDashboard() {
         {/*STAT CARDS*/}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
+            theme={theme}
             icon={<Users size={22} />}
             title="Total Users"
             value={stats.totalUsers}
             color="blue"
           />
           <StatCard
+            theme={theme}
             icon={<Car size={22} />}
             title="Active Fleet"
             value={stats.totalCars}
             color="purple"
           />
           <StatCard
+            theme={theme}
             icon={<Calendar size={22} />}
             title="Bookings"
             value={stats.totalBookings}
             color="orange"
           />
           <StatCard
+            theme={theme}
             icon={<DollarSign size={22} />}
             title="Revenue"
             value={`₹${stats.totalRevenue?.toLocaleString()}`}
@@ -159,11 +203,19 @@ function AdminDashboard() {
           />
         </div>
 
-        {/*CONTENT GRID (WITH SLICES)*/}
+        {/*CONTENT GRID*/}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* RECENT BOOKINGS */}
-          <section className="lg:col-span-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+          <section
+            className={`lg:col-span-1 rounded-3xl border shadow-sm overflow-hidden transition-colors ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800"
+                : "bg-white border-slate-100"
+            }`}
+          >
+            <div
+              className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
+            >
               <h3 className="font-bold flex items-center gap-2">
                 <Clock size={18} className="text-slate-400" /> Recent Bookings
               </h3>
@@ -173,10 +225,16 @@ function AdminDashboard() {
                 <div
                   key={b._id}
                   onClick={() => setSelectedBooking(b)}
-                  className="group p-4 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-blue-50/50 cursor-pointer transition-all"
+                  className={`group p-4 rounded-2xl border border-transparent transition-all cursor-pointer ${
+                    theme === "dark"
+                      ? "hover:border-blue-900/50 hover:bg-blue-900/10"
+                      : "hover:border-blue-100 hover:bg-blue-50/50"
+                  }`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-bold group-hover:text-blue-700 transition-colors">
+                    <span
+                      className={`text-sm font-bold group-hover:text-blue-500 transition-colors ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                    >
                       {b.car?.carName}
                     </span>
                     <StatusBadge status={b.status} />
@@ -191,8 +249,16 @@ function AdminDashboard() {
           </section>
 
           {/* DEALER REQUESTS  */}
-          <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+          <section
+            className={`rounded-3xl border shadow-sm overflow-hidden transition-colors ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800"
+                : "bg-white border-slate-100"
+            }`}
+          >
+            <div
+              className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
+            >
               <h3 className="font-bold flex items-center gap-2">
                 <UserCheck size={18} className="text-slate-400" /> Dealer
                 Approval
@@ -202,15 +268,19 @@ function AdminDashboard() {
               {stats.recentDealers?.slice(0, 3).map((d) => (
                 <div
                   key={d._id}
-                  className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl"
+                  className={`flex justify-between items-center p-4 rounded-2xl ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
                 >
                   <div className="overflow-hidden">
-                    <p className="font-bold text-sm truncate">{d.name}</p>
+                    <p
+                      className={`font-bold text-sm truncate ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                    >
+                      {d.name}
+                    </p>
                     <p className="text-xs text-slate-400 truncate">{d.email}</p>
                   </div>
                   <button
                     onClick={() => handleApproveDealer(d._id)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-bold rounded-xl transition-colors shadow-md shadow-blue-100"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-bold rounded-xl transition-colors shadow-md shadow-blue-500/20"
                   >
                     Approve
                   </button>
@@ -225,8 +295,16 @@ function AdminDashboard() {
           </section>
 
           {/* NEW CUSTOMERS*/}
-          <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-50">
+          <section
+            className={`rounded-3xl border shadow-sm overflow-hidden transition-colors ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800"
+                : "bg-white border-slate-100"
+            }`}
+          >
+            <div
+              className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
+            >
               <h3 className="font-bold flex items-center gap-2">
                 <Users size={18} className="text-slate-400" /> New Customers
               </h3>
@@ -235,13 +313,23 @@ function AdminDashboard() {
               {stats.recentCustomers?.slice(0, 3).map((c) => (
                 <div
                   key={c._id}
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors"
+                  className={`flex items-center gap-4 p-4 rounded-2xl transition-colors ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-slate-50"}`}
                 >
-                  <div className="h-10 w-10 rounded-full bg-linear-to-tr from-slate-200 to-slate-100 flex items-center justify-center text-slate-600 font-bold text-xs uppercase border border-white">
+                  <div
+                    className={`h-10 w-10 rounded-full flex items-center justify-center font-bold text-xs uppercase border ${
+                      theme === "dark"
+                        ? "bg-slate-800 text-slate-400 border-slate-700"
+                        : "bg-slate-100 text-slate-600 border-white"
+                    }`}
+                  >
                     {c.name?.substring(0, 2)}
                   </div>
                   <div>
-                    <p className="font-bold text-sm">{c.name}</p>
+                    <p
+                      className={`font-bold text-sm ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                    >
+                      {c.name}
+                    </p>
                     <p className="text-xs text-slate-400">{c.email}</p>
                   </div>
                 </div>
@@ -254,7 +342,9 @@ function AdminDashboard() {
       {/* MODAL  */}
       {selectedBooking && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="bg-white w-full max-w-2xl rounded-4xl overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+          <div
+            className={`w-full max-w-2xl rounded-4xl overflow-hidden shadow-2xl animate-in zoom-in duration-300 ${theme === "dark" ? "bg-slate-900 border border-slate-800" : "bg-white"}`}
+          >
             <div className="relative h-56 bg-slate-900">
               <img
                 src={selectedBooking.car?.carImage}
@@ -264,7 +354,7 @@ function AdminDashboard() {
               <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent" />
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition"
+                className={`absolute top-6 right-6 p-2 rounded-full backdrop-blur-md transition ${theme === "dark" ? "bg-white/10 hover:bg-white/20 text-white" : "bg-white/20 hover:bg-white/30 text-white"}`}
               >
                 <X size={20} />
               </button>
@@ -283,23 +373,28 @@ function AdminDashboard() {
               </div>
             </div>
 
-            <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto">
+            <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {/* TRIP JOURNEY */}
                 <div className="space-y-6">
                   <SectionTitle title="Journey Route" />
                   <div className="flex gap-4">
                     <div className="flex flex-col items-center py-1">
                       <div className="w-3 h-3 rounded-full border-2 border-blue-600 bg-white" />
-                      <div className="w-0.5 grow bg-slate-100 my-1" />
-                      <div className="w-3 h-3 rounded-full bg-slate-900" />
+                      <div
+                        className={`w-0.5 grow my-1 ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}
+                      />
+                      <div
+                        className={`w-3 h-3 rounded-full ${theme === "dark" ? "bg-white" : "bg-slate-900"}`}
+                      />
                     </div>
                     <div className="flex flex-col justify-between space-y-4 text-sm">
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                           Pickup
                         </p>
-                        <p className="font-bold text-slate-800">
+                        <p
+                          className={`font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                        >
                           {selectedBooking.pickupLocation}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -312,7 +407,9 @@ function AdminDashboard() {
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                           Drop-off
                         </p>
-                        <p className="font-bold text-slate-800">
+                        <p
+                          className={`font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                        >
                           {selectedBooking.dropLocation}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -323,39 +420,52 @@ function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* DETAILS */}
                 <div className="space-y-6">
                   <SectionTitle title="Booking Specs" />
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl">
-                      <div className="h-10 w-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600">
+                    <div
+                      className={`flex items-center gap-3 p-3 rounded-2xl ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+                    >
+                      <div
+                        className={`${theme === "dark" ? "bg-slate-900" : "bg-white"} h-10 w-10 rounded-xl shadow-sm flex items-center justify-center text-blue-600`}
+                      >
                         <Users size={18} />
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           Customer
                         </p>
-                        <p className="text-sm font-bold text-slate-800">
+                        <p
+                          className={`text-sm font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                        >
                           {selectedBooking.customer?.name}
                         </p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                      <div
+                        className={`p-3 rounded-2xl text-center ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+                      >
                         <Fuel
                           size={16}
                           className="mx-auto mb-1 text-slate-400"
                         />
-                        <p className="text-[10px] font-bold text-slate-800 uppercase">
+                        <p
+                          className={`text-[10px] font-bold uppercase ${theme === "dark" ? "text-slate-300" : "text-slate-800"}`}
+                        >
                           {selectedBooking.car?.carRunning}
                         </p>
                       </div>
-                      <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                      <div
+                        className={`p-3 rounded-2xl text-center ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+                      >
                         <Gauge
                           size={16}
                           className="mx-auto mb-1 text-slate-400"
                         />
-                        <p className="text-[10px] font-bold text-slate-800 uppercase">
+                        <p
+                          className={`text-[10px] font-bold uppercase ${theme === "dark" ? "text-slate-300" : "text-slate-800"}`}
+                        >
                           {selectedBooking.car?.transmission}
                         </p>
                       </div>
@@ -364,8 +474,7 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* PAYMENT INFO */}
-              <div className="bg-blue-600 rounded-4xl p-6 text-white flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl shadow-blue-100">
+              <div className="bg-blue-600 rounded-4xl p-6 text-white flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl shadow-blue-900/20">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
                     <CreditCard size={24} />
@@ -389,7 +498,6 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* DRIVER SELECT */}
               {selectedBooking.bookingType === "driver" &&
                 selectedBooking.status === "pending" && (
                   <div className="space-y-3">
@@ -397,7 +505,11 @@ function AdminDashboard() {
                     <select
                       value={selectedDriverId}
                       onChange={(e) => setSelectedDriverId(e.target.value)}
-                      className="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none"
+                      className={`w-full p-4 rounded-2xl text-sm font-semibold outline-none transition appearance-none ${
+                        theme === "dark"
+                          ? "bg-slate-800 text-white border-none"
+                          : "bg-slate-50 text-slate-800 border-none"
+                      }`}
                     >
                       <option value="">Choose Available Driver...</option>
                       {drivers.map((d) => (
@@ -409,24 +521,25 @@ function AdminDashboard() {
                   </div>
                 )}
 
-              {/* FOOTER ACTIONS */}
               {selectedBooking.status === "pending" ? (
                 <div className="flex gap-4 pt-4">
                   <button
                     onClick={handleCancelBooking}
-                    className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                    className={`flex-1 px-6 py-4 rounded-2xl font-bold transition-all ${theme === "dark" ? "text-slate-400 hover:text-red-400 hover:bg-red-900/20" : "text-slate-400 hover:text-red-500 hover:bg-red-50"}`}
                   >
                     Reject
                   </button>
                   <button
                     onClick={handleConfirmBooking}
-                    className="flex-2 bg-slate-900 text-white px-6 py-4 rounded-2xl font-bold shadow-xl shadow-slate-200 hover:bg-black transition-all"
+                    className="flex-2 bg-slate-900 dark:bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-xl transition-all hover:opacity-90"
                   >
                     Confirm Booking
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2 py-4 text-green-600 font-bold bg-green-50 rounded-2xl">
+                <div
+                  className={`flex items-center justify-center gap-2 py-4 font-bold rounded-2xl ${theme === "dark" ? "text-green-400 bg-green-900/20" : "text-green-600 bg-green-50"}`}
+                >
                   <CheckCircle size={20} /> This booking is{" "}
                   {selectedBooking.status}
                 </div>
@@ -439,17 +552,21 @@ function AdminDashboard() {
   );
 }
 
-/*HELPER COMPONENTS  */
-
-const StatCard = ({ icon, title, value, color }) => {
+const StatCard = ({ icon, title, value, color, theme }) => {
   const colors = {
-    blue: "text-blue-600 bg-blue-50",
-    purple: "text-purple-600 bg-purple-50",
-    orange: "text-orange-600 bg-orange-50",
-    green: "text-emerald-600 bg-emerald-50",
+    blue: "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
+    purple: "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
+    orange: "text-orange-600 bg-orange-50 dark:bg-orange-900/20",
+    green: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20",
   };
   return (
-    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+    <div
+      className={`p-6 rounded-3xl shadow-sm border transition-all ${
+        theme === "dark"
+          ? "bg-slate-900 border-slate-800"
+          : "bg-white border-slate-100"
+      }`}
+    >
       <div
         className={`w-12 h-12 flex items-center justify-center rounded-2xl mb-4 ${colors[color]}`}
       >
@@ -458,7 +575,11 @@ const StatCard = ({ icon, title, value, color }) => {
       <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">
         {title}
       </p>
-      <h2 className="text-2xl font-black text-slate-800">{value}</h2>
+      <h2
+        className={`text-2xl font-black ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+      >
+        {value}
+      </h2>
     </div>
   );
 };

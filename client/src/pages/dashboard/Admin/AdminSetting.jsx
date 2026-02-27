@@ -33,7 +33,6 @@ function AdminSetting() {
     apiFetch("/api/cars/recent-approved")
       .then((res) => setRecentCars(res))
       .catch(() => {
-        // Dummy data for visual reference if API fails
         setRecentCars([
           {
             id: 1,
@@ -77,10 +76,16 @@ function AdminSetting() {
   const toggleTheme = (selectedTheme) => {
     setTheme(selectedTheme);
     localStorage.setItem("theme", selectedTheme);
+
+    // Apply class to HTML for Tailwind
     const root = document.documentElement;
     selectedTheme === "dark"
       ? root.classList.add("dark")
       : root.classList.remove("dark");
+
+    // DISPATCH CUSTOM EVENT: This triggers the AdminSidebar to update instantly
+    window.dispatchEvent(new Event("themeChanged"));
+
     toast.success(
       `${selectedTheme.charAt(0).toUpperCase() + selectedTheme.slice(1)} mode activated`,
     );
@@ -88,7 +93,11 @@ function AdminSetting() {
 
   return (
     <div
-      className={`p-6 md:p-10 min-h-screen transition-colors duration-300 ${theme === "dark" ? "bg-slate-950 text-white" : "bg-[#F8FAFC] text-slate-900"}`}
+      className={`p-6 md:p-10 min-h-screen transition-all duration-500 ${
+        theme === "dark"
+          ? "bg-[#050810] text-white"
+          : "bg-[#F8FAFC] text-slate-900"
+      }`}
     >
       <div className="mb-10">
         <h1 className="text-3xl font-black tracking-tight">
@@ -111,35 +120,46 @@ function AdminSetting() {
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
               <Monitor className="text-blue-600" size={20} /> Appearance
             </h3>
-            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl">
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => toggleTheme("light")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${theme === "light" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500"}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+                  theme === "light"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-slate-500"
+                }`}
               >
-                <Sun size={16} /> Light
+                <Sun size={16} strokeWidth={3} /> Light
               </button>
               <button
                 onClick={() => toggleTheme("dark")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${theme === "dark" ? "bg-slate-700 text-white shadow-sm" : "text-slate-500"}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+                  theme === "dark"
+                    ? "bg-indigo-600 text-white shadow-lg"
+                    : "text-slate-500"
+                }`}
               >
-                <Moon size={16} /> Dark
+                <Moon size={16} strokeWidth={3} /> Dark
               </button>
             </div>
           </div>
 
-          {/* RECENT CAR APPROVALS SECTION */}
+          {/* RECENT CAR APPROVALS */}
           <div
             className={`${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"} p-8 rounded-[2.5rem] border shadow-sm`}
           >
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-              <Car className="text-emerald-500" size={20} /> Recent Car
-              Approvals
+              <Car className="text-emerald-500" size={20} /> Recent Approvals
             </h3>
             <div className="space-y-4">
               {recentCars.map((car) => (
                 <div
                   key={car.id}
-                  className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700"
+                  className={`flex items-start gap-3 p-3 rounded-xl border border-transparent transition-colors ${
+                    theme === "dark"
+                      ? "hover:bg-slate-800/50 hover:border-slate-700"
+                      : "hover:bg-slate-50 hover:border-slate-100"
+                  }`}
                 >
                   <div className="mt-1 bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-lg text-emerald-600">
                     <CheckCircle2 size={16} />
@@ -162,7 +182,7 @@ function AdminSetting() {
         {/* RIGHT COLUMN */}
         <div className="lg:col-span-8 space-y-8">
           <div
-            className={`${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"} p-8 rounded-[2.5rem] border shadow-sm`}
+            className={`${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100 shadow-sm"} p-8 rounded-[2.5rem] border`}
           >
             <h3 className="text-lg font-bold mb-8 flex items-center gap-2">
               <User className="text-blue-600" size={20} /> Personal Profile
@@ -179,7 +199,11 @@ function AdminSetting() {
                     onChange={(e) =>
                       setProfile({ ...profile, name: e.target.value })
                     }
-                    className={`w-full mt-1 px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-semibold ${theme === "dark" ? "bg-slate-800 text-white" : "bg-slate-50"}`}
+                    className={`w-full mt-1 px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-bold transition-all ${
+                      theme === "dark"
+                        ? "bg-slate-800 text-white"
+                        : "bg-slate-50"
+                    }`}
                   />
                 </div>
                 <div>
@@ -190,10 +214,14 @@ function AdminSetting() {
                     type="text"
                     value={profile.email}
                     disabled
-                    className={`w-full mt-1 px-5 py-3.5 border-none rounded-2xl opacity-50 cursor-not-allowed font-medium ${theme === "dark" ? "bg-slate-800 text-slate-400" : "bg-slate-100"}`}
+                    className={`w-full mt-1 px-5 py-3.5 border-none rounded-2xl opacity-50 cursor-not-allowed font-medium ${
+                      theme === "dark"
+                        ? "bg-black/20 text-slate-400"
+                        : "bg-slate-100"
+                    }`}
                   />
                 </div>
-                <button className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                <button className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-blue-500/20">
                   <Save size={16} /> Update Name
                 </button>
               </div>
@@ -215,7 +243,9 @@ function AdminSetting() {
                       currentPassword: e.target.value,
                     })
                   }
-                  className={`w-full px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-semibold ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+                  className={`w-full px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-bold ${
+                    theme === "dark" ? "bg-slate-800" : "bg-slate-50"
+                  }`}
                 />
                 <input
                   type="password"
@@ -224,11 +254,13 @@ function AdminSetting() {
                   onChange={(e) =>
                     setPasswords({ ...passwords, newPassword: e.target.value })
                   }
-                  className={`w-full px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-semibold ${theme === "dark" ? "bg-slate-800" : "bg-slate-50"}`}
+                  className={`w-full px-5 py-3.5 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 font-bold ${
+                    theme === "dark" ? "bg-slate-800" : "bg-slate-50"
+                  }`}
                 />
                 <button
                   type="submit"
-                  className="w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-2xl font-bold text-sm transition-all hover:scale-[1.02]"
+                  className="w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-xl"
                 >
                   Update Credentials
                 </button>
@@ -238,12 +270,14 @@ function AdminSetting() {
 
           <div className="border-2 border-dashed border-red-100 dark:border-red-900/30 p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-              <h4 className="font-bold text-red-500">Danger Zone</h4>
+              <h4 className="font-bold text-red-500 flex items-center gap-2">
+                <ShieldAlert size={18} /> Danger Zone
+              </h4>
               <p className="text-xs text-slate-400 font-medium">
                 Permanently delete your account and all data.
               </p>
             </div>
-            <button className="px-8 py-3 bg-red-50 text-red-600 rounded-2xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all">
+            <button className="px-8 py-3 bg-red-50 text-red-600 rounded-2xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all active:scale-95">
               Delete Account
             </button>
           </div>

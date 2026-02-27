@@ -11,7 +11,6 @@ import {
   Headphones,
   Car,
   BadgeCheck,
-  ShieldCheck,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 // import
@@ -69,17 +68,23 @@ function Setting() {
     }
   };
 
+  //THEME TOGGLE WITH INSTANT SIDEBAR UPDATE
   const toggleTheme = (mode) => {
     setTheme(mode);
     localStorage.setItem("theme", mode);
+
+    // Toggle HTML class for Tailwind dark mode
     document.documentElement.classList.toggle("dark", mode === "dark");
+
+    // DISPATCH CUSTOM EVENT: This tells the Sidebar and Navbar to update instantly
+    window.dispatchEvent(new Event("themeChanged"));
   };
 
   return (
     <div
       className={`min-h-screen p-4 lg:p-10 transition-all duration-500 ${
         theme === "dark"
-          ? "bg-[#050810] text-white"
+          ? "bg-[#0b1120] text-white"
           : "bg-[#F8FAFC] text-slate-900"
       }`}
     >
@@ -98,13 +103,14 @@ function Setting() {
             </h1>
           </div>
 
+          {/* Theme Switcher */}
           <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
             <button
               onClick={() => toggleTheme("light")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
                 theme === "light"
                   ? "bg-white text-indigo-600 shadow-sm"
-                  : "text-slate-500"
+                  : "text-slate-500 hover:text-slate-400"
               }`}
             >
               <Sun size={14} strokeWidth={3} /> LIGHT
@@ -114,7 +120,7 @@ function Setting() {
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
                 theme === "dark"
                   ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
-                  : "text-slate-500"
+                  : "text-slate-500 hover:text-slate-400"
               }`}
             >
               <Moon size={14} strokeWidth={3} /> DARK
@@ -145,9 +151,9 @@ function Setting() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* PERSONAL PROFILE CARD */}
           <div
-            className={`p-10 rounded-[3rem] border transition-all ${
+            className={`p-10 rounded-[3rem] border transition-all duration-300 ${
               theme === "dark"
-                ? "bg-slate-900/40 border-slate-800 shadow-2xl"
+                ? "bg-[#111827] border-slate-800 shadow-2xl"
                 : "bg-white border-slate-100 shadow-xl shadow-slate-200/50"
             }`}
           >
@@ -173,8 +179,8 @@ function Setting() {
                 <input
                   className={`w-full px-6 py-5 rounded-2xl border-2 outline-none transition-all font-bold ${
                     theme === "dark"
-                      ? "bg-slate-800/50 border-slate-700 focus:border-indigo-500 text-white"
-                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-indigo-500"
+                      ? "bg-slate-900/50 border-slate-800 focus:border-indigo-500 text-white"
+                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-indigo-500 text-slate-800"
                   }`}
                   value={profile.name}
                   onChange={(e) =>
@@ -190,7 +196,7 @@ function Setting() {
                 <div
                   className={`px-6 py-5 rounded-2xl border-2 flex items-center gap-3 font-bold transition-all ${
                     theme === "dark"
-                      ? "bg-black/40 border-slate-800 text-slate-500"
+                      ? "bg-black/20 border-slate-800 text-slate-500"
                       : "bg-slate-100 border-transparent text-slate-400"
                   }`}
                 >
@@ -201,7 +207,7 @@ function Setting() {
               <button
                 onClick={handleUpdateProfile}
                 disabled={loading}
-                className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl font-black uppercase text-xs tracking-[0.3em] shadow-2xl shadow-indigo-500/40 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4"
+                className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl font-black uppercase text-xs tracking-[0.3em] shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 mt-4"
               >
                 <Save size={18} strokeWidth={3} />{" "}
                 {loading ? "SAVING..." : "SAVE PROFILE"}
@@ -211,9 +217,9 @@ function Setting() {
 
           {/* SECURITY CARD */}
           <div
-            className={`p-10 rounded-[3rem] border transition-all ${
+            className={`p-10 rounded-[3rem] border transition-all duration-300 ${
               theme === "dark"
-                ? "bg-slate-900/40 border-slate-800 shadow-2xl"
+                ? "bg-[#111827] border-slate-800 shadow-2xl"
                 : "bg-white border-slate-100 shadow-xl shadow-slate-200/50"
             }`}
           >
@@ -239,8 +245,8 @@ function Setting() {
                   placeholder="••••••••"
                   className={`w-full px-6 py-5 rounded-2xl border-2 outline-none transition-all font-bold ${
                     theme === "dark"
-                      ? "bg-slate-800/50 border-slate-700 focus:border-rose-500 text-white"
-                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-rose-500"
+                      ? "bg-slate-900/50 border-slate-800 focus:border-rose-500 text-white"
+                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-rose-500 text-slate-800"
                   }`}
                   value={passwords.currentPassword}
                   onChange={(e) =>
@@ -261,8 +267,8 @@ function Setting() {
                   placeholder="Create new password"
                   className={`w-full px-6 py-5 rounded-2xl border-2 outline-none transition-all font-bold ${
                     theme === "dark"
-                      ? "bg-slate-800/50 border-slate-700 focus:border-rose-500 text-white"
-                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-rose-500"
+                      ? "bg-slate-900/50 border-slate-800 focus:border-rose-500 text-white"
+                      : "bg-slate-50 border-slate-50 focus:bg-white focus:border-rose-500 text-slate-800"
                   }`}
                   value={passwords.newPassword}
                   onChange={(e) =>
@@ -284,23 +290,21 @@ function Setting() {
         </div>
 
         {/* --- CUSTOMER SUPPORT FOOTER --- */}
-        <div className="mt-16 p-1 bg-linear-to-r rounded-[2.5rem]">
-          <div className="bg-white dark:bg-blue-50 p-8 rounded-[2.4rem] flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-6 flex-col md:flex-row text-center md:text-left">
-              <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600">
-                <Headphones size={32} strokeWidth={2.5} />
-              </div>
-              <div>
-                <h4 className="text-xl font-black">Need any help?</h4>
-                <p className="text-slate-500 text-sm font-bold">
-                  Our support team is available 24/7 for you.
-                </p>
-              </div>
+        <div className="mt-16 bg-white dark:bg-slate-800/50 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 transition-all duration-300">
+          <div className="flex items-center gap-6 flex-col md:flex-row text-center md:text-left">
+            <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600">
+              <Headphones size={32} strokeWidth={2.5} />
             </div>
-            <button className="px-10 py-4 bg-indigo-600 text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/30">
-              Open Ticket
-            </button>
+            <div>
+              <h4 className="text-xl font-black">Need any help?</h4>
+              <p className="text-slate-500 text-sm font-bold">
+                Our support team is available 24/7 for you.
+              </p>
+            </div>
           </div>
+          <button className="px-10 py-4 bg-indigo-600 text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-lg active:scale-95">
+            Open Ticket
+          </button>
         </div>
       </div>
     </div>
@@ -315,9 +319,9 @@ const StatCard = ({ icon, label, value, color, theme, isVerified }) => {
 
   return (
     <div
-      className={`p-8 rounded-[2.5rem] border flex items-center gap-7 transition-all ${
+      className={`p-8 rounded-[2.5rem] border flex items-center gap-7 transition-all duration-300 ${
         theme === "dark"
-          ? "bg-slate-900/30 border-slate-800"
+          ? "bg-[#111827] border-slate-800"
           : "bg-white border-slate-100 shadow-sm"
       }`}
     >
@@ -334,7 +338,7 @@ const StatCard = ({ icon, label, value, color, theme, isVerified }) => {
           <p className="text-2xl font-black tracking-tight">{value}</p>
           {isVerified && (
             <BadgeCheck
-              size={20}
+              size={22}
               className="text-blue-500"
               fill="currentColor"
               fillOpacity={0.1}

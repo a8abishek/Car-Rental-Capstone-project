@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Eye,
   Heart,
@@ -12,63 +12,110 @@ import {
 import Navbar from "../../components/Navbar";
 
 function About() {
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  // theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
+  const bgPrimary = theme === "dark" ? "bg-[#0f172a]" : "bg-[#f9fafb]";
+  const textPrimary = theme === "dark" ? "text-white" : "text-slate-900";
+  const textSecondary = theme === "dark" ? "text-slate-400" : "text-gray-500";
+  const cardBg =
+    theme === "dark"
+      ? "bg-slate-900 border-slate-800"
+      : "bg-white border-white";
+
   return (
-    <div>
+    <div
+      className={`transition-colors duration-300 ${bgPrimary} ${textPrimary}`}
+    >
       <Navbar />
-      <div className="bg-[#f9fafb] px-10 py-20 flex space-x-10">
+
+      {/* Hero Section */}
+      <div
+        className={`px-14 py-24 flex space-x-10 transition-colors ${bgPrimary}`}
+      >
         <div className="flex flex-col justify-center">
           <h1 className="text-7xl font-bold w-160 tracking-wide">
             Redefining the{" "}
             <span className="text-blue-600">Car Rental Experience</span>
           </h1>
-          <p className="text-gray-500 w-150 mt-5 tracking-wide">
-            we're more than just a rental service.We're your gateway to premium
-            mobility,combing a world-class fleet with unparalleled customer
-            Services.
+          <p className={`${textSecondary} w-150 mt-5 tracking-wide`}>
+            We're more than just a rental service. We're your gateway to premium
+            mobility, combining a world-class fleet with unparalleled customer
+            services.
           </p>
-          <button className="px-8 py-2.5 border rounded-md font-bold w-40 text-blue-600 cursor-pointer mt-10">
+          <button className="px-8 py-2.5 border rounded-md font-bold w-40 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-all cursor-pointer mt-10">
             Explore Cars
           </button>
         </div>
         <div>
           <img
             src="https://i.pinimg.com/736x/c8/bb/ae/c8bbaee908c2bedf845b674888fa6d36.jpg"
-            alt=""
-            className="rounded-2xl h-110"
+            alt="Hero Car"
+            className="rounded-2xl h-110 object-cover shadow-2xl"
           />
         </div>
       </div>
-      {/*about us */}
-      <div className="px-10 py-10 bg-[#f9fafb] shadow flex space-x-10 ">
+
+      {/* Mission Section */}
+      <div
+        className={`px-10 py-10 shadow flex space-x-10 transition-colors ${bgPrimary}`}
+      >
         <div>
-          <span className="text-4xl text-blue-600 font-semibold">
+          <span className="text-4xl text-blue-600 font-semibold uppercase">
             OUR MISSION
           </span>
-          <h1 className="text-4xl font-bold w-160 my-3">
+          <h1 className="text-4xl font-bold w-160 my-6">
             Redefining mobility by providing accessible, reliable, and premium
             car rental experiences for every journey.
           </h1>
 
-          <div className="flex space-x-3.5 bg-white p-4 rounded-2xl">
-            <div className=" bg-blue-300 w-12 h-12 flex justify-center items-center rounded-xl">
-              <Eye color="blue" />
+          <div
+            className={`flex space-x-3.5 p-6 rounded-2xl border transition-colors ${cardBg}`}
+          >
+            <div className="bg-blue-600/20 w-12 h-12 flex justify-center items-center rounded-xl shrink-0">
+              <Eye className="text-blue-600" />
             </div>
             <div>
-              <h1 className="font-bold">Our Vision</h1>
-              <p className="text-gray-500 w-100">
-                To become the world's most customer-center car rental
-                platform,leveraging technology to simplify travel for everyone.
+              <h1 className="font-bold text-lg">Our Vision</h1>
+              <p className={textSecondary}>
+                To become the world's most customer-centric car rental platform,
+                leveraging technology to simplify travel for everyone.
               </p>
             </div>
           </div>
 
-          <div className="flex space-x-3.5 bg-white p-4 my-4 rounded-2xl">
-            <div className=" bg-blue-300 w-12 h-12 flex justify-center items-center rounded-xl">
-              <Heart color="blue" />
+          <div
+            className={`flex space-x-3.5 p-6 my-4 rounded-2xl border transition-colors ${cardBg}`}
+          >
+            <div className="bg-blue-600/20 w-12 h-12 flex justify-center items-center rounded-xl shrink-0">
+              <Heart className="text-blue-600" />
             </div>
             <div>
-              <h1 className="font-bold">Our Values</h1>
-              <p className="text-gray-500 w-100">
+              <h1 className="font-bold text-lg">Our Values</h1>
+              <p className={textSecondary}>
                 Integrity, transparency, and service excellence are at the heart
                 of everything we do, every single day.
               </p>
@@ -79,169 +126,183 @@ function About() {
         <div className="flex justify-center items-center">
           <img
             src="https://i.pinimg.com/736x/1b/3f/ad/1b3fad548ea401cd660ff8da9783bf86.jpg"
-            alt="image"
-            className="rounded-xl w-180"
+            alt="Values Image"
+            className="rounded-3xl w-180 shadow-xl"
           />
         </div>
       </div>
-      {/*our growth */}
-      <div className="bg-[#eaf1f7] py-10">
-        <h1 className="text-3xl font-bold flex justify-center">
+
+      {/* Growth Story Section */}
+      <div
+        className={`${theme === "dark" ? "bg-slate-900/50" : "bg-[#eaf1f7]"} py-20 transition-colors`}
+      >
+        <h1 className="text-4xl font-black flex justify-center mb-16">
           Our Growth Story
         </h1>
-        <div className="py-10 px-[10%] ">
-          <div className="flex space-x-50 items-center">
-            <div>
-              <span className="text-blue-600 font-extrabold flex justify-end">
+
+        <div className="space-y-12">
+          {/* 2012 */}
+          <div className="flex items-center justify-center space-x-20 px-[10%]">
+            <div className="text-right w-1/3">
+              <span className="text-blue-600 text-2xl font-black block mb-2">
                 2012
               </span>
-              <p className="text-gray-500 w-100">
+              <p className={textSecondary}>
                 Founded with a small fleet of 10 cars in London, focused on
                 local commuters.
               </p>
             </div>
-            <div>
-              <ArrowRight size={50} color="blue" />
-            </div>
-            <div>
+            <ArrowRight size={40} className="text-blue-600 shrink-0" />
+            <div className="w-1/3 text-left">
               <h1 className="font-bold text-2xl">The Humble Beginning</h1>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center space-x-50 px-[10%] my-10">
-          <div>
-            <span className="font-extrabold  text-blue-600 flex justify-end">
-              Digital Transformation
-            </span>
-            <p className="text-gray-500 w-100">
-              Launched our first mobile booking platform, reaching over 50,000
-              customer
-            </p>
+          {/* 2016 */}
+          <div className="flex items-center justify-center space-x-20 px-[10%]">
+            <div className="text-right w-1/3">
+              <span className="text-blue-600 text-2xl font-black block mb-2">
+                Digital Transformation
+              </span>
+              <p className={textSecondary}>
+                Launched our first mobile booking platform, reaching over 50,000
+                customers.
+              </p>
+            </div>
+            <ArrowRight size={40} className="text-blue-600 shrink-0" />
+            <div className="w-1/3 text-left">
+              <h1 className="font-bold text-2xl">2016</h1>
+            </div>
           </div>
-          <div>
-            <ArrowRight size={50} color="blue" />
-          </div>
-          <div>
-            <h1 className="font-bold text-2xl">2016</h1>
-          </div>
-        </div>
 
-        <div className="flex items-center space-x-50 px-[10%] my-10">
-          <div>
-            <span className="text-blue-600 font-extrabold flex justify-end">
-              Present
-            </span>
-            <p className="text-gray-500 w-100">
-              Operating in 15 countries with a diverse fleet of over 5000
-              premium vehicles
-            </p>
-          </div>
-          <div>
-            <ArrowRight size={50} color="blue" />
-          </div>
-          <div>
-            <h1 className="font-bold text-2xl">Global Mobility Leader</h1>
+          {/* Present */}
+          <div className="flex items-center justify-center space-x-20 px-[10%]">
+            <div className="text-right w-1/3">
+              <span className="text-blue-600 text-2xl font-black block mb-2">
+                Present
+              </span>
+              <p className={textSecondary}>
+                Operating in 15 countries with a diverse fleet of over 5000
+                premium vehicles.
+              </p>
+            </div>
+            <ArrowRight size={40} className="text-blue-600 shrink-0" />
+            <div className="w-1/3 text-left">
+              <h1 className="font-bold text-2xl">Global Mobility Leader</h1>
+            </div>
           </div>
         </div>
       </div>
-      {/*why choose CarRental */}
-      <div className="px-18 py-8 bg-[#f9fafb]">
-        <h1 className="text-xl font-bold flex justify-center">
-          Why Choose CarRental ?
+
+      {/* Why Choose Section */}
+      <div className={`px-18 py-20 transition-colors ${bgPrimary}`}>
+        <h1 className="text-3xl font-black flex justify-center mb-2">
+          Why Choose CarRental?
         </h1>
-        <p className="text-gray-500 flex justify-center">
-          We provide the best rental experience with premium benefits 24/7
+        <p className={`${textSecondary} flex justify-center mb-12`}>
+          We provide the best rental experience with premium benefits and 24/7
           support.
         </p>
-        <div className="flex justify-between space-x-10 items-center py-10">
-          <div className="flex flex-col items-center bg-white p-10 rounded-2xl">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <TicketPlus color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">Best Price Guarantee</h1>
-            <p className="text-gray-500 text-center">
-              Find a lower price elsewhere and we'll beat it by 10%.No hidden
-              fees,ever.
-            </p>
-          </div>
-          <div className="flex flex-col items-center bg-white p-10 rounded-2xl">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <Headset color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">24/7 Roasside Assist</h1>
-            <p className="text-gray-500 text-center">
-              Drive with peace of mind knowing our support team is just one call
-              away,anytime.
-            </p>
-          </div>
-          <div className="flex flex-col items-center bg-white p-10 rounded-2xl">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
-              <X color="#137fec" />
-            </div>
-            <h1 className="text-xl font-bold">Free cancellation</h1>
-            <p className="text-gray-500 text-center">
-              Plan changed ? Cancel your booking up to 24 hours before pick-up
-              for a full refund.
-            </p>
-          </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+          <BenefitCard
+            theme={theme}
+            icon={<TicketPlus />}
+            title="Best Price Guarantee"
+            desc="Find a lower price elsewhere and we'll beat it by 10%. No hidden fees, ever."
+          />
+          <BenefitCard
+            theme={theme}
+            icon={<Headset />}
+            title="24/7 Roadside Assist"
+            desc="Drive with peace of mind knowing our support team is just one call away, anytime."
+          />
+          <BenefitCard
+            theme={theme}
+            icon={<X />}
+            title="Free Cancellation"
+            desc="Plan changed? Cancel your booking up to 24 hours before pick-up for a full refund."
+          />
         </div>
       </div>
 
-      {/*Footer*/}
-      <div className="bg-black text-white flex justify-between px-28 py-10">
+      {/* Footer */}
+      <div
+        className={`${theme === "dark" ? "bg-black border-t border-slate-800" : "bg-black"} text-white flex justify-between px-28 py-16`}
+      >
         <div>
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-2">
             <div className="bg-blue-600 p-1.5 rounded-md">
-              <CarFront color="white" />
+              <CarFront size={24} color="white" />
             </div>
-            <p className="font-bold text-xl">CarRental</p>
+            <p className="font-bold text-2xl tracking-tighter">CarRental</p>
           </div>
-          <p className="w-80 mt-4.5 text-gray-500">
-            The premier choice for luxury and premium car rentals
-            worldwide.Making every journey a memory worth Keeping.
+          <p className="w-80 mt-6 text-gray-500 leading-relaxed">
+            The premier choice for luxury and premium car rentals worldwide.
+            Making every journey a memory worth keeping.
           </p>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-600 mt-8 text-sm">
             © {new Date().getFullYear()} CarRentals. All rights reserved.
           </p>
         </div>
 
         <div>
-          <h1 className="font-bold">Quick Links</h1>
-          <ul className="mt-4.5">
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
-              cars
+          <h1 className="font-bold text-lg mb-6">Quick Links</h1>
+          <ul className="space-y-3">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+              Cars
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
               Special Offers
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
-              RentalLocations
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+              Rental Locations
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
-              Career
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+              Careers
             </li>
           </ul>
         </div>
 
         <div>
-          <h1 className="font-bold">Support</h1>
-          <ul className="mt-4.5">
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+          <h1 className="font-bold text-lg mb-6">Support</h1>
+          <ul className="space-y-3">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
               Help Center
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
               Privacy Policy
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
               Terms of Service
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
               Cookie Policy
             </li>
           </ul>
         </div>
       </div>
+    </div>
+  );
+}
+
+function BenefitCard({ icon, title, desc, theme }) {
+  const cardBg =
+    theme === "dark"
+      ? "bg-slate-900 border-slate-800"
+      : "bg-white border-slate-100";
+  const textPrimary = theme === "dark" ? "text-white" : "text-slate-900";
+  const textSecondary = theme === "dark" ? "text-slate-400" : "text-gray-500";
+
+  return (
+    <div
+      className={`flex flex-col items-center p-10 rounded-3xl border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all ${cardBg}`}
+    >
+      <div className="w-14 h-14 rounded-2xl bg-blue-600/10 flex justify-center items-center mb-6 text-blue-600">
+        {React.cloneElement(icon, { size: 28 })}
+      </div>
+      <h1 className={`text-xl font-bold mb-3 ${textPrimary}`}>{title}</h1>
+      <p className={`${textSecondary} text-center leading-relaxed`}>{desc}</p>
     </div>
   );
 }

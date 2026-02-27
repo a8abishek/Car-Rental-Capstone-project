@@ -1,3 +1,4 @@
+// import
 import { validationResult } from "express-validator";
 import carModel from "../models/carModel.js";
 import bookingModel from "../models/bookingModel.js";
@@ -245,18 +246,25 @@ export const getDealerStats = async (req, res) => {
     ]);
 
     // 3. Get Recent Bookings with details
-    const recentBookings = await bookingModel.find({ 
-      car: { $in: carIds }, 
-      status: { $in: ["confirmed", "completed"] } 
-    })
+    const recentBookings = await bookingModel
+      .find({
+        car: { $in: carIds },
+        status: { $in: ["confirmed", "completed"] },
+      })
       .populate("car", "carName carImage")
       .populate("customer", "name email")
       .sort({ createdAt: -1 })
       .limit(5);
 
     // 4. Calculate Revenue Totals
-    const allBookings = await bookingModel.find({ car: { $in: carIds }, status: "confirmed" });
-    const totalGrossRevenue = allBookings.reduce((sum, b) => sum + b.totalAmount, 0);
+    const allBookings = await bookingModel.find({
+      car: { $in: carIds },
+      status: "confirmed",
+    });
+    const totalGrossRevenue = allBookings.reduce(
+      (sum, b) => sum + b.totalAmount,
+      0,
+    );
 
     res.json({
       totalCars: cars.length,
@@ -266,9 +274,9 @@ export const getDealerStats = async (req, res) => {
       revenue: {
         gross: totalGrossRevenue,
         commission: totalGrossRevenue * 0.3, // 30% Platform fee
-        net: totalGrossRevenue * 0.7,        // 70% Dealer take-home
+        net: totalGrossRevenue * 0.7, // 70% Dealer take-home
       },
-      recentBookings
+      recentBookings,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

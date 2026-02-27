@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 import Stripe from "stripe";
 // import
 import bookingModel from "../models/bookingModel.js";
@@ -6,9 +6,9 @@ import carModel from "../models/carModel.js";
 import driverModel from "../models/driverModel.js";
 
 //config
-dotenv.config() 
+dotenv.config();
 
-// import
+// create stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //CREATE BOOKING
@@ -22,11 +22,12 @@ export const createBooking = async (req, res) => {
       dropLocation,
       pickupDate,
       dropDate,
-      paymentId, // RECEIVED FROM FRONTEND AFTER SUCCESSFUL STRIPE PAYMENT
+      paymentId,
     } = req.body;
 
     // Validation
-    if (!paymentId) return res.status(400).json({ message: "Payment ID is required" });
+    if (!paymentId)
+      return res.status(400).json({ message: "Payment ID is required" });
 
     const car = await carModel.findById(carId);
     if (!car) return res.status(404).json({ message: "Car not found" });
@@ -44,11 +45,16 @@ export const createBooking = async (req, res) => {
     });
 
     if (existingBooking) {
-      return res.status(400).json({ message: "Car already booked for selected dates" });
+      return res
+        .status(400)
+        .json({ message: "Car already booked for selected dates" });
     }
 
-    const days = Math.ceil((new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24));
-    if (days <= 0) return res.status(400).json({ message: "Invalid date selection" });
+    const days = Math.ceil(
+      (new Date(dropDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24),
+    );
+    if (days <= 0)
+      return res.status(400).json({ message: "Invalid date selection" });
 
     const totalAmount = days * car.pricePerDay;
 
@@ -62,8 +68,8 @@ export const createBooking = async (req, res) => {
       pickupDate,
       dropDate,
       totalAmount,
-      advancePaid: totalAmount, // Full payment
-      paymentId, // SAVING STRIPE ID FOR REFUND LATER
+      advancePaid: totalAmount,
+      paymentId,
       paymentStatus: "paid",
       status: "pending",
     });
@@ -128,7 +134,8 @@ export const cancelBooking = async (req, res) => {
   try {
     const booking = await bookingModel.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
-    if (booking.status === "cancelled") return res.status(400).json({ message: "Already cancelled" });
+    if (booking.status === "cancelled")
+      return res.status(400).json({ message: "Already cancelled" });
 
     const now = new Date();
     const pickup = new Date(booking.pickupDate);
@@ -143,17 +150,19 @@ export const cancelBooking = async (req, res) => {
       penaltyApplied = true;
     }
 
-    // --- STRIPE REFUND ---
+    //STRIPE REFUND
     if (booking.paymentId) {
       await stripe.refunds.create({
         payment_intent: booking.paymentId,
-        amount: Math.round(refundAmount * 100), // Convert to paise/cents
+        amount: Math.round(refundAmount * 100),
       });
     }
 
     // Release Driver
     if (booking.driverAssigned) {
-      await driverModel.findByIdAndUpdate(booking.driverAssigned, { isAvailable: true });
+      await driverModel.findByIdAndUpdate(booking.driverAssigned, {
+        isAvailable: true,
+      });
     }
 
     booking.status = "cancelled";
@@ -200,7 +209,9 @@ export const adminCancelBooking = async (req, res) => {
     }
 
     if (booking.driverAssigned) {
-      await driverModel.findByIdAndUpdate(booking.driverAssigned, { isAvailable: true });
+      await driverModel.findByIdAndUpdate(booking.driverAssigned, {
+        isAvailable: true,
+      });
     }
 
     booking.status = "cancelled";
@@ -253,41 +264,45 @@ export const getCustomerStats = async (req, res) => {
     const customerId = req.user._id;
 
     // 1. Get Summary Counts
-    const totalBookings = await bookingModel.countDocuments({ customer: customerId });
-    const upcomingTrips = await bookingModel.countDocuments({ 
-      customer: customerId, 
+    const totalBookings = await bookingModel.countDocuments({
+      customer: customerId,
+    });
+    const upcomingTrips = await bookingModel.countDocuments({
+      customer: customerId,
       status: "confirmed",
-      pickupDate: { $gt: new Date() }
+      pickupDate: { $gt: new Date() },
     });
 
     // 2. Calculate Total Spent (Excluding Cancelled Bookings)
     const spentData = await bookingModel.aggregate([
-      { 
-        $match: { 
-          customer: customerId, 
-          status: { $ne: "cancelled" } // Does NOT include cancelled bookings
-        } 
+      {
+        $match: {
+          customer: customerId,
+          status: { $ne: "cancelled" },
+        },
       },
-      { 
-        $group: { 
-          _id: null, 
-          totalSpent: { $sum: "$totalAmount" } 
-        } 
-      }
+      {
+        $group: {
+          _id: null,
+          totalSpent: { $sum: "$totalAmount" },
+        },
+      },
     ]);
 
     const totalSpent = spentData.length > 0 ? spentData[0].totalSpent : 0;
 
     // 3. Get the SINGLE latest active/confirmed rental
-    const activeRental = await bookingModel.findOne({ 
-      customer: customerId, 
-      status: "confirmed" 
-    })
-    .populate("car")
-    .sort({ pickupDate: -1 });
+    const activeRental = await bookingModel
+      .findOne({
+        customer: customerId,
+        status: "confirmed",
+      })
+      .populate("car")
+      .sort({ pickupDate: -1 });
 
     // 4. Get ONLY the latest 3 bookings for History
-    const bookingHistory = await bookingModel.find({ customer: customerId })
+    const bookingHistory = await bookingModel
+      .find({ customer: customerId })
       .populate("car", "carName carImage brand")
       .sort({ createdAt: -1 })
       .limit(3);
@@ -297,7 +312,7 @@ export const getCustomerStats = async (req, res) => {
       upcomingTrips,
       totalSpent,
       activeRental,
-      bookingHistory
+      bookingHistory,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -310,9 +325,12 @@ export const getPaymentHistory = async (req, res) => {
     const customerId = req.user._id;
 
     // Fetch bookings that have a payment record
-    const payments = await bookingModel.find({ customer: customerId })
+    const payments = await bookingModel
+      .find({ customer: customerId })
       .populate("car", "carName brand carImage")
-      .select("totalAmount advancePaid paymentStatus status createdAt pickupDate")
+      .select(
+        "totalAmount advancePaid paymentStatus status createdAt pickupDate",
+      )
       .sort({ createdAt: -1 });
 
     res.json(payments);

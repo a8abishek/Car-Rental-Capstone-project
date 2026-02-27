@@ -17,21 +17,37 @@ function PaymentPage() {
     location.state || {};
 
   const [clientSecret, setClientSecret] = useState("");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-  if (!car)
-    return (
-      <div className="p-20 text-center font-bold text-slate-800">
-        Invalid Access
-      </div>
-    );
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
 
-    useEffect(() => {
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!location.state || !car) {
       toast.error("Session expired. Please restart booking.");
-      navigate("/fleet"); // or wherever your car listing is
+      navigate("/fleet");
     }
   }, [location.state, car, navigate]);
-  
+
   // 1. Get the Client Secret from your Backend
   useEffect(() => {
     const fetchSecret = async () => {
@@ -71,14 +87,35 @@ function PaymentPage() {
     }
   };
 
+  if (!car)
+    return (
+      <div
+        className={`p-20 text-center font-bold transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "text-slate-800"}`}
+      >
+        Invalid Access
+      </div>
+    );
+
   return (
-    <div className="min-h-screen bg-[#F3F5F7] py-12 px-4 md:px-10">
+    <div
+      className={`min-h-screen transition-colors duration-300 py-12 px-4 md:px-10 ${theme === "dark" ? "bg-[#0f172a]" : "bg-[#F3F5F7]"}`}
+    >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
         {/* LEFT: Summary */}
         <div className="lg:col-span-4">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-10">
+          <div
+            className={`p-6 rounded-2xl shadow-sm border sticky top-10 transition-colors duration-300 ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800 text-white"
+                : "bg-white border-slate-200 text-slate-900"
+            }`}
+          >
             <h2 className="text-xl font-bold mb-6">Booking Summary</h2>
-            <div className="bg-[#E9EDF0] rounded-xl mb-5 p-4">
+            <div
+              className={`rounded-xl mb-5 p-4 transition-colors ${
+                theme === "dark" ? "bg-slate-800" : "bg-[#E9EDF0]"
+              }`}
+            >
               <img
                 src={car.carImage}
                 className="w-full h-32 object-contain"
@@ -89,12 +126,16 @@ function PaymentPage() {
             <p className="text-blue-600 font-bold text-[10px] uppercase mb-6">
               {car.brand} • Full Insurance
             </p>
-            <div className="mt-8 pt-6 border-t flex justify-between items-end">
+            <div
+              className={`mt-8 pt-6 border-t flex justify-between items-end ${theme === "dark" ? "border-slate-800" : "border-slate-100"}`}
+            >
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase">
                   Total to Pay
                 </p>
-                <p className="text-3xl font-black">
+                <p
+                  className={`text-3xl font-black ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+                >
                   ₹{totalAmount?.toLocaleString()}
                 </p>
               </div>
@@ -105,12 +146,22 @@ function PaymentPage() {
 
         {/* RIGHT: Stripe UI */}
         <div className="lg:col-span-8">
-          <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200">
+          <div
+            className={`p-8 md:p-10 rounded-3xl shadow-sm border transition-colors duration-300 ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800 text-white"
+                : "bg-white border-slate-200 text-slate-900"
+            }`}
+          >
             <div className="mb-10">
-              <h2 className="text-3xl font-black text-slate-900">
+              <h2
+                className={`text-3xl font-black ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+              >
                 Secure Checkout
               </h2>
-              <p className="text-slate-500 font-medium">
+              <p
+                className={`${theme === "dark" ? "text-slate-400" : "text-slate-500"} font-medium`}
+              >
                 Payment powered by Stripe Encryption
               </p>
             </div>

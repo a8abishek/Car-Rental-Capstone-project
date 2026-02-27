@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (!token) {
-    // 🔥 Check which dashboard user is trying to access
+    // Check which dashboard user is trying to access
     if (location.pathname.startsWith("/dealer")) {
       return <Navigate to="/dealer/login" replace />;
     }

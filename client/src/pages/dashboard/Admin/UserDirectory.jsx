@@ -13,6 +13,8 @@ import { apiFetch } from "../../../api/apiFetch";
 function UserDirectory() {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
@@ -20,6 +22,29 @@ function UserDirectory() {
 
   const [page, setPage] = useState(1);
   const usersPerPage = 5;
+
+  // Logic to monitor theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
 
   // Fetch all users
   useEffect(() => {
@@ -88,22 +113,40 @@ function UserDirectory() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen font-sans">
+    <div
+      className={`p-6 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-gray-50 text-slate-900"}`}
+    >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">User Directory</h2>
-        <span className="text-sm text-gray-500 font-medium">
+        <h2
+          className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}
+        >
+          User Directory
+        </h2>
+        <span
+          className={`text-sm font-medium ${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+        >
           Total Users: {filteredUsers.length}
         </span>
       </div>
 
       {/*Search & Filters Bar */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex gap-4 flex-wrap items-center">
+      <div
+        className={`p-4 rounded-xl shadow-sm border mb-6 flex gap-4 flex-wrap items-center transition-colors ${
+          theme === "dark"
+            ? "bg-slate-900 border-slate-800"
+            : "bg-white border-gray-100"
+        }`}
+      >
         <div className="relative flex-1 min-w-70">
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
           <input
             type="text"
             placeholder="Search name or email..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            className={`w-full pl-10 pr-4 py-2 border rounded-lg outline-none transition-all ${
+              theme === "dark"
+                ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:ring-blue-500/50"
+                : "bg-white border-gray-200 focus:ring-2 focus:ring-blue-500"
+            }`}
             value={searchTerm}
             onChange={(e) => {
               setPage(1);
@@ -118,7 +161,11 @@ function UserDirectory() {
             setPage(1);
             setRoleFilter(e.target.value);
           }}
-          className="border border-gray-200 p-2 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-300 transition-all"
+          className={`border p-2 rounded-lg text-sm cursor-pointer transition-all ${
+            theme === "dark"
+              ? "bg-slate-800 border-slate-700 text-slate-300"
+              : "bg-white border-gray-200 hover:border-gray-300"
+          }`}
         >
           <option value="All">All Roles</option>
           <option value="customer">Customer</option>
@@ -131,7 +178,11 @@ function UserDirectory() {
             setPage(1);
             setStatusFilter(e.target.value);
           }}
-          className="border border-gray-200 p-2 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-300 transition-all"
+          className={`border p-2 rounded-lg text-sm cursor-pointer transition-all ${
+            theme === "dark"
+              ? "bg-slate-800 border-slate-700 text-slate-300"
+              : "bg-white border-gray-200 hover:border-gray-300"
+          }`}
         >
           <option value="All">All Status</option>
           <option value="approved">Approved</option>
@@ -140,9 +191,17 @@ function UserDirectory() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div
+        className={`rounded-xl shadow-sm border overflow-hidden transition-colors ${
+          theme === "dark"
+            ? "bg-slate-900 border-slate-800"
+            : "bg-white border-gray-100"
+        }`}
+      >
         <table className="w-full text-left">
-          <thead className="bg-gray-50 text-gray-500 text-[11px] uppercase font-bold tracking-wider">
+          <thead
+            className={`${theme === "dark" ? "bg-slate-800/50 text-slate-400" : "bg-gray-50 text-gray-500"} text-[11px] uppercase font-bold tracking-wider`}
+          >
             <tr>
               <th className="p-4">User Info</th>
               <th className="p-4">Role</th>
@@ -151,7 +210,9 @@ function UserDirectory() {
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          <tbody
+            className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-gray-100"}`}
+          >
             {loading ? (
               <tr>
                 <td colSpan="4" className="text-center p-20">
@@ -177,15 +238,23 @@ function UserDirectory() {
               currentUsers.map((user) => (
                 <tr
                   key={user._id}
-                  className="hover:bg-blue-50/20 transition-colors"
+                  className={`transition-colors ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-blue-50/20"}`}
                 >
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-sm">
+                      <div
+                        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${
+                          theme === "dark"
+                            ? "bg-indigo-900/50 text-indigo-400"
+                            : "bg-blue-100 text-blue-700"
+                        }`}
+                      >
                         {user.name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">
+                        <p
+                          className={`text-sm font-semibold ${theme === "dark" ? "text-slate-200" : "text-gray-800"}`}
+                        >
                           {user.name}
                         </p>
                         <p className="text-xs text-gray-400">{user.email}</p>
@@ -194,7 +263,13 @@ function UserDirectory() {
                   </td>
 
                   <td className="p-4">
-                    <span className="text-xs text-gray-600 font-medium px-2 py-1 bg-gray-100 rounded capitalize">
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded capitalize ${
+                        theme === "dark"
+                          ? "bg-slate-800 text-slate-400"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
                       {user.role}
                     </span>
                   </td>
@@ -217,7 +292,9 @@ function UserDirectory() {
                       className={`p-2 rounded-lg transition-all ${
                         user.status === "pending"
                           ? "text-green-600 hover:bg-green-50"
-                          : "text-red-400 hover:bg-red-50"
+                          : theme === "dark"
+                            ? "text-red-400 hover:bg-red-900/20"
+                            : "text-red-400 hover:bg-red-50"
                       }`}
                       title={
                         user.status === "pending"
@@ -242,7 +319,9 @@ function UserDirectory() {
       {/* Pagination Controls */}
       {!loading && filteredUsers.length > 0 && (
         <div className="flex items-center justify-between mt-6 px-2">
-          <p className="text-xs text-gray-500">
+          <p
+            className={`text-xs ${theme === "dark" ? "text-slate-500" : "text-gray-500"}`}
+          >
             Showing {startIndex + 1} to{" "}
             {Math.min(startIndex + usersPerPage, filteredUsers.length)} of{" "}
             {filteredUsers.length} entries
@@ -251,17 +330,31 @@ function UserDirectory() {
             <button
               disabled={page === 1}
               onClick={() => setPage(page - 1)}
-              className="p-2 border rounded-lg bg-white hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className={`p-2 border rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed ${
+                theme === "dark"
+                  ? "bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "bg-white hover:bg-gray-50"
+              }`}
             >
               <ChevronLeft size={18} />
             </button>
-            <div className="flex items-center px-4 py-1 bg-white border rounded-lg text-xs font-semibold">
+            <div
+              className={`flex items-center px-4 py-1 border rounded-lg text-xs font-semibold ${
+                theme === "dark"
+                  ? "bg-slate-900 border-slate-700 text-slate-300"
+                  : "bg-white border-gray-200"
+              }`}
+            >
               {page} / {totalPages}
             </div>
             <button
               disabled={page === totalPages}
               onClick={() => setPage(page + 1)}
-              className="p-2 border rounded-lg bg-white hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className={`p-2 border rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed ${
+                theme === "dark"
+                  ? "bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "bg-white hover:bg-gray-50"
+              }`}
             >
               <ChevronRight size={18} />
             </button>

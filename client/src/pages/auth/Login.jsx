@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import {
@@ -17,9 +17,34 @@ import { apiFetch } from "../../api/apiFetch";
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Added theme state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Logic to monitor theme changes instantly
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+    
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
 
   //Role Detection
   const role = location.pathname.includes("/dealer")
@@ -64,9 +89,9 @@ function Login() {
 
   return (
     <div
-      className={`relative min-h-screen w-full flex items-center justify-center font-sans overflow-hidden ${
-        loading ? "cursor-wait" : "cursor-default"
-      }`}
+      className={`relative min-h-screen w-full flex items-center justify-center font-sans overflow-hidden transition-colors duration-300 ${
+        theme === 'dark' ? 'bg-slate-950' : ''
+      } ${loading ? "cursor-wait" : "cursor-default"}`}
     >
       {/* Background */}
       <div
@@ -76,8 +101,8 @@ function Login() {
             "url('https://images.turo.com/media/vehicle/images/cpq_uryfQjGnl5aZA3uBYw.jpg')",
         }}
       >
-        <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-[2px]"></div>
-        <div className="absolute inset-0 bg-linear-to-t from-white/40 via-transparent to-transparent"></div>
+        <div className={`absolute inset-0 backdrop-blur-[2px] transition-colors ${theme === 'dark' ? 'bg-slate-950/60' : 'bg-slate-900/20'}`}></div>
+        <div className={`absolute inset-0 bg-linear-to-t via-transparent to-transparent ${theme === 'dark' ? 'from-slate-950' : 'from-white/40'}`}></div>
       </div>
 
       {/* Navbar */}
@@ -90,28 +115,32 @@ function Login() {
             <div className="bg-blue-600 p-1.5 rounded-md">
               <CarFront color="white" />
             </div>
-            <p className="font-bold text-xl">
+            <p className={`font-bold text-xl ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>
               Car<span className="text-blue-600">Rental</span>
             </p>
           </div>
         </div>
-        <div className="flex gap-6 text-sm font-semibold text-slate-700">
+        <div className="flex gap-6 text-sm font-semibold">
           <button
             onClick={() => navigate("/")}
-            className="hover:text-[#1d4ed8] transition-colors"
+            className={`transition-colors ${theme === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-[#1d4ed8]'}`}
           >
             Home
           </button>
-          <button className="bg-white/80 hover:bg-white px-5 py-2 rounded-full border border-slate-200 backdrop-blur-md transition-all shadow-sm">
+          <button className={`px-5 py-2 rounded-full border backdrop-blur-md transition-all shadow-sm ${
+            theme === 'dark' ? 'bg-slate-800/80 border-slate-700 text-white hover:bg-slate-800' : 'bg-white/80 border-slate-200 text-slate-700 hover:bg-white'
+          }`}>
             Help Center
           </button>
         </div>
       </div>
 
       {/*Login Card */}
-      <div className="relative z-10 w-full max-w-105 bg-white rounded-4xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-10 mx-4 border border-white">
+      <div className={`relative z-10 w-full max-w-105 rounded-4xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-10 mx-4 border transition-all duration-300 ${
+        theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-white'
+      }`}>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className={`text-3xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             Welcome Back
           </h1>
           <p className="text-slate-500 text-sm mt-2 font-medium">
@@ -122,23 +151,26 @@ function Login() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-800 ml-1 uppercase tracking-wider">
+            <label className={`text-xs font-bold ml-1 uppercase tracking-wider ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
               Email Address
             </label>
             <div className="relative group">
               <Mail
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1d4ed8] transition-colors"
+                className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${theme === 'dark' ? 'text-slate-500 group-focus-within:text-blue-400' : 'text-slate-400 group-focus-within:text-[#1d4ed8]'}`}
                 size={18}
               />
               <input
                 type="email"
                 disabled={loading}
                 placeholder="name@gmail.com"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-[#1d4ed8] focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all text-sm disabled:opacity-60"
+                className={`w-full border rounded-2xl py-4 pl-12 pr-4 outline-none transition-all text-sm disabled:opacity-60 ${
+                  theme === 'dark' 
+                    ? 'bg-slate-800 border-slate-700 text-white focus:border-blue-500 focus:bg-slate-800/50' 
+                    : 'bg-slate-50 border-slate-200 focus:border-[#1d4ed8] focus:bg-white focus:ring-4 focus:ring-blue-500/5'
+                }`}
                 {...register("email", { required: "Email is required" })}
               />
             </div>
-            {/*error message */}
             {errors.email && (
               <p className="text-red-500 text-[10px] font-bold ml-1">
                 {errors.email.message}
@@ -149,31 +181,34 @@ function Login() {
           {/* Password */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
-              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              <label className={`text-xs font-bold uppercase tracking-wider ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
                 Password
               </label>
             </div>
             <div className="relative group">
               <Lock
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1d4ed8] transition-colors"
+                className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${theme === 'dark' ? 'text-slate-500 group-focus-within:text-blue-400' : 'text-slate-400 group-focus-within:text-[#1d4ed8]'}`}
                 size={18}
               />
               <input
                 type={showPassword ? "text" : "password"}
                 disabled={loading}
                 placeholder="*********"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-12 outline-none focus:border-[#1d4ed8] focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all text-sm disabled:opacity-60"
+                className={`w-full border rounded-2xl py-4 pl-12 pr-12 outline-none transition-all text-sm disabled:opacity-60 ${
+                  theme === 'dark' 
+                    ? 'bg-slate-800 border-slate-700 text-white focus:border-blue-500 focus:bg-slate-800/50' 
+                    : 'bg-slate-50 border-slate-200 focus:border-[#1d4ed8] focus:bg-white focus:ring-4 focus:ring-blue-500/5'
+                }`}
                 {...register("password", { required: "Password is required" })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${theme === 'dark' ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {/*error message */}
             {errors.password && (
               <p className="text-red-500 text-[10px] font-bold ml-1">
                 {errors.password.message}
@@ -184,12 +219,12 @@ function Login() {
           <div className="flex items-center gap-2 px-1">
             <input
               type="checkbox"
-              className="w-4 h-4 rounded border-slate-300 text-[#1d4ed8] focus:ring-[#1d4ed8]"
+              className={`w-4 h-4 rounded focus:ring-blue-500 ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-blue-500' : 'border-slate-300 text-[#1d4ed8]'}`}
               id="remember"
             />
             <label
               htmlFor="remember"
-              className="text-xs text-slate-600 font-semibold cursor-pointer"
+              className={`text-xs font-semibold cursor-pointer ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}
             >
               Stay logged in
             </label>
@@ -199,7 +234,7 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#1d4ed8] hover:bg-blue-700 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-[0.98] flex items-center justify-center gap-3 mt-4 group disabled:opacity-70 disabled:cursor-wait"
+            className="w-full bg-[#1d4ed8] hover:bg-blue-700 text-white font-extrabold py-4 rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 mt-4 group disabled:opacity-70 disabled:cursor-wait"
           >
             {loading ? (
               <>
@@ -225,7 +260,7 @@ function Login() {
               onClick={() =>
                 navigate(role === "dealer" ? "/dealer/register" : "/register")
               }
-              className="text-slate-500 text-sm font-medium cursor-pointer"
+              className={`text-sm font-medium cursor-pointer ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
             >
               New to CarRental?{" "}
               <span className="text-[#1d4ed8] font-bold hover:underline">

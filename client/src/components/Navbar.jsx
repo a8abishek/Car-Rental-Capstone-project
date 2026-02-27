@@ -6,10 +6,34 @@ import { apiFetch } from "../api/apiFetch";
 function Navbar() {
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Fetch user data if token exists (logic from updated version)
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    // Listen for storage changes (other tabs) and themeChanged (same tab)
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme(); // Run on mount
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
+  // Fetch user data if token exists
   useEffect(() => {
     if (token) {
       const fetchUser = async () => {
@@ -36,28 +60,32 @@ function Navbar() {
   };
 
   return (
-    <div className="flex items-center justify-between px-10 py-2.5 shadow bg-white sticky top-0 z-50">
-      {/* logo + name (Your Original Style) */}
+    <div
+      className={`flex items-center justify-between px-12 py-2.5 shadow sticky top-0 z-50 ${theme === "dark" ? "bg-slate-900 border-b border-slate-800 text-white" : "bg-white"}`}
+    >
+      {/* logo + name */}
       <Link to="/" className="flex items-center space-x-1">
         <div className="bg-blue-600 p-1.5 rounded-md">
           <CarFront color="white" />
         </div>
-        <p className="font-bold text-xl text-slate-900">
+        <p
+          className={`font-bold text-xl ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+        >
           Car<span className="text-blue-600">Rental</span>
         </p>
       </Link>
 
-      {/* menu (Your Original Style: space-x-9, text-md, font-medium) */}
+      {/* menu */}
       <div>
         <nav>
-          <ul className="flex space-x-9 text-md font-medium">
+          <ul className="flex space-x-6 text-md font-medium">
             <li>
               <NavLink
                 to="/"
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"
-                    : "text-gray-500 px-3 py-2 hover:text-blue-600"
+                    : `${theme === "dark" ? "text-slate-400" : "text-gray-500"} px-3 py-2 hover:text-blue-600`
                 }
               >
                 Home
@@ -69,7 +97,7 @@ function Navbar() {
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"
-                    : "text-gray-500 px-3 py-2 hover:text-blue-600"
+                    : `${theme === "dark" ? "text-slate-400" : "text-gray-500"} px-3 py-2 hover:text-blue-600`
                 }
               >
                 About
@@ -81,7 +109,7 @@ function Navbar() {
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"
-                    : "text-gray-500 px-3 py-2 hover:text-blue-600"
+                    : `${theme === "dark" ? "text-slate-400" : "text-gray-500"} px-3 py-2 hover:text-blue-600`
                 }
               >
                 Cars
@@ -93,7 +121,7 @@ function Navbar() {
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"
-                    : "text-gray-500 px-3 py-2 hover:text-blue-600"
+                    : `${theme === "dark" ? "text-slate-400" : "text-gray-500"} px-3 py-2 hover:text-blue-600`
                 }
               >
                 Services
@@ -105,7 +133,7 @@ function Navbar() {
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 px-3 py-2 rounded"
-                    : "text-gray-500 px-3 py-2 hover:text-blue-600"
+                    : `${theme === "dark" ? "text-slate-400" : "text-gray-500"} px-3 py-2 hover:text-blue-600`
                 }
               >
                 Contacts
@@ -115,19 +143,20 @@ function Navbar() {
         </nav>
       </div>
 
-      {/* Auth Logic (Your Original Style for Buttons) */}
+      {/* Auth Logic */}
       <div className="flex items-center">
         {user ? (
-          /* LOGGED IN: Profile View */
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center space-x-2 cursor-pointer px-3 py-1.5 hover:bg-gray-50 rounded-md transition"
+              className={`flex items-center space-x-2 cursor-pointer px-3 py-1.5 rounded-md transition ${theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-50"}`}
             >
               <div className="bg-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
-              <p className="text-md font-medium text-gray-700">
+              <p
+                className={`text-md font-medium ${theme === "dark" ? "text-white" : "text-gray-700"}`}
+              >
                 {user.name.split(" ")[0]}
               </p>
               <ChevronDown
@@ -136,9 +165,10 @@ function Navbar() {
               />
             </button>
 
-            {/* Dropdown Menu */}
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2 z-50">
+              <div
+                className={`absolute right-0 mt-2 w-48 border rounded-lg shadow-lg py-2 z-50 ${theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-gray-100"}`}
+              >
                 <Link
                   to={
                     user.role === "admin"
@@ -147,14 +177,14 @@ function Navbar() {
                         ? "/dealer/dashboard"
                         : "/dashboard"
                   }
-                  className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                  className={`flex items-center space-x-3 px-4 py-2 text-sm ${theme === "dark" ? "text-slate-300 hover:bg-slate-700" : "text-gray-600 hover:bg-gray-50"}`}
                   onClick={() => setShowDropdown(false)}
                 >
                   <LayoutDashboard size={16} /> <span>Dashboard</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 border-t border-gray-50 mt-1"
+                  className={`w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-500 border-t ${theme === "dark" ? "border-slate-700 hover:bg-red-900/20" : "border-gray-50 hover:bg-red-50"} mt-1`}
                 >
                   <LogOut size={16} /> <span>Logout</span>
                 </button>
@@ -164,7 +194,9 @@ function Navbar() {
         ) : (
           <div className="flex space-x-5">
             <Link to="/login">
-              <button className="px-3 py-1.5 text-gray-500 rounded-md text-md font-medium cursor-pointer hover:shadow">
+              <button
+                className={`px-3 py-1.5 rounded-md text-md font-medium cursor-pointer hover:shadow ${theme === "dark" ? "text-slate-300" : "text-gray-500"}`}
+              >
                 Login
               </button>
             </Link>

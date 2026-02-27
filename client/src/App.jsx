@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import {
   CircleStar,
@@ -15,8 +16,34 @@ import Navbar from "./components/Navbar";
 import LandingCars from "./pages/landing_pages/LandingCar";
 
 function App() {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    const applyTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "light";
+      setTheme(currentTheme);
+      if (currentTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window.addEventListener("storage", applyTheme);
+    window.addEventListener("themeChanged", applyTheme);
+
+    applyTheme();
+
+    return () => {
+      window.removeEventListener("storage", applyTheme);
+      window.removeEventListener("themeChanged", applyTheme);
+    };
+  }, []);
+
   return (
-    <div className="bg-gray-50">
+    <div
+      className={`transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a]" : "bg-gray-50"}`}
+    >
       <Navbar />
       {/*Home section */}
       <div className="flex justify-between px-16 pt-10">
@@ -26,17 +53,21 @@ function App() {
             <CircleStar size={18} />
             <span>#Car Rental Service</span>
           </div>
-          <h1 className=" text-6xl font-bold w-[50%]">
+          <h1
+            className={`text-7xl font-bold w-[50%] ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+          >
             Drive Your Dream :{" "}
             <span className="text-blue-500">Premium Rentals</span>
           </h1>{" "}
           <br />
-          <p className="text-gray-500 font-medium  w-[85%]">
-            Experience luxury and comfort with our extensive fleet of high-end
-            vehicles. From sleek sedans to rugged SUVs, we have the perfect ride
-            for every journey.
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"} font-medium w-[85%]`}
+          >
+            Elevate your journey with a vehicle that reflects your ambition.
+            From sleek sedans to elite SUVs, our meticulously maintained fleet
+            is ready to turn your next drive into a luxury escape.
           </p>
-          <div className="flex space-x-1.5 mt-2">
+          <div className="flex space-x-3 mt-5">
             <div className="w-10 rounded-full">
               <img
                 src="https://photodpshare.com/wp-content/uploads/2025/09/cute-cartoon-dp-smiling.jpeg"
@@ -77,44 +108,72 @@ function App() {
         </div>
       </div>
       {/*Search*/}
-      <div className="flex bg-white items-center justify-between mx-25 py-8 shadow mt-5 px-8 rounded-2xl">
+      <div
+        className={`flex items-center justify-between mx-30 py-8 shadow mt-10 px-8 rounded-2xl border ${theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-white"}`}
+      >
         <div>
           {/*pickup location */}
           <div className="flex items-center space-x-1 mb-2.5">
             <MapPin strokeWidth={2} size={20} color="#2b7fff" />
-            <p className="text-gray-500">Pick-up location</p>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
+              Pick-up location
+            </p>
           </div>
           <input
             type="text"
             placeholder="Select City"
-            className="outline-none"
+            className={`outline-none bg-transparent ${theme === "dark" ? "text-white" : "text-slate-900"}`}
           />
         </div>
         <div>
           <div className="flex items-center space-x-1 mb-2.5">
             <Calendar strokeWidth={2} size={20} color="#2b7fff" />
-            <p className="text-gray-500">Pick-up Date</p>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
+              Pick-up Date
+            </p>
           </div>
-          <input type="Date" className="outline-none text-gray-500" />
+          <input
+            type="Date"
+            className={`outline-none bg-transparent ${theme === "dark" ? "text-white" : "text-gray-500"}`}
+          />
         </div>
         <div>
           <div className="flex items-center space-x-1 mb-2.5">
             <CalendarArrowDown strokeWidth={2} size={20} color="#2b7fff" />
-            <p className="text-gray-500">Return Date</p>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
+              Return Date
+            </p>
           </div>
-          <input type="Date" className="outline-none text-gray-500" />
+          <input
+            type="Date"
+            className={`outline-none bg-transparent ${theme === "dark" ? "text-white" : "text-gray-500"}`}
+          />
         </div>
         <div>
-          <button className="bg-blue-600 px-8 py-2 rounded-md text-white cursor-pointer ">
+          <button className="bg-blue-600 px-8 py-2 rounded-md text-white cursor-pointer hover:bg-blue-700 transition-colors">
             Find Your Car
           </button>
         </div>
       </div>
       {/*Our featyred Car */}
-      <div className="px-16 my-8 bg-white py-10">
-        <h1 className="text-3xl font-bold py-1">Our Featured Fleet</h1>
+      <div
+        className={`px-16 my-8 py-10 transition-colors ${theme === "dark" ? "bg-slate-900" : "bg-white"}`}
+      >
+        <h1
+          className={`text-3xl font-bold py-1 ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+        >
+          Our Featured Fleet
+        </h1>
         <div className="flex justify-between">
-          <p className="text-gray-500 pb-5">
+          <p
+            className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"} pb-5`}
+          >
             choose from our selection of premium and exotic Vehicles.
           </p>
           <Link to={"/cars"}>
@@ -130,40 +189,68 @@ function App() {
       </div>
       {/*why choose CarRental */}
       <div className="mx-18 pb-8">
-        <h1 className="text-xl font-bold flex justify-center">
+        <h1
+          className={`text-xl font-bold flex justify-center ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+        >
           Why Choose CarRental ?
         </h1>
-        <p className="text-gray-500 flex justify-center">
+        <p
+          className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"} flex justify-center`}
+        >
           We provide the best rental experience with premium benefits 24/7
           support.
         </p>
         <div className="flex justify-between space-x-10 items-center py-10">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
+          <div className="flex flex-col items-center text-center">
+            <div
+              className={`w-12 h-12 rounded-2xl flex justify-center items-center mb-3.5 ${theme === "dark" ? "bg-blue-900/30" : "bg-[#e0edfa]"}`}
+            >
               <TicketPlus color="#137fec" />
             </div>
-            <h1 className="text-xl font-bold">Best Price Guarantee</h1>
-            <p className="text-gray-500 text-center">
-              Find a lower price elsewhere and we'll beat it by 10%.No hidden
-              fees,ever.
+            <h1
+              className={`text-xl font-bold ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+            >
+              Best Price Guarantee
+            </h1>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
+              Find a lower price elsewhere and we'll beat it by 10%. No hidden
+              fees, ever.
             </p>
           </div>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
+          <div className="flex flex-col items-center text-center">
+            <div
+              className={`w-12 h-12 rounded-2xl flex justify-center items-center mb-3.5 ${theme === "dark" ? "bg-blue-900/30" : "bg-[#e0edfa]"}`}
+            >
               <Headset color="#137fec" />
             </div>
-            <h1 className="text-xl font-bold">24/7 Roasside Assist</h1>
-            <p className="text-gray-500 text-center">
+            <h1
+              className={`text-xl font-bold ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+            >
+              24/7 Roadside Assist
+            </h1>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
               Drive with peace of mind knowing our support team is just one call
-              away,anytime.
+              away, anytime.
             </p>
           </div>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#e0edfa] flex justify-center items-center mb-3.5">
+          <div className="flex flex-col items-center text-center">
+            <div
+              className={`w-12 h-12 rounded-2xl flex justify-center items-center mb-3.5 ${theme === "dark" ? "bg-blue-900/30" : "bg-[#e0edfa]"}`}
+            >
               <X color="#137fec" />
             </div>
-            <h1 className="text-xl font-bold">Free cancellation</h1>
-            <p className="text-gray-500 text-center">
+            <h1
+              className={`text-xl font-bold ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+            >
+              Free cancellation
+            </h1>
+            <p
+              className={`${theme === "dark" ? "text-slate-400" : "text-gray-500"}`}
+            >
               Plan changed ? Cancel your booking up to 24 hours before pick-up
               for a full refund.
             </p>
@@ -171,7 +258,7 @@ function App() {
         </div>
       </div>
 
-      <div className="mx-18 bg-[#137fec] px-10 py-10  space-x-28 rounded-2xl flex mb-10">
+      <div className="mx-18 bg-[#137fec] px-10 py-10 space-x-28 rounded-2xl flex mb-10 shadow-xl shadow-blue-500/20">
         <div className="flex flex-col justify-center ml-10">
           <h1 className="text-white font-bold text-5xl">
             Ready to hit the road?
@@ -182,12 +269,12 @@ function App() {
           </p>
           <div className="flex space-x-5 mt-5">
             <Link to={"/register"}>
-              <button className="px-8 py-2 rounded-md bg-white text-blue-600 font-bold">
+              <button className="px-8 py-2 rounded-md bg-white text-blue-600 font-bold active:scale-95 transition-transform">
                 Join Us
               </button>
             </Link>
             <Link to={"/contacts"}>
-              <button className="px-8 border py-2 rounded-md text-white font-bold">
+              <button className="px-8 border py-2 rounded-md text-white font-bold active:scale-95 transition-transform">
                 Contacts Us
               </button>
             </Link>
@@ -196,7 +283,7 @@ function App() {
         <div>
           <img
             src="https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Punch/13254/1768985724266/rear-view-119.jpg"
-            className="w-140 h-90 rounded-2xl "
+            className="w-140 h-90 rounded-2xl object-cover"
             alt="Car image"
           />
         </div>
@@ -211,8 +298,8 @@ function App() {
             <p className="font-bold text-xl">CarRental</p>
           </div>
           <p className="w-80 mt-4.5 text-gray-500">
-            The premier choice for luxury and premium car rentals
-            worldwide.Making every journey a memory worth Keeping.
+            The premier choice for luxury and premium car rentals worldwide.
+            Making every journey a memory worth Keeping.
           </p>
           <p className="text-gray-500 mt-2">
             © {new Date().getFullYear()} CarRentals. All rights reserved.
@@ -222,16 +309,16 @@ function App() {
         <div>
           <h1 className="font-bold">Quick Links</h1>
           <ul className="mt-4.5">
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               cars
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Special Offers
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               RentalLocations
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Career
             </li>
           </ul>
@@ -240,16 +327,16 @@ function App() {
         <div>
           <h1 className="font-bold">Support</h1>
           <ul className="mt-4.5">
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Help Center
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Privacy Policy
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Terms of Service
             </li>
-            <li className="text-gray-500 py-1 hover:text-white cursor-pointer">
+            <li className="text-gray-500 py-1 hover:text-white cursor-pointer transition-colors">
               Cookie Policy
             </li>
           </ul>

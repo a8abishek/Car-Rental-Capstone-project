@@ -19,36 +19,27 @@ import DashboardLayout from "../pages/layouts/DashboardLayout";
 
 //2.Admin Dashboard
 import AdminDashboard from "./../pages/dashboard/Admin/AdminDashboard";
-import Analytics from './../pages/dashboard/Admin/Analytics';
-import UserDirectory from './../pages/dashboard/Admin/UserDirectory';
-import FleetMananger from './../pages/dashboard/Admin/FleetMananger';
-import BookingRequests from './../pages/dashboard/Admin/BookingRequests';
-import AdminSetting from './../pages/dashboard/Admin/AdminSetting';
+import Analytics from "./../pages/dashboard/Admin/Analytics";
+import UserDirectory from "./../pages/dashboard/Admin/UserDirectory";
+import FleetMananger from "./../pages/dashboard/Admin/FleetMananger";
+import BookingRequests from "./../pages/dashboard/Admin/BookingRequests";
+import AdminSetting from "./../pages/dashboard/Admin/AdminSetting";
 
 //3.Dealer Dashboard
 import DealerDoashboard from "../pages/dashboard/dealer/DealerDoashboard";
-import DealerAnalytics from '../pages/dashboard/dealer/DealerAnalytics';
-// import DMyFleet from './../pages/dashboard/dealer/DMyFleet';
-import DealerSetting from './../pages/dashboard/dealer/DealerSetting';
-import DAddCar from './../pages/dashboard/dealer/DAddCar';
+import DealerAnalytics from "../pages/dashboard/dealer/DealerAnalytics";
+import DealerSetting from "./../pages/dashboard/dealer/DealerSetting";
 
 //4.Customer Dashboard
 import CustomerDashboard from "../pages/dashboard/Customer/CustomerDashboard";
-import Mybooking from './../pages/dashboard/Customer/Mybooking';
-import  SaveCars from '../pages/dashboard/Customer/SaveCars'
-import PaymentHistory from './../pages/dashboard/Customer/PaymentHistory';
+import Mybooking from "./../pages/dashboard/Customer/Mybooking";
+import SaveCars from "../pages/dashboard/Customer/SaveCars";
+import PaymentHistory from "./../pages/dashboard/Customer/PaymentHistory";
 import Setting from "../pages/dashboard/Customer/CDSetting";
 
 // import
-import DriveEliteLanding from "../pages/dealerLanding";
 import CarDetail from "../pages/CarDetail";
 import PaymentPage from "../pages/Payment";
-
-
-
-
-
-
 
 const AppRouter = createBrowserRouter([
   {
@@ -87,29 +78,27 @@ const AppRouter = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      {path : "/dashboard",element : <CustomerDashboard />},
-      {path : "/dashboard/booking",element : <Mybooking />},
-      {path : "/dashboard/wishlist", element : <SaveCars />},
-      {path : "/dashboard/payments", element : <PaymentHistory />},
-      {path : "/dashboard/settings",element : <Setting />},
+      { path: "/dashboard", element: <CustomerDashboard /> },
+      { path: "/dashboard/booking", element: <Mybooking /> },
+      { path: "/dashboard/wishlist", element: <SaveCars /> },
+      { path: "/dashboard/payments", element: <PaymentHistory /> },
+      { path: "/dashboard/settings", element: <Setting /> },
     ],
   },
   {
-  path: "/dealer",
-  element: (
-    <ProtectedRoute role="dealer">
-      <DashboardLayout />
-    </ProtectedRoute>
-  ),
-  children: [
-    { path: "dashboard", element: <DealerDoashboard /> },
-    { path: "/dealer/bookings", element: <DealerAnalytics /> },
-    { path: "/dealer/my-cars", element: <FleetMananger /> },
-    { path: "/dealer/add-cars", element: <DAddCar /> },
-    { path: "/dealer/settings", element: <DealerSetting /> },
-
-  ],
-},
+    path: "/dealer",
+    element: (
+      <ProtectedRoute role="dealer">
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "dashboard", element: <DealerDoashboard /> },
+      { path: "/dealer/bookings", element: <DealerAnalytics /> },
+      { path: "/dealer/my-cars", element: <FleetMananger /> },
+      { path: "/dealer/settings", element: <DealerSetting /> },
+    ],
+  },
 
   {
     path: "/admin",
@@ -148,10 +137,6 @@ const AppRouter = createBrowserRouter([
   {
     path: "/contacts",
     element: <Contacts />,
-  },
-  {
-    path: "/dealer",
-    element: <DriveEliteLanding />,
   },
   {
     path: "/payment",
