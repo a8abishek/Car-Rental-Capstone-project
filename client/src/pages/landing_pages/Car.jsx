@@ -146,6 +146,31 @@ const Car = () => {
   const currentCars = filteredCars.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredCars.length / itemsPerPage);
 
+  //SLIDING WINDOW PAGINATION LOGIC
+  const maxButtonsToShow = 5;
+  let startPage, endPage;
+
+  if (totalPages <= maxButtonsToShow) {
+    startPage = 1;
+    endPage = totalPages;
+  } else {
+    if (currentPage <= 3) {
+      startPage = 1;
+      endPage = 5;
+    } else if (currentPage + 2 >= totalPages) {
+      startPage = totalPages - 4;
+      endPage = totalPages;
+    } else {
+      startPage = currentPage - 2;
+      endPage = currentPage + 2;
+    }
+  }
+
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a]" : "bg-[#F8FAFC]"}`}
@@ -166,7 +191,6 @@ const Car = () => {
         </header>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          {/* SIDEBAR */}
           <aside className="w-full lg:w-80 shrink-0">
             <div
               className={`p-6 rounded-2xl shadow-sm border sticky top-24 transition-colors ${
@@ -189,7 +213,6 @@ const Car = () => {
                 </button>
               </div>
 
-              {/* Search */}
               <div className="relative mb-8">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -208,7 +231,6 @@ const Car = () => {
                 />
               </div>
 
-              {/* PRICE FILTER */}
               <div
                 className={`mb-8 border-b pb-8 ${theme === "dark" ? "border-slate-800" : "border-slate-100"}`}
               >
@@ -279,7 +301,6 @@ const Car = () => {
                 </div>
               </div>
 
-              {/* Checkbox Groups Styling */}
               {[
                 {
                   label: "Rating",
@@ -342,7 +363,6 @@ const Car = () => {
             </div>
           </aside>
 
-          {/* MAIN CONTENT AREA */}
           <main className="flex-1">
             <div className="flex justify-between items-center mb-8 px-2">
               <p
@@ -376,7 +396,7 @@ const Car = () => {
               )}
             </div>
 
-            {/* PAGINATION */}
+            {/* PAGINATION  */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center mt-16 gap-3">
                 <button
@@ -394,22 +414,22 @@ const Car = () => {
                   <ChevronLeft size={20} />
                 </button>
 
-                {[...Array(totalPages)].map((_, index) => (
+                {pageNumbers.map((num) => (
                   <button
-                    key={index}
+                    key={num}
                     onClick={() => {
-                      setCurrentPage(index + 1);
+                      setCurrentPage(num);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className={`w-10 h-10 rounded-xl font-bold transition-all ${
-                      currentPage === index + 1
+                      currentPage === num
                         ? "bg-blue-600 text-white shadow-lg"
                         : theme === "dark"
                           ? "bg-slate-800 text-slate-300 border border-slate-700 hover:border-blue-500"
                           : "bg-white text-slate-600 border border-slate-200 hover:border-blue-500"
                     }`}
                   >
-                    {index + 1}
+                    {num}
                   </button>
                 ))}
 

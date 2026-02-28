@@ -11,6 +11,8 @@ import {
   ChevronUp,
   Trash2,
   Edit3,
+  ChevronLeft, // Added for pagination
+  ChevronRight, // Added for pagination
 } from "lucide-react";
 
 function Mybooking() {
@@ -19,6 +21,10 @@ function Mybooking() {
   const [activeTab, setActiveTab] = useState("upcoming");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
+
+  // --- PAGINATION STATE ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; 
 
   // THEME STATE
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -29,7 +35,6 @@ function Mybooking() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentReviewId, setCurrentReviewId] = useState(null);
 
-  // Logic to theme changes instantly
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -133,6 +138,17 @@ function Mybooking() {
     return false;
   });
 
+  // --- PAGINATION LOGIC ---
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredBookings.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Reset to first page when tab or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, searchQuery]);
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 p-4 md:p-10 font-sans ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#FDFDFD] text-slate-900"}`}
@@ -176,7 +192,7 @@ function Mybooking() {
               </tr>
             </thead>
             <tbody>
-              {filteredBookings.map((item) => (
+              {currentItems.map((item) => (
                 <React.Fragment key={item._id}>
                   <tr
                     className={`transition-all cursor-pointer border-b ${theme === "dark" ? "border-slate-800 hover:bg-slate-800/50" : "border-gray-50 hover:bg-gray-50/50"}`}
@@ -338,6 +354,32 @@ function Mybooking() {
               ))}
             </tbody>
           </table>
+
+          {/* --- PAGINATION CONTROLS --- */}
+          {filteredBookings.length > itemsPerPage && (
+            <div className={`p-4 flex items-center justify-between border-t ${theme === "dark" ? "border-slate-800 bg-slate-900/50" : "border-gray-100 bg-gray-50/30"}`}>
+              <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+                Page {currentPage} of {totalPages}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                  className={`p-2 rounded-lg transition-all ${currentPage === 1 ? "opacity-30 cursor-not-allowed" : theme === "dark" ? "hover:bg-slate-800 text-white" : "hover:bg-gray-100 text-slate-700"}`}
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  className={`p-2 rounded-lg transition-all ${currentPage === totalPages ? "opacity-30 cursor-not-allowed" : theme === "dark" ? "hover:bg-slate-800 text-white" : "hover:bg-gray-100 text-slate-700"}`}
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+          )}
+
           {filteredBookings.length === 0 && (
             <p className="text-center py-12 text-slate-400">
               No bookings in this category

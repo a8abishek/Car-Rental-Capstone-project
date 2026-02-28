@@ -158,7 +158,7 @@ function Setting() {
             }`}
           >
             <div className="flex items-center gap-5 mb-10">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-500/40">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center ">
                 <User size={24} strokeWidth={2.5} />
               </div>
               <div>
@@ -194,7 +194,7 @@ function Setting() {
                   Email Address
                 </label>
                 <div
-                  className={`px-6 py-5 rounded-2xl border-2 flex items-center gap-3 font-bold transition-all ${
+                  className={`px-6 py-5 rounded-2xl border-2 flex items-center gap-3 font-bold transition-all cursor-no-drop ${
                     theme === "dark"
                       ? "bg-black/20 border-slate-800 text-slate-500"
                       : "bg-slate-100 border-transparent text-slate-400"
@@ -224,7 +224,7 @@ function Setting() {
             }`}
           >
             <div className="flex items-center gap-5 mb-10">
-              <div className="w-14 h-14 rounded-2xl bg-rose-600 text-white flex items-center justify-center shadow-xl shadow-rose-500/40">
+              <div className="w-14 h-14 rounded-2xl bg-rose-600 text-white flex items-center justify-center">
                 <Lock size={24} strokeWidth={2.5} />
               </div>
               <div>
