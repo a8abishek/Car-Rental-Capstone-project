@@ -76,10 +76,10 @@ function FleetManager({ user }) {
 
   const handleDelete = async (id, e) => {
     e.stopPropagation();
-    if (!window.confirm("Delete vehicle?")) return;
+    if (!window.confirm("are u remove the vehicle?")) return;
     try {
       await apiFetch(`/api/cars/${id}`, { method: "DELETE" });
-      toast.success("Deleted");
+      toast.success("successfully removed from the fleet!");
       fetchFleet();
     } catch {
       toast.error("Failed");
@@ -201,13 +201,16 @@ function FleetManager({ user }) {
           }`}
         >
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse min-w-175">
+            <table className="w-full text-left border-collapse">
               <thead
                 className={`${theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50/80 border-slate-200"} border-b`}
               >
                 <tr className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                  <th className="px-6 py-4">Vehicle Detail</th>
-                  <th className="px-6 py-4">License Plate</th>
+                  <th className="px-6 py-4 min-w-37.5">Vehicle Detail</th>
+                  {/* HIDDEN ON MOBILE */}
+                  <th className="px-6 py-4 hidden sm:table-cell">
+                    License Plate
+                  </th>
                   <th className="px-6 py-4 text-center">Rent / Day</th>
                   <th className="px-6 py-4 text-center">Status</th>
                   <th className="px-6 py-4 text-right">Actions</th>
@@ -241,7 +244,8 @@ function FleetManager({ user }) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    {/* HIDDEN ON MOBILE */}
+                    <td className="px-6 py-4 hidden sm:table-cell">
                       <div className="flex items-center gap-1.5">
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${theme === "dark" ? "bg-slate-800 text-slate-400" : "bg-slate-100 text-slate-500"}`}
@@ -250,7 +254,7 @@ function FleetManager({ user }) {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
                       <span
                         className={`text-sm font-black ${theme === "dark" ? "text-white" : "text-slate-900"}`}
                       >
@@ -316,7 +320,7 @@ function FleetManager({ user }) {
           {/* Pagination */}
           {totalPages > 1 && (
             <div
-              className={`px-6 py-3 border-t flex items-center justify-between ${theme === "dark" ? "bg-slate-800/30 border-slate-700" : "bg-slate-50/30 border-slate-100"}`}
+              className={`px-6 py-3 border-t flex flex-col sm:flex-row items-center justify-between gap-3 ${theme === "dark" ? "bg-slate-800/30 border-slate-700" : "bg-slate-50/30 border-slate-100"}`}
             >
               <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter">
                 Page {currentPage} of {totalPages}

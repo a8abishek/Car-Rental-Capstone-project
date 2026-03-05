@@ -6,7 +6,6 @@ import {
   Clock,
   Wallet,
   MapPin,
-  ArrowRightLeft,
   Plus,
   XCircle,
   Info,
@@ -70,7 +69,7 @@ function CustomerDashboard() {
   if (loading)
     return (
       <div
-        className={`p-10 text-center font-medium transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-slate-400" : "text-slate-500"}`}
+        className={`p-10 text-center font-medium transition-colors duration-300 h-screen flex items-center justify-center ${theme === "dark" ? "bg-[#0f172a] text-slate-400" : "bg-white text-slate-500"}`}
       >
         Loading your dashboard...
       </div>
@@ -78,13 +77,13 @@ function CustomerDashboard() {
 
   return (
     <div
-      className={`p-8 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F4F7FE] text-slate-900"}`}
+      className={`p-4 md:p-8 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F4F7FE] text-slate-900"}`}
     >
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-10">
+      {/* HEADER - Responsive Flex */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
         <div>
           <h1
-            className={`text-3xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+            className={`text-2xl md:text-3xl font-extrabold tracking-tight ${theme === "dark" ? "text-white" : "text-slate-900"}`}
           >
             Dashboard
           </h1>
@@ -96,14 +95,14 @@ function CustomerDashboard() {
         </div>
         <button
           onClick={() => navigate("/cars")}
-          className="bg-[#4318FF] hover:bg-[#3311CC] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2  transition-all active:scale-95"
+          className="w-full sm:w-auto bg-[#4318FF] hover:bg-[#3311CC] text-white px-6 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
         >
           <Plus size={20} /> New Booking
         </button>
       </div>
 
-      {/* STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      {/* STATS CARDS - Responsive Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
         <div
           className={`p-5 rounded-3xl flex items-center gap-4 shadow-sm border transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
         >
@@ -163,7 +162,7 @@ function CustomerDashboard() {
         </div>
       </div>
 
-      {/* ACTIVE RENTAL */}
+      {/* ACTIVE RENTAL - Responsive Layout */}
       <div className="mb-10">
         <div className="flex justify-between items-end mb-4 px-2">
           <h3
@@ -183,16 +182,16 @@ function CustomerDashboard() {
 
         {data?.activeRental ? (
           <div
-            className={`rounded-4xl overflow-hidden shadow-sm flex flex-col lg:flex-row border p-2 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
+            className={`rounded-4xl md:rounded-4xl overflow-hidden shadow-sm flex flex-col lg:flex-row border p-2 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
           >
-            <div className="lg:w-2/5 h-64 lg:h-auto relative overflow-hidden rounded-3xl">
+            <div className="w-full lg:w-2/5 h-56 md:h-72 lg:h-auto relative overflow-hidden rounded-3xl md:rounded-3xl shrink-0">
               <img
                 src={data.activeRental.car?.carImage}
                 alt="Car"
                 className="h-full w-full object-cover"
               />
               <div className="absolute top-4 left-4 flex gap-2">
-                <span className="bg-emerald-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-emerald-200">
+                <span className="bg-emerald-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
                   Live
                 </span>
                 <span
@@ -203,11 +202,11 @@ function CustomerDashboard() {
               </div>
             </div>
 
-            <div className="p-8 flex-1 flex flex-col justify-between">
-              <div className="flex justify-between items-start">
+            <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
                   <h2
-                    className={`text-2xl font-black tracking-tight ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                    className={`text-xl md:text-2xl font-black tracking-tight ${theme === "dark" ? "text-white" : "text-slate-900"}`}
                   >
                     {data.activeRental.car?.carName}
                   </h2>
@@ -216,18 +215,18 @@ function CustomerDashboard() {
                     {data.activeRental.pickupLocation}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="md:text-right">
                   <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">
                     Total Amount
                   </p>
-                  <p className="text-3xl font-black text-[#4318FF]">
+                  <p className="text-2xl md:text-3xl font-black text-[#4318FF]">
                     ₹{data.activeRental.totalAmount.toLocaleString()}
                   </p>
                 </div>
               </div>
 
               <div
-                className={`grid grid-cols-1 md:grid-cols-2 gap-4 my-6 p-4 rounded-2xl border transition-colors ${theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-100"}`}
+                className={`grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 p-4 rounded-2xl border transition-colors ${theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-100"}`}
               >
                 <div className="flex gap-3 items-center">
                   <div
@@ -270,10 +269,10 @@ function CustomerDashboard() {
               </div>
 
               <div
-                className={`flex justify-between items-center pt-4 border-t ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
+                className={`flex flex-col sm:flex-row justify-between items-start sm:items-center pt-4 border-t gap-4 ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
               >
                 <div className="flex gap-6">
-                  <div className="text-center">
+                  <div>
                     <p className="text-[10px] font-black text-slate-500 uppercase">
                       Fuel
                     </p>
@@ -283,7 +282,7 @@ function CustomerDashboard() {
                       {data.activeRental.car?.carRunning}
                     </p>
                   </div>
-                  <div className="text-center">
+                  <div>
                     <p className="text-[10px] font-black text-slate-500 uppercase">
                       Type
                     </p>
@@ -294,7 +293,7 @@ function CustomerDashboard() {
                     </p>
                   </div>
                 </div>
-                <button className="bg-slate-900 text-white px-6 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition-all">
+                <button className="w-full sm:w-auto bg-slate-900 text-white px-6 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition-all">
                   Booking Details
                 </button>
               </div>
@@ -302,7 +301,7 @@ function CustomerDashboard() {
           </div>
         ) : (
           <div
-            className={`p-16 rounded-4xl text-center border-2 border-dashed transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200"}`}
+            className={`p-10 md:p-16 rounded-4xl md:rounded-4xl text-center border-2 border-dashed transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-700" : "bg-white border-slate-200"}`}
           >
             <div className="bg-slate-50/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
               <Info size={32} />
@@ -320,11 +319,11 @@ function CustomerDashboard() {
         )}
       </div>
 
-      {/* HISTORY TABLE */}
+      {/* HISTORY TABLE - Responsive Scroll */}
       <div
-        className={`rounded-4xl shadow-sm border overflow-hidden p-4 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
+        className={`rounded-4xl md:rounded-4xl shadow-sm border overflow-hidden p-4 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
       >
-        <div className="flex justify-between items-center p-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 gap-3">
           <h3
             className={`text-lg font-black tracking-tight ${theme === "dark" ? "text-white" : "text-slate-800"}`}
           >
@@ -337,82 +336,86 @@ function CustomerDashboard() {
             View All Activity
           </button>
         </div>
-        <table className="w-full text-left">
-          <thead>
-            <tr
-              className={`text-[10px] uppercase font-black text-slate-400 tracking-widest border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
-            >
-              <th className="px-6 py-4">Vehicle</th>
-              <th className="px-6 py-4">Duration</th>
-              <th className="px-6 py-4">Payment</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Records</th>
-            </tr>
-          </thead>
-          <tbody
-            className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-slate-50"}`}
-          >
-            {data?.bookingHistory?.map((item) => (
+
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left min-w-187.5">
+            <thead>
               <tr
-                key={item._id}
-                className={`group transition-all ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-slate-50/50"}`}
+                className={`text-[10px] uppercase font-black text-slate-400 tracking-widest border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
               >
-                <td className="px-6 py-5 flex items-center gap-4">
-                  <div
-                    className={`w-14 h-10 rounded-xl overflow-hidden shadow-sm ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}
-                  >
-                    <img
-                      src={item.car?.carImage}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <p
-                      className={`font-black text-sm tracking-tight ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
-                    >
-                      {item.car?.carName}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase leading-none">
-                      {item.car?.brand}
-                    </p>
-                  </div>
-                </td>
-                <td
-                  className={`px-6 py-5 text-sm font-bold tracking-tight ${theme === "dark" ? "text-slate-400" : "text-slate-600"}`}
-                >
-                  {new Date(item.pickupDate).toLocaleDateString("en-GB")}
-                </td>
-                <td
-                  className={`px-6 py-5 font-black text-sm italic ${theme === "dark" ? "text-white" : "text-slate-800"}`}
-                >
-                  ₹{item.totalAmount.toLocaleString()}
-                </td>
-                <td className="px-6 py-5">
-                  <span
-                    className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest ${
-                      item.status === "confirmed"
-                        ? "bg-emerald-100 text-emerald-600"
-                        : item.status === "cancelled"
-                          ? "bg-rose-100 text-rose-500"
-                          : theme === "dark"
-                            ? "bg-slate-800 text-slate-400"
-                            : "bg-slate-100 text-slate-500"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </td>
-                <td className="px-6 py-5 text-right">
-                  <button
-                    className={`p-2 rounded-lg transition-all shadow-sm border ${theme === "dark" ? "bg-slate-800 border-slate-700 text-slate-400 hover:text-indigo-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-indigo-600"}`}
-                  >
-                    <FileText size={16} />
-                  </button>
-                </td>
+                <th className="px-6 py-4">Vehicle</th>
+                <th className="px-6 py-4">Duration</th>
+                <th className="px-6 py-4 text-center">Payment</th>
+                <th className="px-6 py-4 text-center">Status</th>
+                <th className="px-6 py-4 text-right">Records</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody
+              className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-slate-50"}`}
+            >
+              {data?.bookingHistory?.map((item) => (
+                <tr
+                  key={item._id}
+                  className={`group transition-all ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-slate-50/50"}`}
+                >
+                  <td className="px-6 py-5 flex items-center gap-4">
+                    <div
+                      className={`w-14 h-10 rounded-xl overflow-hidden shadow-sm shrink-0 ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}
+                    >
+                      <img
+                        src={item.car?.carImage}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-all"
+                        alt=""
+                      />
+                    </div>
+                    <div>
+                      <p
+                        className={`font-black text-sm tracking-tight ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+                      >
+                        {item.car?.carName}
+                      </p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase leading-none">
+                        {item.car?.brand}
+                      </p>
+                    </div>
+                  </td>
+                  <td
+                    className={`px-6 py-5 text-sm font-bold tracking-tight whitespace-nowrap ${theme === "dark" ? "text-slate-400" : "text-slate-600"}`}
+                  >
+                    {new Date(item.pickupDate).toLocaleDateString("en-GB")}
+                  </td>
+                  <td
+                    className={`px-6 py-5 font-black text-sm text-center whitespace-nowrap ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                  >
+                    ₹{item.totalAmount.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-5 text-center">
+                    <span
+                      className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest whitespace-nowrap ${
+                        item.status === "confirmed"
+                          ? "bg-emerald-100 text-emerald-600"
+                          : item.status === "cancelled"
+                            ? "bg-rose-100 text-rose-500"
+                            : theme === "dark"
+                              ? "bg-slate-800 text-slate-400"
+                              : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-5 text-right">
+                    <button
+                      className={`p-2 rounded-lg transition-all shadow-sm border ${theme === "dark" ? "bg-slate-800 border-slate-700 text-slate-400 hover:text-indigo-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-indigo-600"}`}
+                    >
+                      <FileText size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

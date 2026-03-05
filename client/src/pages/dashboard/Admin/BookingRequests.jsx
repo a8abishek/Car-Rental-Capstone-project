@@ -182,11 +182,11 @@ function BookingRequests() {
             Track and manage your bookings for 2026
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-full md:w-auto">
           <select
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold shadow-sm outline-none border transition-colors ${
+            className={`grow md:grow-0 rounded-xl px-4 py-2 text-sm font-semibold shadow-sm outline-none border transition-colors ${
               theme === "dark"
                 ? "bg-slate-800 border-slate-700 text-white focus:ring-blue-500/50"
                 : "bg-white border-slate-200 text-slate-900 focus:ring-blue-500"
@@ -207,8 +207,8 @@ function BookingRequests() {
         </div>
       </div>
 
-      {/* STAT CARDS */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* STAT CARDS - Updated Grid Breakpoints */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
         <StatCard
           label="Gross Total"
           value={totalGrossAmount}
@@ -236,7 +236,7 @@ function BookingRequests() {
         />
       </div>
 
-      {/* TABLE */}
+      {/* TABLE - Added overflow-x-auto for mobile */}
       <div
         className={`max-w-6xl mx-auto rounded-2xl shadow-sm border overflow-hidden transition-colors ${
           theme === "dark"
@@ -244,103 +244,111 @@ function BookingRequests() {
             : "bg-white border-slate-100"
         }`}
       >
-        <table className="w-full text-left text-sm">
-          <thead
-            className={`${theme === "dark" ? "bg-slate-800/50 border-slate-800" : "bg-slate-50 border-slate-100"} border-b`}
-          >
-            <tr>
-              <th
-                className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
-              >
-                Customer & Vehicle
-              </th>
-              <th
-                className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
-              >
-                Amount
-              </th>
-              <th
-                className={`p-4 font-semibold text-center ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
-              >
-                Status
-              </th>
-              <th
-                className={`p-4 font-semibold text-right ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody
-            className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-slate-50"}`}
-          >
-            {currentData.map((b) => (
-              <tr
-                key={b._id}
-                className={`transition-colors cursor-pointer ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-blue-50/30"}`}
-                onClick={() => setSelectedBooking(b)}
-              >
-                <td className="p-4">
-                  <div
-                    className={`font-semibold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
-                  >
-                    {b.customer?.name}
-                  </div>
-                  <div className="text-xs text-slate-500">{b.car?.carName}</div>
-                </td>
-                <td
-                  className={`p-4 font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left text-sm min-w-175">
+            <thead
+              className={`${theme === "dark" ? "bg-slate-800/50 border-slate-800" : "bg-slate-50 border-slate-100"} border-b`}
+            >
+              <tr>
+                <th
+                  className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
                 >
-                  ₹{Number(b.totalAmount).toLocaleString("en-IN")}
-                </td>
-                <td className="p-4 text-center">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                      b.status === "confirmed"
-                        ? "bg-green-100 text-green-700"
-                        : b.status === "cancelled"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-amber-100 text-amber-700"
-                    }`}
-                  >
-                    {b.status}
-                  </span>
-                </td>
-                <td className="p-4 text-right">
-                  <div
-                    className="flex justify-end gap-2"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {b.status === "pending" && (
-                      <button
-                        onClick={(e) => handleUpdateStatus(e, b._id, "confirm")}
-                        className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95 transition-transform"
-                      >
-                        Confirm
-                      </button>
-                    )}
-                    {b.status !== "cancelled" && (
-                      <button
-                        onClick={(e) => handleUpdateStatus(e, b._id, "cancel")}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                          theme === "dark"
-                            ? "bg-slate-800 border border-slate-700 text-slate-300 hover:text-red-400"
-                            : "bg-white border border-slate-200 text-slate-500 hover:text-red-600"
-                        }`}
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </td>
+                  Customer & Vehicle
+                </th>
+                <th
+                  className={`p-4 font-semibold ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+                >
+                  Amount
+                </th>
+                <th
+                  className={`p-4 font-semibold text-center ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+                >
+                  Status
+                </th>
+                <th
+                  className={`p-4 font-semibold text-right ${theme === "dark" ? "text-slate-300" : "text-slate-500"}`}
+                >
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody
+              className={`divide-y ${theme === "dark" ? "divide-slate-800" : "divide-slate-50"}`}
+            >
+              {currentData.map((b) => (
+                <tr
+                  key={b._id}
+                  className={`transition-colors cursor-pointer ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-blue-50/30"}`}
+                  onClick={() => setSelectedBooking(b)}
+                >
+                  <td className="p-4">
+                    <div
+                      className={`font-semibold ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
+                    >
+                      {b.customer?.name}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      {b.car?.carName}
+                    </div>
+                  </td>
+                  <td
+                    className={`p-4 font-bold ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+                  >
+                    ₹{Number(b.totalAmount).toLocaleString("en-IN")}
+                  </td>
+                  <td className="p-4 text-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                        b.status === "confirmed"
+                          ? "bg-green-100 text-green-700"
+                          : b.status === "cancelled"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div
+                      className="flex justify-end gap-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {b.status === "pending" && (
+                        <button
+                          onClick={(e) =>
+                            handleUpdateStatus(e, b._id, "confirm")
+                          }
+                          className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95 transition-transform"
+                        >
+                          Confirm
+                        </button>
+                      )}
+                      {b.status !== "cancelled" && (
+                        <button
+                          onClick={(e) =>
+                            handleUpdateStatus(e, b._id, "cancel")
+                          }
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            theme === "dark"
+                              ? "bg-slate-800 border border-slate-700 text-slate-300 hover:text-red-400"
+                              : "bg-white border border-slate-200 text-slate-500 hover:text-red-600"
+                          }`}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* PAGINATION */}
-      <div className="max-w-6xl mx-auto mt-6 flex justify-between items-center text-xs font-bold text-slate-400">
+      {/* PAGINATION - Adaptive Layout */}
+      <div className="max-w-6xl mx-auto mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-400">
         <span>
           Showing {currentData.length} of {filteredBookings.length}
         </span>
@@ -370,24 +378,20 @@ function BookingRequests() {
         </div>
       </div>
 
-      {/* DETAIL MODAL */}
+      {/* DETAIL MODAL - Mobile Optimized */}
       {selectedBooking && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] z-60 flex items-center justify-center p-4">
           <div
-            className={`w-full max-w-xl rounded-3xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-150 transition-colors ${
+            className={`w-full max-w-xl rounded-3xl shadow-xl overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-150 transition-colors ${
               theme === "dark"
-                ? "bg-slate-900 border border-slate-800"
-                : "bg-white"
+                ? "bg-slate-900 border border-slate-800 text-white"
+                : "bg-white text-slate-900"
             }`}
           >
             <div
-              className={`p-6 border-b flex justify-between items-center ${theme === "dark" ? "bg-slate-800/50 border-slate-800" : "bg-slate-50/50 border-slate-100"}`}
+              className={`p-6 border-b flex justify-between items-center sticky top-0 z-10 ${theme === "dark" ? "bg-slate-900" : "bg-white"}`}
             >
-              <h3
-                className={`font-bold ${theme === "dark" ? "text-white" : "text-slate-800"}`}
-              >
-                Booking Summary
-              </h3>
+              <h3 className="font-bold">Booking Summary</h3>
               <button
                 onClick={() => setSelectedBooking(null)}
                 className={`p-1.5 rounded-full transition ${theme === "dark" ? "hover:bg-slate-800 text-slate-400" : "hover:bg-slate-200 text-slate-600"}`}
@@ -397,7 +401,7 @@ function BookingRequests() {
             </div>
 
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <InfoBox
                   theme={theme}
                   icon={<User size={14} />}
@@ -415,7 +419,7 @@ function BookingRequests() {
               </div>
 
               <div
-                className={`p-4 rounded-2xl grid grid-cols-2 gap-y-4 transition-colors ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
+                className={`p-4 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4 transition-colors ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
               >
                 <InfoBox
                   theme={theme}
@@ -451,7 +455,7 @@ function BookingRequests() {
                 />
               </div>
 
-              <div className="flex justify-between items-end pt-2">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end pt-2 gap-4">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                     Total Paid
@@ -505,23 +509,17 @@ function StatCard({ label, value, icon, color, bg, isPrimary, theme }) {
 function InfoBox({ icon, label, value, sub, theme }) {
   return (
     <div className="flex gap-3">
-      <div className="text-slate-400 mt-1">{icon}</div>
-      <div>
+      <div className="text-slate-400 mt-1 shrink-0">{icon}</div>
+      <div className="min-w-0">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
           {label}
         </p>
         <p
-          className={`text-sm font-semibold leading-tight ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
+          className={`text-sm font-semibold leading-tight wrap-break-word ${theme === "dark" ? "text-slate-200" : "text-slate-700"}`}
         >
           {value}
         </p>
-        {sub && (
-          <p
-            className={`text-xs font-medium ${theme === "dark" ? "text-slate-500" : "text-slate-500"}`}
-          >
-            {sub}
-          </p>
-        )}
+        {sub && <p className="text-xs font-medium text-slate-500">{sub}</p>}
       </div>
     </div>
   );

@@ -7,7 +7,6 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  AlertCircle,
   CarFront,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -75,7 +74,7 @@ function AdminSidebar() {
 
   return (
     <div
-      className={`w-64 border-r h-screen fixed flex flex-col justify-between p-4 transition-colors duration-300 ${
+      className={`w-64 border-r h-screen flex flex-col justify-between p-4 transition-colors duration-300 ${
         theme === "dark"
           ? "bg-slate-900 border-slate-800"
           : "bg-white border-gray-100"

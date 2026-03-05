@@ -7,7 +7,6 @@ import {
   RotateCcw,
   CheckCircle,
   CarFront,
-  TrendingUp,
 } from "lucide-react";
 import { apiFetch } from "../../../api/apiFetch";
 
@@ -75,10 +74,10 @@ const DealerDashboard = () => {
     <div
       className={`min-h-screen transition-colors duration-300 p-4 md:p-8 font-sans ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F8FAFC] text-slate-900"}`}
     >
-      {/* HEADER */}
-      <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+      {/* HEADER - Updated flex-col for mobile */}
+      <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
             Dealer Console
           </h1>
           <p
@@ -89,7 +88,7 @@ const DealerDashboard = () => {
         </div>
         <button
           onClick={fetchStats}
-          className={`flex items-center justify-center gap-2 border px-5 py-2.5 rounded-xl transition-all active:scale-95 shadow-sm font-semibold ${
+          className={`flex items-center justify-center gap-2 border px-5 py-2.5 rounded-xl transition-all active:scale-95 shadow-sm font-semibold w-full md:w-auto ${
             theme === "dark"
               ? "bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700"
               : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
@@ -100,7 +99,7 @@ const DealerDashboard = () => {
       </header>
 
       <main className="max-w-7xl mx-auto space-y-10">
-        {/* STAT CARDS */}
+        {/* STAT CARDS - Responsive Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             theme={theme}
@@ -132,7 +131,7 @@ const DealerDashboard = () => {
           />
         </div>
 
-        {/* DASHBOARD CONTENT */}
+        {/* DASHBOARD CONTENT - Responsive Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* RECENT BOOKINGS */}
           <section
@@ -145,12 +144,14 @@ const DealerDashboard = () => {
             <div
               className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
             >
-              <h3 className="font-bold flex items-center gap-2">
+              <h3 className="font-bold flex items-center gap-2 text-sm md:text-base">
                 <Clock size={18} className="text-slate-400" /> Recent Bookings
               </h3>
             </div>
-            <div className="p-0 overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+
+            {/* Table Horizontal Scroll Wrapper */}
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left border-collapse min-w-150">
                 <thead>
                   <tr
                     className={`text-[10px] uppercase tracking-widest text-slate-400 font-black ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
@@ -170,7 +171,7 @@ const DealerDashboard = () => {
                       key={b._id}
                       className={`transition-colors ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-slate-50/50"}`}
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <img
                             src={b.car?.carImage}
@@ -183,17 +184,17 @@ const DealerDashboard = () => {
                         </div>
                       </td>
                       <td
-                        className={`px-6 py-4 text-sm ${theme === "dark" ? "text-slate-400" : "text-slate-600"}`}
+                        className={`px-6 py-4 text-sm whitespace-nowrap ${theme === "dark" ? "text-slate-400" : "text-slate-600"}`}
                       >
                         {b.customer?.name || "customer"}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium">
+                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                         ₹{b.totalAmount}
                       </td>
-                      <td className="px-6 py-4 text-sm font-bold text-emerald-600">
+                      <td className="px-6 py-4 text-sm font-bold text-emerald-600 whitespace-nowrap">
                         ₹{b.totalAmount * 0.7}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${
                             b.status === "confirmed"
@@ -209,7 +210,7 @@ const DealerDashboard = () => {
                 </tbody>
               </table>
               {data.recentBookings?.length === 0 && (
-                <p className="text-center py-10 text-slate-400">
+                <p className="text-center py-10 text-slate-400 text-sm">
                   No bookings found
                 </p>
               )}
@@ -227,7 +228,7 @@ const DealerDashboard = () => {
             <div
               className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-slate-50"}`}
             >
-              <h3 className="font-bold flex items-center gap-2">
+              <h3 className="font-bold flex items-center gap-2 text-sm md:text-base">
                 <CarFront size={18} className="text-slate-400" /> Fleet Status
               </h3>
             </div>
@@ -250,7 +251,7 @@ const DealerDashboard = () => {
                 <div
                   className="bg-green-500 h-full transition-all duration-1000"
                   style={{
-                    width: `${(data.activeCars / data.totalCars) * 100}%`,
+                    width: `${data.totalCars > 0 ? (data.activeCars / data.totalCars) * 100 : 0}%`,
                   }}
                 />
               </div>
@@ -317,7 +318,7 @@ const StatCard = ({ icon, title, value, color, theme }) => {
         {title}
       </p>
       <h2
-        className={`text-2xl font-black ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+        className={`text-xl md:text-2xl font-black ${theme === "dark" ? "text-white" : "text-slate-800"}`}
       >
         {value}
       </h2>

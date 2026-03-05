@@ -102,74 +102,100 @@ function PaymentPage() {
     >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
         {/* LEFT: Summary */}
-       {/* LEFT: Summary */}
-<div className="lg:col-span-4">
-  <div
-    className={`p-6 rounded-2xl shadow-sm border sticky top-10 transition-colors duration-300 ${
-      theme === "dark"
-        ? "bg-slate-900 border-slate-800 text-white"
-        : "bg-white border-slate-200 text-slate-900"
-    }`}
-  >
-    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-      <CheckCircle2 className="text-blue-500" size={20} />
-      Booking Summary
-    </h2>
+        {/* LEFT: Summary */}
+        <div className="lg:col-span-4">
+          <div
+            className={`p-6 rounded-2xl shadow-sm border sticky top-10 transition-colors duration-300 ${
+              theme === "dark"
+                ? "bg-slate-900 border-slate-800 text-white"
+                : "bg-white border-slate-200 text-slate-900"
+            }`}
+          >
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <CheckCircle2 className="text-blue-500" size={20} />
+              Booking Summary
+            </h2>
 
-    {/* Car Mini-Header */}
-    <div className="flex items-center gap-4 mb-6 pb-6 border-b border-dashed border-slate-700/50">
-      <div className={`p-2 rounded-lg ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}>
-        <img src={car.carImage} className="w-16 h-12 object-contain" alt={car.carName} />
-      </div>
-      <div>
-        <h3 className="font-bold text-lg leading-tight">{car.carName}</h3>
-        <p className="text-[10px] font-bold text-blue-500 uppercase">{car.brand} • {bookingType}</p>
-      </div>
-    </div>
+            {/* Car Mini-Header */}
+            <div className="flex items-center gap-4 mb-6 pb-6 border-b border-dashed border-slate-700/50">
+              <div
+                className={`p-2 rounded-lg ${theme === "dark" ? "bg-slate-800" : "bg-slate-100"}`}
+              >
+                <img
+                  src={car.carImage}
+                  className="w-16 h-12 object-contain"
+                  alt={car.carName}
+                />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg leading-tight">
+                  {car.carName}
+                </h3>
+                <p className="text-[10px] font-bold text-blue-500 uppercase">
+                  {car.brand} • {bookingType}
+                </p>
+              </div>
+            </div>
 
-    {/* Itinerary Details */}
-    <div className="space-y-6">
-      <div className="relative pl-6 border-l-2 border-blue-500/30">
-        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900" />
-        <p className="text-[10px] font-bold text-slate-500 uppercase">Pick-up</p>
-        <p className="font-bold text-sm">{formData?.pickupLocation}</p>
-        <p className="text-xs text-slate-400">{formData?.pickupDate}</p>
-      </div>
+            {/* Itinerary Details */}
+            <div className="space-y-6">
+              <div className="relative pl-6 border-l-2 border-blue-500/30">
+                <div className="absolute -left-2.25 top-0 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900" />
+                <p className="text-[10px] font-bold text-slate-500 uppercase">
+                  Pick-up
+                </p>
+                <p className="font-bold text-sm">{formData?.pickupLocation}</p>
+                <p className="text-xs text-slate-400">{formData?.pickupDate}</p>
+              </div>
 
-      <div className="relative pl-6 border-l-2 border-slate-700/30">
-        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-500 border-4 border-slate-900" />
-        <p className="text-[10px] font-bold text-slate-500 uppercase">Drop-off</p>
-        <p className="font-bold text-sm">{formData?.dropLocation}</p>
-        <p className="text-xs text-slate-400">{formData?.dropDate}</p>
-      </div>
-    </div>
+              <div className="relative pl-6 border-l-2 border-slate-700/30">
+                <div className="absolute -left-2.25 top-0 w-4 h-4 rounded-full bg-slate-500 border-4 border-slate-900" />
+                <p className="text-[10px] font-bold text-slate-500 uppercase">
+                  Drop-off
+                </p>
+                <p className="font-bold text-sm">{formData?.dropLocation}</p>
+                <p className="text-xs text-slate-400">{formData?.dropDate}</p>
+              </div>
+            </div>
 
-    {/* Price Breakdown */}
-    <div className={`mt-8 p-4 rounded-xl ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}>
-      <div className="flex justify-between text-sm mb-2">
-        <span className="text-slate-400 font-medium">Rental Duration</span>
-        <span className="font-bold">{daysCount} Days</span>
-      </div>
-      <div className="flex justify-between text-sm mb-2">
-        <span className="text-slate-400 font-medium">Daily Rate</span>
-        <span className="font-bold">₹{(totalAmount / daysCount).toFixed(0)}</span>
-      </div>
-      <div className="flex justify-between text-sm pt-2 border-t border-slate-700/50">
-        <span className="font-bold">Subtotal</span>
-        <span className="font-bold text-blue-500">₹{totalAmount?.toLocaleString()}</span>
-      </div>
-    </div>
+            {/* Price Breakdown */}
+            <div
+              className={`mt-8 p-4 rounded-xl ${theme === "dark" ? "bg-slate-800/50" : "bg-slate-50"}`}
+            >
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-slate-400 font-medium">
+                  Rental Duration
+                </span>
+                <span className="font-bold">{daysCount} Days</span>
+              </div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-slate-400 font-medium">Daily Rate</span>
+                <span className="font-bold">
+                  ₹{(totalAmount / daysCount).toFixed(0)}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm pt-2 border-t border-slate-700/50">
+                <span className="font-bold">Subtotal</span>
+                <span className="font-bold text-blue-500">
+                  ₹{totalAmount?.toLocaleString()}
+                </span>
+              </div>
+            </div>
 
-    {/* Total Footer */}
-    <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
-      <div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Amount</p>
-        <p className="text-3xl font-black text-emerald-500">₹{totalAmount?.toLocaleString()}</p>
-      </div>
-      <ShieldCheck className="text-emerald-500" size={32} />
-    </div>
-  </div>
-</div>
+            {/* Total Footer */}
+            <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Total Amount
+                </p>
+                <p className="text-3xl font-black text-emerald-500">
+                  ₹{totalAmount?.toLocaleString()}
+                </p>
+              </div>
+              <ShieldCheck className="text-emerald-500" size={32} />
+            </div>
+          </div>
+        </div>
 
         {/* RIGHT: Stripe UI */}
         <div className="lg:col-span-8">

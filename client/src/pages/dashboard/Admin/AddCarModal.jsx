@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   X,
@@ -177,7 +177,7 @@ function AddCarModal({ onClose, onRefresh, userRole }) {
                 <label className={labelStyle}>License Plate</label>
                 <input
                   {...register("carNumber", { required: true })}
-                  placeholder="ABC-1234"
+                  placeholder="TN01AB1234"
                   className={inputStyle + " uppercase font-mono"}
                 />
               </div>

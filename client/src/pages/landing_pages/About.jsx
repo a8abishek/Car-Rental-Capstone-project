@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router";
 import {
   Eye,
   Heart,
@@ -54,40 +55,42 @@ function About() {
 
       {/* Hero Section */}
       <div
-        className={`px-14 py-24 flex space-x-10 transition-colors ${bgPrimary}`}
+        className={`px-6 md:px-14 py-12 md:py-24 flex flex-col lg:flex-row lg:space-x-10 space-y-10 lg:space-y-0 transition-colors ${bgPrimary}`}
       >
         <div className="flex flex-col justify-center">
-          <h1 className="text-7xl font-bold w-160 tracking-wide">
+          <h1 className="text-4xl md:text-7xl font-bold w-full lg:w-160 tracking-wide">
             Redefining the{" "}
             <span className="text-blue-600">Car Rental Experience</span>
           </h1>
-          <p className={`${textSecondary} w-150 mt-5 tracking-wide`}>
+          <p className={`${textSecondary} w-full lg:w-150 mt-5 tracking-wide`}>
             We're more than just a rental service. We're your gateway to premium
             mobility, combining a world-class fleet with unparalleled customer
             services.
           </p>
-          <button className="px-8 py-2.5 border rounded-md font-bold w-40 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-all cursor-pointer mt-10">
-            Explore Cars
-          </button>
+          <Link to={"/cars"}>
+            <button className="px-8 py-2.5 border rounded-md font-bold w-40 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-all cursor-pointer mt-10">
+              Explore Cars
+            </button>
+          </Link>
         </div>
-        <div>
+        <div className="w-full lg:w-auto flex justify-center">
           <img
             src="https://i.pinimg.com/736x/c8/bb/ae/c8bbaee908c2bedf845b674888fa6d36.jpg"
             alt="Hero Car"
-            className="rounded-2xl h-110 object-cover shadow-2xl"
+            className="rounded-2xl h-64 md:h-110 w-full lg:w-auto object-cover shadow-2xl"
           />
         </div>
       </div>
 
       {/* Mission Section */}
       <div
-        className={`px-10 py-10 shadow flex space-x-10 transition-colors ${bgPrimary}`}
+        className={`px-6 md:px-10 py-10 shadow flex flex-col lg:flex-row lg:space-x-10 space-y-10 lg:space-y-0 transition-colors ${bgPrimary}`}
       >
-        <div>
-          <span className="text-4xl text-blue-600 font-semibold uppercase">
+        <div className="w-full lg:w-auto">
+          <span className="text-2xl md:text-4xl text-blue-600 font-semibold uppercase">
             OUR MISSION
           </span>
-          <h1 className="text-4xl font-bold w-160 my-6">
+          <h1 className="text-2xl md:text-4xl font-bold w-full lg:w-160 my-6">
             Redefining mobility by providing accessible, reliable, and premium
             car rental experiences for every journey.
           </h1>
@@ -123,27 +126,27 @@ function About() {
           </div>
         </div>
 
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center w-full lg:w-auto">
           <img
             src="https://i.pinimg.com/736x/1b/3f/ad/1b3fad548ea401cd660ff8da9783bf86.jpg"
             alt="Values Image"
-            className="rounded-3xl w-180 shadow-xl"
+            className="rounded-3xl w-full lg:w-180 shadow-xl"
           />
         </div>
       </div>
 
-      {/* Growth Story Section */}
+      {/* Growth Story Section*/}
       <div
         className={`${theme === "dark" ? "bg-slate-900/50" : "bg-[#eaf1f7]"} py-20 transition-colors`}
       >
-        <h1 className="text-4xl font-black flex justify-center mb-16">
+        <h1 className="text-3xl md:text-4xl font-black flex justify-center mb-16">
           Our Growth Story
         </h1>
 
         <div className="space-y-12">
           {/* 2012 */}
-          <div className="flex items-center justify-center space-x-20 px-[10%]">
-            <div className="text-right w-1/3">
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-20 px-6 md:px-[10%]">
+            <div className="text-center md:text-right w-full md:w-1/3">
               <span className="text-blue-600 text-2xl font-black block mb-2">
                 2012
               </span>
@@ -152,15 +155,18 @@ function About() {
                 local commuters.
               </p>
             </div>
-            <ArrowRight size={40} className="text-blue-600 shrink-0" />
-            <div className="w-1/3 text-left">
+            <ArrowRight
+              size={40}
+              className="text-blue-600 shrink-0 rotate-90 md:rotate-0"
+            />
+            <div className="w-full md:w-1/3 text-center md:text-left">
               <h1 className="font-bold text-2xl">The Humble Beginning</h1>
             </div>
           </div>
 
           {/* 2016 */}
-          <div className="flex items-center justify-center space-x-20 px-[10%]">
-            <div className="text-right w-1/3">
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-20 px-6 md:px-[10%]">
+            <div className="text-center md:text-right w-full md:w-1/3">
               <span className="text-blue-600 text-2xl font-black block mb-2">
                 Digital Transformation
               </span>
@@ -169,15 +175,18 @@ function About() {
                 customers.
               </p>
             </div>
-            <ArrowRight size={40} className="text-blue-600 shrink-0" />
-            <div className="w-1/3 text-left">
+            <ArrowRight
+              size={40}
+              className="text-blue-600 shrink-0 rotate-90 md:rotate-0"
+            />
+            <div className="w-full md:w-1/3 text-center md:text-left">
               <h1 className="font-bold text-2xl">2016</h1>
             </div>
           </div>
 
           {/* Present */}
-          <div className="flex items-center justify-center space-x-20 px-[10%]">
-            <div className="text-right w-1/3">
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-20 px-6 md:px-[10%]">
+            <div className="text-center md:text-right w-full md:w-1/3">
               <span className="text-blue-600 text-2xl font-black block mb-2">
                 Present
               </span>
@@ -186,20 +195,23 @@ function About() {
                 premium vehicles.
               </p>
             </div>
-            <ArrowRight size={40} className="text-blue-600 shrink-0" />
-            <div className="w-1/3 text-left">
+            <ArrowRight
+              size={40}
+              className="text-blue-600 shrink-0 rotate-90 md:rotate-0"
+            />
+            <div className="w-full md:w-1/3 text-center md:text-left">
               <h1 className="font-bold text-2xl">Global Mobility Leader</h1>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Why Choose Section */}
-      <div className={`px-18 py-20 transition-colors ${bgPrimary}`}>
-        <h1 className="text-3xl font-black flex justify-center mb-2">
+      {/* Why Choose Section  */}
+      <div className={`px-6 md:px-18 py-20 transition-colors ${bgPrimary}`}>
+        <h1 className="text-2xl md:text-3xl font-black flex justify-center text-center mb-2">
           Why Choose CarRental?
         </h1>
-        <p className={`${textSecondary} flex justify-center mb-12`}>
+        <p className={`${textSecondary} flex justify-center text-center mb-12`}>
           We provide the best rental experience with premium benefits and 24/7
           support.
         </p>
@@ -226,9 +238,9 @@ function About() {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer*/}
       <div
-        className={`${theme === "dark" ? "bg-black border-t border-slate-800" : "bg-black"} text-white flex justify-between px-28 py-16`}
+        className={`${theme === "dark" ? "bg-black border-t border-slate-800" : "bg-black"} text-white flex flex-col md:flex-row justify-between px-6 md:px-28 py-16 space-y-12 md:space-y-0`}
       >
         <div>
           <div className="flex items-center space-x-2">
@@ -237,7 +249,7 @@ function About() {
             </div>
             <p className="font-bold text-2xl tracking-tighter">CarRental</p>
           </div>
-          <p className="w-80 mt-6 text-gray-500 leading-relaxed">
+          <p className="w-full md:w-80 mt-6 text-gray-500 leading-relaxed">
             The premier choice for luxury and premium car rentals worldwide.
             Making every journey a memory worth keeping.
           </p>

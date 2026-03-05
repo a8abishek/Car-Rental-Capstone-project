@@ -94,14 +94,14 @@ function DealerSetting() {
 
   return (
     <div
-      className={`min-h-screen p-6 lg:p-10 transition-all duration-500 ${
+      className={`min-h-screen p-4 md:p-6 lg:p-10 transition-all duration-500 ${
         theme === "dark"
           ? "bg-[#050810] text-white"
           : "bg-[#F8FAFC] text-slate-900"
       }`}
     >
-      {/* HEADER */}
-      <div className="max-w-6xl mx-auto flex justify-between items-end mb-10">
+      {/* HEADER - Updated to stack on mobile */}
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Settings2 size={16} className="text-blue-600" />
@@ -109,21 +109,22 @@ function DealerSetting() {
               System
             </span>
           </div>
-          <h1 className="text-3xl font-black tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight">
             Dealer Settings
           </h1>
         </div>
 
-        <div className="flex bg-white dark:bg-slate-800 p-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        {/* Theme Switcher - Responsive width on mobile */}
+        <div className="flex w-full sm:w-auto bg-white dark:bg-slate-800 p-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <button
             onClick={() => toggleTheme("light")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${theme === "light" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${theme === "light" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
           >
             <Sun size={14} strokeWidth={3} /> Light
           </button>
           <button
             onClick={() => toggleTheme("dark")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${theme === "dark" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${theme === "dark" ? "bg-blue-600 text-white shadow-md" : "text-slate-400"}`}
           >
             <Moon size={14} strokeWidth={3} /> Dark
           </button>
@@ -131,8 +132,8 @@ function DealerSetting() {
       </div>
 
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* BUSINESS STATUS ROW */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* BUSINESS STATUS ROW - Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <StatusCard
             icon={<CarFront size={22} strokeWidth={2.5} />}
             label="Fleet Size"
@@ -156,14 +157,14 @@ function DealerSetting() {
           />
         </div>
 
-        {/* FORMS */}
+        {/* FORMS - Grid adjusted for small vs large screens */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* PROFILE CARD */}
           <div
-            className={`p-8 rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
+            className={`p-6 md:p-8 rounded-4xl md:rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 shrink-0">
                 <User size={20} strokeWidth={2.5} />
               </div>
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">
@@ -190,9 +191,10 @@ function DealerSetting() {
                   Registered Email
                 </label>
                 <div
-                  className={`px-5 py-3.5 rounded-2xl text-sm font-medium flex items-center gap-3 border-2 ${theme === "dark" ? "bg-slate-950 border-slate-800 text-slate-500" : "bg-slate-100 border-transparent text-slate-400"}`}
+                  className={`px-5 py-3.5 rounded-2xl text-sm font-medium flex items-center gap-3 border-2 overflow-hidden ${theme === "dark" ? "bg-slate-950 border-slate-800 text-slate-500" : "bg-slate-100 border-transparent text-slate-400"}`}
                 >
-                  <Mail size={16} strokeWidth={2.5} /> {profile.email}
+                  <Mail size={16} strokeWidth={2.5} className="shrink-0" />
+                  <span className="truncate">{profile.email}</span>
                 </div>
               </div>
               <button
@@ -208,10 +210,10 @@ function DealerSetting() {
 
           {/* SECURITY CARD */}
           <div
-            className={`p-8 rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
+            className={`p-6 md:p-8 rounded-4xl md:rounded-4xl border shadow-sm transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800 shadow-2xl" : "bg-white border-slate-100"}`}
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 shrink-0">
                 <KeyRound size={20} strokeWidth={2.5} />
               </div>
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">
@@ -253,22 +255,22 @@ function DealerSetting() {
           </div>
         </div>
 
-        {/* FOOTER SUPPORT */}
-        <div className="relative overflow-hidden p-8 rounded-4xl bg-slate-900 dark:bg-blue-600 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-300">
-          <div className="relative z-10 flex items-center gap-5">
-            <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
+        {/* FOOTER SUPPORT - Updated to center on mobile */}
+        <div className="relative overflow-hidden p-6 md:p-8 rounded-4xl md:rounded-4xl bg-slate-900 dark:bg-blue-600 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-300">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+            <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shrink-0">
               <Headphones size={28} strokeWidth={2.5} />
             </div>
             <div>
               <p className="font-black text-lg tracking-tight">
                 Dealer Support
               </p>
-              <p className="text-xs text-blue-100 font-medium">
+              <p className="text-xs text-blue-100 font-medium max-w-xs">
                 Need help with payouts or car listings? We are here 24/7.
               </p>
             </div>
           </div>
-          <button className="relative z-10 px-10 py-4 bg-white text-slate-900 font-black rounded-2xl text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl">
+          <button className="relative z-10 w-full md:w-auto px-10 py-4 bg-white text-slate-900 font-black rounded-2xl text-[11px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl">
             Open Ticket
           </button>
           <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full" />
@@ -287,18 +289,20 @@ const StatusCard = ({ icon, label, value, color, theme }) => {
 
   return (
     <div
-      className={`p-6 rounded-4xl border shadow-sm flex items-center gap-6 transition-all hover:translate-y-1 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+      className={`p-6 rounded-4xl md:rounded-4xl border shadow-sm flex items-center gap-6 transition-all hover:translate-y-1 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
     >
       <div
-        className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner ${colors[color]}`}
+        className={`w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-2xl flex items-center justify-center shadow-inner ${colors[color]}`}
       >
         {icon}
       </div>
-      <div>
+      <div className="min-w-0">
         <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.15em] mb-1">
           {label}
         </p>
-        <p className="text-2xl font-black tabular-nums">{value}</p>
+        <p className="text-xl md:text-2xl font-black tabular-nums truncate">
+          {value}
+        </p>
       </div>
     </div>
   );

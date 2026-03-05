@@ -2,11 +2,9 @@ import { NavLink, useNavigate } from "react-router";
 import {
   LayoutDashboard,
   Car,
-  PlusCircle,
   ClipboardList,
   Settings,
   LogOut,
-  Store,
   CarFront,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -73,7 +71,7 @@ function DealerSidebar() {
 
   return (
     <div
-      className={`w-64 border-r h-screen fixed flex flex-col justify-between p-4 transition-colors duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
+      className={`w-64 border-r h-full flex flex-col justify-between p-4 transition-colors duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
     >
       <div className="overflow-y-auto">
         {/* Dealer Branding */}

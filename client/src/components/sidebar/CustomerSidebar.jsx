@@ -4,7 +4,6 @@ import {
   Car,
   CreditCard,
   Heart,
-  HelpCircle,
   Settings,
   LogOut,
   CarFront,
@@ -19,20 +18,10 @@ const CustomerSidebar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const applyTheme = () => {
-      const currentTheme = localStorage.getItem("theme") || "light";
-      setTheme(currentTheme);
-      if (currentTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    };
-
+    const applyTheme = () => setTheme(localStorage.getItem("theme") || "light");
     window.addEventListener("storage", applyTheme);
     window.addEventListener("themeChanged", applyTheme);
     applyTheme();
-
     return () => {
       window.removeEventListener("storage", applyTheme);
       window.removeEventListener("themeChanged", applyTheme);
@@ -45,7 +34,7 @@ const CustomerSidebar = () => {
         const data = await apiFetch("/api/users/me");
         setUser(data);
       } catch (error) {
-        console.error("Failed to fetch user:", error.message);
+        console.error(error.message);
       }
     };
     fetchUser();
@@ -70,9 +59,14 @@ const CustomerSidebar = () => {
 
   return (
     <div
-      className={`w-64 border-r h-screen fixed flex flex-col justify-between p-4 transition-all duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
+      className={`w-64 border-r h-screen flex flex-col justify-between p-4 transition-all duration-300 ${
+        theme === "dark"
+          ? "bg-slate-900 border-slate-800"
+          : "bg-white border-gray-100"
+      }`}
     >
-      <div className="overflow-y-auto custom-scrollbar">
+      {/* Scrollable Navigation Area */}
+      <div className="overflow-y-auto custom-scrollbar flex-1 pr-2">
         <div className="flex items-center gap-2 px-4 mb-8 mt-2">
           <div className="bg-blue-600 p-1.5 rounded-lg">
             <CarFront size={20} className="text-white" />
@@ -118,9 +112,11 @@ const CustomerSidebar = () => {
           >
             <CreditCard size={18} /> Payments history
           </NavLink>
+
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2 px-4">
             Support
           </p>
+
           <NavLink
             to="/dashboard/settings"
             className={({ isActive }) =>
@@ -132,24 +128,29 @@ const CustomerSidebar = () => {
         </nav>
       </div>
 
+      {/* Fixed Bottom Section */}
       <div
-        className={`border-t pt-4 pb-2 transition-colors duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
+        className={`border-t pt-4 pb-2 mt-auto transition-colors duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
       >
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-3 max-w-[80%]">
             <div
-              className={`h-10 w-10 shrink-0 rounded-full flex items-center justify-center font-bold ${theme === "dark" ? "bg-orange-900/40 text-orange-400" : "bg-orange-100 text-orange-600"}`}
+              className={`h-10 w-10 shrink-0 rounded-full flex items-center justify-center font-bold ${
+                theme === "dark"
+                  ? "bg-orange-900/40 text-orange-400"
+                  : "bg-orange-100 text-orange-600"
+              }`}
             >
-              {user?.name ? user.name.charAt(0).toUpperCase() : "?"}
+              {user?.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="overflow-hidden">
               <p
                 className={`text-sm font-bold truncate leading-tight ${theme === "dark" ? "text-slate-200" : "text-slate-800"}`}
               >
-                {user?.name || "Loading..."}
+                {user?.name || "Abishek"}
               </p>
               <p className="text-xs text-slate-400 capitalize truncate">
-                {user?.role || "Member"}
+                Customer
               </p>
             </div>
           </div>

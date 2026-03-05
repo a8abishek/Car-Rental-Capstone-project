@@ -21,6 +21,7 @@ import {
   RotateCcw,
   Download,
   Percent,
+  Inbox, 
 } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -160,67 +161,77 @@ function DealerAnalytics() {
             </div>
           </div>
 
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={chartData}>
-                <defs>
-                  <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke={theme === "dark" ? "#1e293b" : "#F1F5F9"}
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94A3B8", fontWeight: 600 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94A3B8", fontWeight: 600 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: theme === "dark" ? "#1e293b" : "#fff",
-                    borderRadius: "20px",
-                    border: "none",
-                    boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
-                    padding: "15px",
-                  }}
-                  itemStyle={{
-                    color: "#2563eb",
-                    fontWeight: "800",
-                    fontSize: "14px",
-                  }}
-                />
-                <Bar
-                  dataKey="revenue"
-                  fill={theme === "dark" ? "#1e293b" : "#eff6ff"}
-                  radius={[10, 10, 10, 10]}
-                  barSize={40}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#2563eb"
-                  strokeWidth={4}
-                  fill="url(#blueGradient)"
-                  dot={{
-                    r: 4,
-                    fill: "#2563eb",
-                    strokeWidth: 2,
-                    stroke: "#fff",
-                  }}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
+          <div className="h-80 w-full flex items-center justify-center">
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={chartData}>
+                  <defs>
+                    <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={theme === "dark" ? "#1e293b" : "#F1F5F9"}
+                  />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94A3B8", fontWeight: 600 }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94A3B8", fontWeight: 600 }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: theme === "dark" ? "#1e293b" : "#fff",
+                      borderRadius: "20px",
+                      border: "none",
+                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+                      padding: "15px",
+                    }}
+                    itemStyle={{
+                      color: "#2563eb",
+                      fontWeight: "800",
+                      fontSize: "14px",
+                    }}
+                  />
+                  <Bar
+                    dataKey="revenue"
+                    fill={theme === "dark" ? "#1e293b" : "#eff6ff"}
+                    radius={[10, 10, 10, 10]}
+                    barSize={40}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#2563eb"
+                    strokeWidth={4}
+                    fill="url(#blueGradient)"
+                    dot={{
+                      r: 4,
+                      fill: "#2563eb",
+                      strokeWidth: 2,
+                      stroke: "#fff",
+                    }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center p-10">
+                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                  <Inbox size={32} className="text-slate-400" />
+                </div>
+                <h4 className="text-slate-400 font-black text-sm uppercase tracking-widest">No bookings this week</h4>
+                <p className="text-slate-500 text-xs mt-1 font-medium">Weekly revenue graph will appear once cars are rented.</p>
+              </div>
+            )}
           </div>
         </div>
 

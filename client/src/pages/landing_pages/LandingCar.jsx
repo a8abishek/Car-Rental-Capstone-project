@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 //import
 import { apiFetch } from "../../api/apiFetch.js";
 import CarCard from "../../components/carCard.jsx";
+
 const LandingCars = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,7 @@ const LandingCars = () => {
   }
 
   return (
-    <div className="flex justify-between">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
       {cars.map((car) => (
         <CarCard key={car._id} car={car} />
       ))}
