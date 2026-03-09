@@ -72,7 +72,7 @@ function Navbar() {
     <div
       className={`flex flex-col sticky top-0 z-50 shadow ${theme === "dark" ? "bg-slate-900 border-b border-slate-800 text-white" : "bg-white"}`}
     >
-      <div className="flex items-center justify-between px-12 py-2.5">
+      <div className="flex items-center justify-between lg:px-12 px-6  py-2.5">
         {/* logo + name */}
         <Link to="/" className="flex items-center space-x-1">
           <div className="bg-blue-600 p-1.5 rounded-md">
