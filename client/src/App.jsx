@@ -258,7 +258,8 @@ function App() {
         </div>
       </div>
 
-      <div className="mx-6 md:mx-18 bg-[#137fec] px-6 md:px-10 py-10 lg:space-x-28 rounded-2xl flex flex-col lg:flex-row mb-10 shadow-xl shadow-blue-500/20">
+      {/*para + car image*/}
+      <div className="mx-3 md:mx-18 bg-[#137fec] px-6 md:px-10 py-10 lg:space-x-28 rounded-2xl flex flex-col lg:flex-row items-center mb-10 shadow-xl shadow-blue-500/20">
         <div className="flex flex-col justify-center lg:ml-10 mb-8 lg:mb-0">
           <h1 className="text-white font-bold text-3xl md:text-5xl">
             Ready to hit the road?
@@ -280,10 +281,11 @@ function App() {
             </Link>
           </div>
         </div>
+
         <div className="w-full">
           <img
             src="https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Punch/13254/1768985724266/rear-view-119.jpg"
-            className="w-full lg:w-140 h-64 md:h-90 rounded-2xl object-cover"
+            className="w-full lg:w-140 h-64 md:h-90 rounded-2xl object-cover block mx-auto"
             alt="Car image"
           />
         </div>

@@ -11,7 +11,7 @@ import carRouter from "./src/routers/carRouter.js";
 import bookingRouter from "./src/routers/bookingRouter.js";
 import driverRouter from "./src/routers/driverRouter.js";
 import userRouter from "./src/routers/userRouter.js";
-import reviewRouter from './src/routers/reviewRouter.js'
+import reviewRouter from "./src/routers/reviewRouter.js";
 import paymentRouter from "./src/routers/paymentRoutes.js";
 
 //app Setup
@@ -22,10 +22,12 @@ dotenv.config();
 
 //Middleware
 app.use(express.json());
-app.use(cors({          
-  origin: 'http://localhost:5173',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FORNTEND_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 //DB connection
 DBConnection();
@@ -37,8 +39,8 @@ app.use("/api/cars", carRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/driver", driverRouter);
 app.use("/api/users", userRouter);
-app.use("/api/review",reviewRouter)
-app.use("/api/payment",paymentRouter)
+app.use("/api/review", reviewRouter);
+app.use("/api/payment", paymentRouter);
 // Test Route
 app.get("/", (req, res) => {
   res.json({

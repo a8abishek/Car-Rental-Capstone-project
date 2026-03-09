@@ -353,7 +353,7 @@ function PaymentHistory() {
           </div>
         </div>
       )}
-
+      {/**pdf style */}
       <style>{`
         @media screen { .print-only { display: none !important; } }
         @media print {

@@ -42,7 +42,7 @@ function CarCard({ car }) {
   return (
     <div
       onClick={() => navigate(`/cars/${car._id}`)}
-      className={`w-100 rounded-2xl h-115 border cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md ${
+      className={`lg:w-100 w-85 rounded-2xl h-115 border cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md ${
         theme === "dark"
           ? "bg-slate-800 border-slate-700 text-white"
           : "bg-[#f8fafc] border-gray-300 text-slate-900"
@@ -113,7 +113,7 @@ function CarCard({ car }) {
             e.stopPropagation();
             navigate(`/cars/${car._id}`);
           }}
-          className={`font-bold w-full py-1.5 rounded-md transition-colors ${
+          className={`font-bold w-full lg:py-1.5 py-2.5 rounded-md transition-colors ${
             theme === "dark"
               ? "bg-blue-600 text-white hover:bg-blue-700"
               : "bg-black text-white hover:bg-gray-800"

@@ -34,6 +34,7 @@ function Setting() {
     });
   }, []);
 
+  //Update Profile
   const handleUpdateProfile = async () => {
     if (!profile.name) return toast.error("Name is required");
     setLoading(true);
@@ -49,7 +50,7 @@ function Setting() {
       setLoading(false);
     }
   };
-
+  // Change Password
   const handleChangePassword = async () => {
     if (!passwords.currentPassword || !passwords.newPassword)
       return toast.error("Fill all fields");
@@ -103,7 +104,7 @@ function Setting() {
             </h1>
           </div>
 
-          {/* Theme Switcher - Responsive width on mobile */}
+          {/* Theme Switcher */}
           <div className="flex w-full md:w-auto bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
             <button
               onClick={() => toggleTheme("light")}
@@ -128,7 +129,7 @@ function Setting() {
           </div>
         </div>
 
-        {/* --- CUSTOMER STATS GRID --- */}
+        {/* CUSTOMER STATS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12">
           <StatCard
             icon={<Heart />}
@@ -200,7 +201,7 @@ function Setting() {
                       : "bg-slate-100 border-transparent text-slate-400"
                   }`}
                 >
-                  <Mail size={18} strokeWidth={2.5} className="shrink-0" /> 
+                  <Mail size={18} strokeWidth={2.5} className="shrink-0" />
                   <span className="truncate">{profile.email}</span>
                 </div>
               </div>
@@ -338,7 +339,9 @@ const StatCard = ({ icon, label, value, color, theme, isVerified }) => {
           {label}
         </p>
         <div className="flex items-center gap-2">
-          <p className="text-xl md:text-2xl font-black tracking-tight truncate">{value}</p>
+          <p className="text-xl md:text-2xl font-black tracking-tight truncate">
+            {value}
+          </p>
           {isVerified && (
             <BadgeCheck
               size={22}

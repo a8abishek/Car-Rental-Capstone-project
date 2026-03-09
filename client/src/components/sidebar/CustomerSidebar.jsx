@@ -17,6 +17,7 @@ const CustomerSidebar = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
 
+  //theme
   useEffect(() => {
     const applyTheme = () => setTheme(localStorage.getItem("theme") || "light");
     window.addEventListener("storage", applyTheme);
@@ -28,6 +29,7 @@ const CustomerSidebar = () => {
     };
   }, []);
 
+  //fetch data (for name)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -40,6 +42,7 @@ const CustomerSidebar = () => {
     fetchUser();
   }, []);
 
+  // logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -65,7 +68,6 @@ const CustomerSidebar = () => {
           : "bg-white border-gray-100"
       }`}
     >
-      {/* Scrollable Navigation Area */}
       <div className="overflow-y-auto custom-scrollbar flex-1 pr-2">
         <div className="flex items-center gap-2 px-4 mb-8 mt-2">
           <div className="bg-blue-600 p-1.5 rounded-lg">
@@ -128,7 +130,7 @@ const CustomerSidebar = () => {
         </nav>
       </div>
 
-      {/* Fixed Bottom Section */}
+      {/* Profile Footer  */}
       <div
         className={`border-t pt-4 pb-2 mt-auto transition-colors duration-300 ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-gray-100"}`}
       >

@@ -15,7 +15,7 @@ function DealerSidebar() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
-
+  //theme
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -38,6 +38,7 @@ function DealerSidebar() {
     };
   }, []);
 
+  // fetch data (for name)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -50,6 +51,7 @@ function DealerSidebar() {
     fetchUser();
   }, []);
 
+  //logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

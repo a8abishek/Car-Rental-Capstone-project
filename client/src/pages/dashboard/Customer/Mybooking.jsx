@@ -67,6 +67,7 @@ function Mybooking() {
     fetchMyBookings();
   }, []);
 
+  //Review Submit
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (reviewData.rating === 0)
@@ -99,7 +100,7 @@ function Mybooking() {
       toast.error("Action failed");
     }
   };
-
+  //Delete Review
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm("Are you sure you want to delete this review?")) return;
     try {
@@ -110,7 +111,7 @@ function Mybooking() {
       toast.error("Failed to delete review");
     }
   };
-
+  //Cancel Booking
   const handleCancelBooking = async (id) => {
     if (!window.confirm("Cancel this booking?")) return;
     try {
@@ -122,14 +123,15 @@ function Mybooking() {
     }
   };
 
+  // for booking status getStatusStyle (status -> pending,confirm,cancel)
   const getStatusStyle = (status) => {
     switch (status) {
       case "pending":
-        return "bg-amber-100 text-amber-700"; 
+        return "bg-amber-100 text-amber-700";
       case "confirmed":
-        return "bg-emerald-100 text-emerald-700"; 
+        return "bg-emerald-100 text-emerald-700";
       case "cancelled":
-        return "bg-rose-100 text-rose-700"; 
+        return "bg-rose-100 text-rose-700";
       default:
         return "bg-slate-100 text-slate-700";
     }
@@ -199,15 +201,14 @@ function Mybooking() {
                   <th className="p-5">Car Details</th>
                   <th className="p-5">Amount</th>
                   <th className="p-5 text-center">Booking Status</th>
-                  <th className="p-5 text-center">Payment</th> 
+                  <th className="p-5 text-center">Payment Status</th>
                   <th className="p-5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y-0"> {/* Removed vertical divide lines */}
+              <tbody className="divide-y-0">
                 {currentData.map((item) => (
                   <React.Fragment key={item._id}>
                     <tr
-                      /* Removed border-b to remove bottom lines */
                       className={`transition-all ${theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-gray-50/50"}`}
                     >
                       <td className="p-5">
@@ -324,11 +325,8 @@ function Mybooking() {
                       <tr
                         className={`${theme === "dark" ? "bg-slate-800/30" : "bg-slate-50/50"} animate-in fade-in slide-in-from-top-1`}
                       >
-                        <td
-                          colSpan="5"
-                          className="p-6 text-sm" /* Removed border-b */
-                        >
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <td colSpan="5" className="p-6 text-sm">
+                          <div className="grid grid-cols-4  gap-6">
                             <div>
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
                                 Pickup Location
@@ -341,7 +339,9 @@ function Mybooking() {
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
                                 Drop Location
                               </p>
-                              <p className="font-semibold">{item.dropLocation}</p>
+                              <p className="font-semibold">
+                                {item.dropLocation}
+                              </p>
                             </div>
                             <div>
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
@@ -373,18 +373,20 @@ function Mybooking() {
         {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4 text-xs font-bold text-slate-400">
-            <span>Showing page {currentPage} of {totalPages}</span>
+            <span>
+              Showing page {currentPage} of {totalPages}
+            </span>
             <div className="flex gap-2">
               <button
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(p => p - 1)}
+                onClick={() => setCurrentPage((p) => p - 1)}
                 className={`p-2 rounded-lg border transition-colors ${theme === "dark" ? "bg-slate-800 border-slate-700 text-white disabled:opacity-20" : "bg-white border-slate-200 text-slate-500 disabled:opacity-30"}`}
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(p => p + 1)}
+                onClick={() => setCurrentPage((p) => p + 1)}
                 className={`p-2 rounded-lg border transition-colors ${theme === "dark" ? "bg-slate-800 border-slate-700 text-white disabled:opacity-20" : "bg-white border-slate-200 text-slate-500 disabled:opacity-30"}`}
               >
                 <ChevronRight size={16} />
@@ -395,7 +397,7 @@ function Mybooking() {
 
         {/* --- REVIEW MODAL --- */}
         {selectedBooking && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center p-4 z-100 transition-all">
+          <div className="fixed inset-0 bg-slate-900/40  flex items-center justify-center p-4 z-100 transition-all">
             <div
               className={`rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl transition-all ${theme === "dark" ? "bg-slate-900 border border-slate-800" : "bg-white"}`}
             >

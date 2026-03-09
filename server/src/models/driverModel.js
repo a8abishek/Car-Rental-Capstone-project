@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 
+//create Schema
 const driverSchema = new Schema(
   {
     name: {
@@ -30,6 +31,7 @@ const driverSchema = new Schema(
   { timestamps: true },
 );
 
+//create model
 const driverModel = model("Driver", driverSchema);
 
 export default driverModel;

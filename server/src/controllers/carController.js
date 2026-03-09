@@ -4,7 +4,6 @@ import carModel from "../models/carModel.js";
 import bookingModel from "../models/bookingModel.js";
 
 /* ADD CAR- Admin → auto approved - Dealer → auto pending */
-
 export const addCar = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -215,7 +214,7 @@ export const getAllCars = async (req, res) => {
   }
 };
 
-// Add this to your controllers
+// get Dealer Stats (Dashboard)
 export const getDealerStats = async (req, res) => {
   try {
     const dealerId = req.user._id;

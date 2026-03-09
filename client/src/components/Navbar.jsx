@@ -16,6 +16,7 @@ function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
+  //store token
   const token = localStorage.getItem("token");
 
   useEffect(() => {

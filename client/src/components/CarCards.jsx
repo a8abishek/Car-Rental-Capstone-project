@@ -69,6 +69,7 @@ function CarCards({ car, isInitiallySaved }) {
     }
   };
 
+  //icon {petrol,diesel,electric,hybrid}
   const renderFuelIcon = () => {
     const iconProps = { className: "text-blue-500", size: 18 };
     if (fuelType === "petrol" || fuelType === "diesel")

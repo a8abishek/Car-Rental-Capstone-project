@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 
+//create Schema
 const bookingSchema = new Schema(
   {
     car: {
@@ -73,13 +74,14 @@ const bookingSchema = new Schema(
       default: "pending",
     },
     paymentId: {
-    type: String, 
-    required: true,
-  }
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true },
 );
 
+//create Model
 const bookingModel = model("Booking", bookingSchema);
 
 export default bookingModel;

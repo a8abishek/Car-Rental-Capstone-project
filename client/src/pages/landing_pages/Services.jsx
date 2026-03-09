@@ -13,7 +13,6 @@ import {
   Phone,
   ChevronRight,
 } from "lucide-react";
-// import
 import Navbar from "../../components/Navbar";
 
 const Services = () => {
@@ -73,11 +72,11 @@ const Services = () => {
       <Navbar />
 
       {/* --- Hero Section --- */}
-      <section className="relative pt-20 pb-20 overflow-hidden">
+      <section className="relative pt-12 md:pt-20 pb-12 md:pb-20 overflow-hidden">
         <div className="w-full max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
           <div className="max-w-5xl flex flex-col items-center">
             {/* Centered Badge */}
-            <div className="flex mb-8 items-center space-x-1 bg-blue-200 text-blue-600 font-bold px-6 py-1.5 justify-center rounded-2xl">
+            <div className="flex mb-6 md:mb-8 items-center space-x-1 bg-blue-200 text-blue-600 font-bold px-6 py-1.5 justify-center rounded-2xl">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
               <span className="uppercase tracking-widest text-[10px]">
                 Premium Services
@@ -86,7 +85,7 @@ const Services = () => {
 
             {/* Large Centered Heading */}
             <h1
-              className={`text-8xl font-bold leading-tight mb-8 ${
+              className={`text-4xl sm:text-6xl md:text-8xl font-bold leading-tight mb-6 md:mb-8 ${
                 theme === "dark" ? "text-white" : "text-slate-900"
               }`}
             >
@@ -95,7 +94,7 @@ const Services = () => {
             </h1>
 
             <p
-              className={`text-xl mb-12 w-[80%] mx-auto leading-relaxed font-medium ${
+              className={`text-base md:text-xl mb-8 md:mb-12 w-full md:w-[80%] mx-auto leading-relaxed font-medium ${
                 theme === "dark" ? "text-slate-400" : "text-gray-500"
               }`}
             >
@@ -104,16 +103,16 @@ const Services = () => {
               From executive travel to special events, we have you covered.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 w-full sm:w-auto">
               <Link
                 to="/cars"
-                className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-4 rounded-2xl font-bold transition-all flex items-center gap-2 text-sm shadow-xl shadow-blue-500/30 active:scale-95"
+                className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-10 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 text-sm shadow-xl shadow-blue-500/30 active:scale-95"
               >
                 EXPLORE FLEET <ChevronRight size={18} />
               </Link>
               <Link
                 to="/contacts"
-                className={`px-10 py-4 rounded-2xl font-bold transition-all text-sm border shadow-sm active:scale-95 ${
+                className={`w-full sm:w-auto px-10 py-4 rounded-2xl font-bold transition-all text-sm border shadow-sm active:scale-95 text-center ${
                   theme === "dark"
                     ? "text-white border-slate-700 hover:bg-slate-800"
                     : "text-slate-900 border-slate-200 bg-white hover:bg-gray-50"
@@ -127,13 +126,13 @@ const Services = () => {
       </section>
 
       {/* --- Services Grid --- */}
-      <section className="py-24">
-        <div className="w-full max-w-7xl mx-auto px-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <section className="py-12 md:py-24">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {services.map((item, idx) => (
               <div
                 key={idx}
-                className={`group relative p-10 border transition-all duration-500 rounded-[2.5rem] shadow-xl hover:-translate-y-2 ${
+                className={`group relative p-8 md:p-10 border transition-all duration-500 rounded-[2.5rem] shadow-xl hover:-translate-y-2 ${
                   theme === "dark"
                     ? "bg-slate-900 border-slate-800 hover:bg-blue-600 shadow-black/20"
                     : "bg-white border-white hover:bg-blue-600 shadow-blue-900/5"
@@ -180,16 +179,16 @@ const Services = () => {
 
       {/* --- Footer --- */}
       <footer
-        className={`pt-24 pb-12 ${
+        className={`pt-16 md:pt-24 pb-12 ${
           theme === "dark"
             ? "bg-slate-950 border-t border-slate-900"
             : "bg-black text-white"
         }`}
       >
-        <div className="w-full max-w-7xl mx-auto px-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16 md:mb-20">
             <div className="col-span-1">
-              <h3 className="text-2xl font-black tracking-tighter text-white mb-8">
+              <h3 className="text-2xl font-black tracking-tighter text-white mb-6 md:mb-8">
                 CAR<span className="text-blue-400">RENTAL</span>
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed mb-8">
@@ -209,47 +208,29 @@ const Services = () => {
             </div>
 
             <div>
-              <h4 className="text-white font-bold text-sm mb-8 uppercase tracking-widest">
+              <h4 className="text-white font-bold text-sm mb-6 md:mb-8 uppercase tracking-widest">
                 Navigation
               </h4>
               <ul className="space-y-4 text-sm text-gray-500">
-                <li>
-                  <Link to="/" className="hover:text-white transition">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cars" className="hover:text-white transition">
-                    Fleet
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/services" className="hover:text-white transition">
-                    Services
-                  </Link>
-                </li>
+                <li><Link to="/" className="hover:text-white transition">Home</Link></li>
+                <li><Link to="/cars" className="hover:text-white transition">Fleet</Link></li>
+                <li><Link to="/services" className="hover:text-white transition">Services</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-bold text-sm mb-8 uppercase tracking-widest">
+              <h4 className="text-white font-bold text-sm mb-6 md:mb-8 uppercase tracking-widest">
                 Legal
               </h4>
               <ul className="space-y-4 text-sm text-gray-500">
-                <li className="hover:text-white cursor-pointer transition">
-                  Privacy Policy
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Terms of Use
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Refund Policy
-                </li>
+                <li className="hover:text-white cursor-pointer transition">Privacy Policy</li>
+                <li className="hover:text-white cursor-pointer transition">Terms of Use</li>
+                <li className="hover:text-white cursor-pointer transition">Refund Policy</li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-bold text-sm mb-8 uppercase tracking-widest">
+              <h4 className="text-white font-bold text-sm mb-6 md:mb-8 uppercase tracking-widest">
                 Contact
               </h4>
               <ul className="space-y-6 text-sm text-gray-500">
@@ -264,11 +245,11 @@ const Services = () => {
             </div>
           </div>
 
-          <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold tracking-[0.2em] text-gray-600">
+          <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold tracking-[0.2em] text-gray-600 text-center md:text-left">
             <p>
               © {new Date().getFullYear()} CARRENTAL ELITE. ALL RIGHTS RESERVED.
             </p>
-            <div className="flex gap-10">
+            <div className="flex gap-6 md:gap-10">
               <span className="hover:text-white cursor-pointer">INSTAGRAM</span>
               <span className="hover:text-white cursor-pointer">LINKEDIN</span>
             </div>

@@ -15,7 +15,7 @@ const createAdmin = async () => {
   const existing = await userModel.findOne({
     email: process.env.ADMIN_EMAIL,
   });
-
+  
   if (existing) {
     console.log("Admin already exists");
     process.exit();

@@ -74,7 +74,7 @@ const DealerDashboard = () => {
     <div
       className={`min-h-screen transition-colors duration-300 p-4 md:p-8 font-sans ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F8FAFC] text-slate-900"}`}
     >
-      {/* HEADER - Updated flex-col for mobile */}
+      {/* HEADER */}
       <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
@@ -99,7 +99,7 @@ const DealerDashboard = () => {
       </header>
 
       <main className="max-w-7xl mx-auto space-y-10">
-        {/* STAT CARDS - Responsive Grid */}
+        {/* STAT CARDS*/}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             theme={theme}
@@ -131,7 +131,7 @@ const DealerDashboard = () => {
           />
         </div>
 
-        {/* DASHBOARD CONTENT - Responsive Grid */}
+        {/* DASHBOARD CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* RECENT BOOKINGS */}
           <section

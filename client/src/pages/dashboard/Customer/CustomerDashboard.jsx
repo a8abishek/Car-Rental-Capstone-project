@@ -18,6 +18,7 @@ function CustomerDashboard() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
 
+  //theme
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -39,6 +40,7 @@ function CustomerDashboard() {
     };
   }, []);
 
+  //Dashboard details
   const fetchDashboard = async () => {
     try {
       const response = await apiFetch("/api/bookings/customer/stats");
@@ -54,6 +56,7 @@ function CustomerDashboard() {
     fetchDashboard();
   }, []);
 
+  //cancel
   const handleCancel = async (id) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
       try {
@@ -79,7 +82,7 @@ function CustomerDashboard() {
     <div
       className={`p-4 md:p-8 min-h-screen font-sans transition-colors duration-300 ${theme === "dark" ? "bg-[#0f172a] text-white" : "bg-[#F4F7FE] text-slate-900"}`}
     >
-      {/* HEADER - Responsive Flex */}
+      {/* HEADER*/}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
         <div>
           <h1
@@ -101,7 +104,7 @@ function CustomerDashboard() {
         </button>
       </div>
 
-      {/* STATS CARDS - Responsive Grid */}
+      {/* STATS CARDS*/}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
         <div
           className={`p-5 rounded-3xl flex items-center gap-4 shadow-sm border transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
@@ -162,7 +165,7 @@ function CustomerDashboard() {
         </div>
       </div>
 
-      {/* ACTIVE RENTAL - Responsive Layout */}
+      {/* ACTIVE RENTAL */}
       <div className="mb-10">
         <div className="flex justify-between items-end mb-4 px-2">
           <h3
@@ -319,7 +322,7 @@ function CustomerDashboard() {
         )}
       </div>
 
-      {/* HISTORY TABLE - Responsive Scroll */}
+      {/* HISTORY TABLE */}
       <div
         className={`rounded-4xl md:rounded-4xl shadow-sm border overflow-hidden p-4 transition-colors ${theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-white"}`}
       >

@@ -4,8 +4,10 @@ import dotenv from "dotenv";
 //config
 dotenv.config();
 
+//stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+//create PaymentIntent
 export const createPaymentIntent = async (req, res) => {
   try {
     const { amount } = req.body;

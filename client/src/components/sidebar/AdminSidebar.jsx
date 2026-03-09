@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useLocation } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import {
   LayoutDashboard,
   Users,
@@ -18,6 +18,7 @@ function AdminSidebar() {
   const navigate = useNavigate();
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
+  //theme
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -40,6 +41,7 @@ function AdminSidebar() {
     };
   }, []);
 
+  //fetch data (for name)
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -52,6 +54,7 @@ function AdminSidebar() {
     fetchUser();
   }, []);
 
+  //logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { ShieldCheck, Lock, CheckCircle2, ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
+// import
 import { apiFetch } from "../api/apiFetch";
 import StripeCheckoutForm from "../components/StripeCheckoutForm";
 
@@ -101,7 +102,6 @@ function PaymentPage() {
       className={`min-h-screen transition-colors duration-300 py-12 px-4 md:px-10 ${theme === "dark" ? "bg-[#0f172a]" : "bg-[#F3F5F7]"}`}
     >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
-        {/* LEFT: Summary */}
         {/* LEFT: Summary */}
         <div className="lg:col-span-4">
           <div

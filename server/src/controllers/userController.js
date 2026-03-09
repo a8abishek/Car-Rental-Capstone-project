@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 // import
 import userModel from "../models/userModel.js";
 
+//get Profile
 export const getProfile = async (req, res) => {
   try {
     const user = await userModel.findById(req.user._id).select("-password");
@@ -79,11 +80,11 @@ export const toggleSavedCar = async (req, res) => {
     }
 
     await user.save();
-    
+
     // Return the updated array so frontend can sync if needed
-    res.json({ 
+    res.json({
       message: isSaved ? "Removed from favorites" : "Added to favorites",
-      savedCars: user.savedCars 
+      savedCars: user.savedCars,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -94,9 +95,9 @@ export const toggleSavedCar = async (req, res) => {
 export const getSavedCars = async (req, res) => {
   try {
     const user = await userModel.findById(req.user.id).populate("savedCars");
-    
+
     // Filter out nulls in case a car was deleted from the database
-    const validCars = user.savedCars.filter(car => car !== null);
+    const validCars = user.savedCars.filter((car) => car !== null);
 
     res.json(validCars);
   } catch (error) {

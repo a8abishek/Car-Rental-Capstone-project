@@ -100,7 +100,7 @@ function DealerSetting() {
           : "bg-[#F8FAFC] text-slate-900"
       }`}
     >
-      {/* HEADER - Updated to stack on mobile */}
+      {/* HEADER*/}
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -114,7 +114,7 @@ function DealerSetting() {
           </h1>
         </div>
 
-        {/* Theme Switcher - Responsive width on mobile */}
+        {/* Theme Switcher */}
         <div className="flex w-full sm:w-auto bg-white dark:bg-slate-800 p-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <button
             onClick={() => toggleTheme("light")}
@@ -132,7 +132,7 @@ function DealerSetting() {
       </div>
 
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* BUSINESS STATUS ROW - Responsive Grid */}
+        {/* BUSINESS STATUS ROW  */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <StatusCard
             icon={<CarFront size={22} strokeWidth={2.5} />}
@@ -157,7 +157,7 @@ function DealerSetting() {
           />
         </div>
 
-        {/* FORMS - Grid adjusted for small vs large screens */}
+        {/* FORMS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* PROFILE CARD */}
           <div
@@ -255,7 +255,7 @@ function DealerSetting() {
           </div>
         </div>
 
-        {/* FOOTER SUPPORT - Updated to center on mobile */}
+        {/* FOOTER SUPPORT */}
         <div className="relative overflow-hidden p-6 md:p-8 rounded-4xl md:rounded-4xl bg-slate-900 dark:bg-blue-600 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-300">
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
             <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shrink-0">

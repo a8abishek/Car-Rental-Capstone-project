@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 
+//create Schema
 const reviewSchema = new Schema(
   {
     car: {
@@ -31,6 +32,7 @@ const reviewSchema = new Schema(
   { timestamps: true },
 );
 
+//create Model
 const reviewModel = model("Review", reviewSchema);
 
 export default reviewModel;

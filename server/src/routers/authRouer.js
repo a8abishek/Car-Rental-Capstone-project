@@ -6,11 +6,11 @@ import {
   loginValidator,
 } from "../validators/authValidator.js";
 
-//ROUTER SETUP
+//router setup
 const authRouter = express.Router();
 
-//ROUTE SETUP
-authRouter.post("/register", registerValidator, register);
-authRouter.post("/login", loginValidator, login);
+//routes setup
+authRouter.post("/register", registerValidator, register); //register
+authRouter.post("/login", loginValidator, login); //login
 
 export default authRouter;

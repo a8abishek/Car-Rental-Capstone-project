@@ -17,7 +17,7 @@ import {
   X,
   MessageSquare,
   Trash2,
-  Edit3, // Added Edit Icon
+  Edit3,
 } from "lucide-react";
 import { apiFetch } from "../api/apiFetch";
 
@@ -47,7 +47,6 @@ function CarDetail() {
   const [currentUser, setCurrentUser] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-  // --- NEW STATES FOR EDITING ---
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editReviewData, setEditReviewData] = useState({
     rating: 5,
@@ -105,14 +104,14 @@ function CarDetail() {
     if (!window.confirm("Are you sure?")) return;
     try {
       await apiFetch(`/api/review/${reviewId}`, { method: "DELETE" });
-      toast.success("Deleted");
+      toast.success("removed!");
       fetchData();
     } catch (err) {
       toast.error("Failed");
     }
   };
 
-  // --- NEW UPDATE FUNCTION ---
+  //Review update 
   const handleUpdateReview = async (e) => {
     e.preventDefault();
     try {

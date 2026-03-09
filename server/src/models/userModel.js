@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 
+//create Schema
 const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -26,7 +27,7 @@ const userSchema = new Schema(
     },
     savedCars: {
       type: [{ type: Schema.Types.ObjectId, ref: "Car" }],
-      default: []
+      default: [],
     },
   },
   { timestamps: true },
@@ -35,6 +36,7 @@ const userSchema = new Schema(
 // unique email + role
 userSchema.index({ email: 1, role: 1 }, { unique: true });
 
+//create Model
 const userModel = model("User", userSchema);
 
 export default userModel;

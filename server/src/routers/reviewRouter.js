@@ -1,4 +1,5 @@
 import express from "express";
+//import
 import {
   getCarReviews,
   updateReview,
@@ -7,14 +8,16 @@ import {
 } from "../controllers/reviewController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
+//ROUTER SETUP
 const reviewRouter = express.Router();
 
-// Public route: Anyone can see car reviews
-reviewRouter.get("/car/:carId", getCarReviews);
+// customer
+// 1.Public route:
+reviewRouter.get("/car/:carId", getCarReviews); //get Car Reviews
 
-// Protected routes: Only logged in users can add/edit/delete
-reviewRouter.post("/addreview", protect, addReview);
-reviewRouter.put("/:id", protect, updateReview);
-reviewRouter.delete("/:id", protect, deleteReview);
+// 2.Protected routes
+reviewRouter.post("/addreview", protect, addReview); //add Review
+reviewRouter.put("/:id", protect, updateReview); //update Review
+reviewRouter.delete("/:id", protect, deleteReview); //delete Review
 
 export default reviewRouter;

@@ -13,17 +13,16 @@ import { authorize } from "../middleware/roleMiddleware.js";
 const driverRouter = express.Router();
 
 //ROUTE SETUP
-driverRouter.post("/", protect, authorize("admin"), addDriver);
 
-driverRouter.get("/", protect, authorize("admin"), getAllDrivers);
-
-driverRouter.get("/active", protect, authorize("admin"), getActiveDrivers);
-
+// 1.Admin
+driverRouter.post("/", protect, authorize("admin"), addDriver); //add Driver
+driverRouter.get("/", protect, authorize("admin"), getAllDrivers); //get All Drivers
+driverRouter.get("/active", protect, authorize("admin"), getActiveDrivers); //get Active Drivers only
 driverRouter.put(
   "/toggle/:id",
   protect,
   authorize("admin"),
   toggleDriverStatus,
-);
+); //toggle Driver Status
 
 export default driverRouter;

@@ -50,7 +50,7 @@ function DashboardLayout() {
         />
       )}
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div
         className={`flex-1 min-h-screen transition-colors duration-300 md:ml-64 ${
           theme === "dark" ? "bg-[#0b1120]" : "bg-gray-100"

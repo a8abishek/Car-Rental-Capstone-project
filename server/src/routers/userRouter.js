@@ -6,24 +6,20 @@ import {
   changePassword,
   updateProfile,
   toggleSavedCar,
-  getSavedCars
+  getSavedCars,
 } from "../controllers/userController.js";
 
 //ROUTER SETUP
 const userRouter = express.Router();
 
-//ROUTE SETUP
-userRouter.get("/me", protect, getProfile);
+//routes setup
+// 1.commom routes(customer + dealer + admin)
+userRouter.get("/me", protect, getProfile); //get Profile
+userRouter.put("/change-password", protect, changePassword); // Change password
+userRouter.put("/update-profile", protect, updateProfile); // Update name
 
-// Update name
-userRouter.put("/update-profile", protect, updateProfile);
-
-// Change password
-userRouter.put("/change-password", protect, changePassword);
-
-// saved car
-userRouter.post("/toggle-favorite", protect, toggleSavedCar);
-
-userRouter.get("/saved-cars", protect, getSavedCars);
+// 2.customer routes
+userRouter.post("/toggle-favorite", protect, toggleSavedCar); // saved car
+userRouter.get("/saved-cars", protect, getSavedCars); //get Saved Cars
 
 export default userRouter;

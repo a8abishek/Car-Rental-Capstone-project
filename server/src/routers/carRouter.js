@@ -22,42 +22,23 @@ import {
 const carRouter = express.Router();
 
 //ROUTE SETUP
-/*ADMIN ROUTES */
 
-// View all cars
-carRouter.get("/all", protect, adminOnly, getAllCars);
+// 1.ADMIN ROUTES
+carRouter.get("/all", protect, adminOnly, getAllCars); //View all cars
+carRouter.get("/pending", protect, adminOnly, getPendingCars); // View pending cars
+carRouter.put("/toggle-status/:id", protect, adminOnly, toggleCarStatus); // Toggle status (approved ⇄ pending)
 
-// View pending cars
-carRouter.get("/pending", protect, adminOnly, getPendingCars);
+//2.DEALER + ADMIN
+carRouter.post("/", protect, carValidator, addCar); // Add Car (Admin → approved, Dealer → pending)
+carRouter.put("/:id", protect, updateCarValidator, updateCar); // Update Car (Dealer own only, Admin any)
+carRouter.delete("/:id", protect, deleteCar); // Delete Car (Dealer own only, Admin any)
+carRouter.get("/my-cars", protect, getDealerCars); // Dealer view own cars
 
-// Toggle status (approved ⇄ pending)
-carRouter.put("/toggle-status/:id", protect, adminOnly, toggleCarStatus);
+//3.PUBLIC ROUTES
+carRouter.get("/approved", getApprovedCars); // Approved cars only
+carRouter.get("/:id", getSingleCar); // Single car (keep LAST to avoid conflict)
 
-/*DEALER + ADMIN  */
-
-// Add Car (Admin → approved, Dealer → pending)
-carRouter.post("/", protect, carValidator, addCar);
-
-// Update Car (Dealer own only, Admin any)
-carRouter.put("/:id", protect, updateCarValidator, updateCar);
-
-// Delete Car (Dealer own only, Admin any)
-carRouter.delete("/:id", protect, deleteCar);
-
-// Dealer view own cars
-carRouter.get("/my-cars", protect, getDealerCars);
-
-/*PUBLIC ROUTES  */
-
-// Approved cars only
-carRouter.get("/approved", getApprovedCars);
-
-// Single car (keep LAST to avoid conflict)
-carRouter.get("/:id", getSingleCar);
-
-/* DEALER SPECIFIC ROUTES  */
-
-// Add this route - GET /api/cars/dealer/stats
-carRouter.get("/dealer/stats", protect, getDealerStats);
+//4. DEALER ROUTES
+carRouter.get("/dealer/stats", protect, getDealerStats); // Dashboard details
 
 export default carRouter;
