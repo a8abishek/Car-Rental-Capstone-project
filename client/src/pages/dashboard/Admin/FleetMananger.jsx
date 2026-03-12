@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Trash2,
@@ -6,7 +6,6 @@ import {
   ShieldCheck,
   Clock,
   Search,
-  ListFilter,
   X,
   ChevronLeft,
   ChevronRight,

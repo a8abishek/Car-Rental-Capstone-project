@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Mail, Phone,Send, CheckCircle2 } from "lucide-react";
 import Navbar from "./../../components/Navbar";
 
 function Contacts() {

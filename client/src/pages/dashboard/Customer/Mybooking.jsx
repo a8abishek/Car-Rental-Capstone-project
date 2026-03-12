@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import { apiFetch } from "../../../api/apiFetch";
 import { toast } from "react-hot-toast";
 import {
-  Search,
-  MapPin,
-  Calendar,
   X,
   Star,
   ChevronDown,
@@ -13,7 +10,6 @@ import {
   Edit3,
   ChevronLeft,
   ChevronRight,
-  CreditCard,
   Info,
 } from "lucide-react";
 

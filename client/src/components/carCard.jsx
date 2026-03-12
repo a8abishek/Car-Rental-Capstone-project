@@ -28,7 +28,7 @@ function CarCard({ car }) {
       window.removeEventListener("themeChanged", handleThemeChange);
     };
   }, []);
-
+  //icon 
   const renderFuelIcon = () => {
     if (fuelType === "petrol" || fuelType === "diesel") {
       return <Fuel color="#1781ec" />;

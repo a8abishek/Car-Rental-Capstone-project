@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "../../../api/apiFetch";
 import CarCards from "../../../components/CarCards";
-import { Heart, Car, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { Car, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router";
 
 function SaveCars() {

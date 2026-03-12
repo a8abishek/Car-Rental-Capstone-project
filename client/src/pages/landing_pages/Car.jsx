@@ -5,7 +5,6 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
-  Star,
 } from "lucide-react";
 // import
 import Navbar from "../../components/Navbar";

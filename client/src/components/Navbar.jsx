@@ -19,6 +19,7 @@ function Navbar() {
   //store token
   const token = localStorage.getItem("token");
 
+//theme change
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -59,6 +60,7 @@ function Navbar() {
     }
   }, [token]);
 
+  //logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

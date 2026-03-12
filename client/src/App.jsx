@@ -18,6 +18,7 @@ import LandingCars from "./pages/landing_pages/LandingCar";
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
+  //theme change
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -54,9 +55,9 @@ function App() {
             <span>#Car Rental Service</span>
           </div>
           <h1
-            className={`text-4xl md:text-6xl lg:text-7xl font-bold w-full lg:w-[50%] ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+            className={`text-4xl md:text-6xl lg:text-7xl font-bold w-full text-balance lg:w-[88%] ${theme === "dark" ? "text-white" : "text-slate-900"}`}
           >
-            Drive Your Dream :{" "}
+            Drive Your Dream<br/>
             <span className="text-blue-500">Premium Rentals</span>
           </h1>
           <br />

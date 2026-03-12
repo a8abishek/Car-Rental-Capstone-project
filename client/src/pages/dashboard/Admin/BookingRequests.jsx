@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import {
   XCircle,
   Wallet,
   MapPin,
-  IndianRupee,
   Download,
   TrendingUp,
   ChevronLeft,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -20,6 +20,7 @@ function PaymentPage() {
   const [clientSecret, setClientSecret] = useState("");
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
+  //theme
   useEffect(() => {
     const applyTheme = () => {
       const currentTheme = localStorage.getItem("theme") || "light";
@@ -42,6 +43,7 @@ function PaymentPage() {
     };
   }, []);
 
+  //Session expired
   useEffect(() => {
     if (!location.state || !car) {
       toast.error("Session expired. Please restart booking.");

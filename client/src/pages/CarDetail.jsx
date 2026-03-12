@@ -76,6 +76,7 @@ function CarDetail() {
 
   const watchPickupDate = watch("pickupDate");
 
+  //get detail for car,review
   const fetchData = async () => {
     try {
       const [carData, datesData, reviewsData] = await Promise.all([
@@ -100,6 +101,7 @@ function CarDetail() {
     fetchData();
   }, [id]);
 
+  //Delete Review
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm("Are you sure?")) return;
     try {
@@ -127,6 +129,7 @@ function CarDetail() {
     }
   };
 
+  //get Disabled Dates
   const getDisabledDates = () => {
     const dates = [];
     unavailableDates.forEach((booking) => {

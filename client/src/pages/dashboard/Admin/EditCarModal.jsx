@@ -3,10 +3,6 @@ import { useForm } from "react-hook-form";
 import {
   X,
   Save,
-  Settings,
-  Info,
-  Image as ImageIcon,
-  Shield,
   Car,
   CheckCircle2,
 } from "lucide-react";

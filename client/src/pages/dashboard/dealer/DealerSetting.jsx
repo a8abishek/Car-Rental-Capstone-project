@@ -9,7 +9,6 @@ import {
   BarChart3,
   BadgePercent,
   Mail,
-  ShieldCheck,
   Settings2,
   KeyRound,
   Headphones,

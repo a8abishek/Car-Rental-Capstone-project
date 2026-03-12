@@ -9,11 +9,8 @@ import {
   RotateCcw,
   X,
   CheckCircle,
-  MapPin,
-  ChevronRight,
   Fuel,
   Gauge,
-  ShieldCheck,
   CreditCard,
 } from "lucide-react";
 import { apiFetch } from "../../../api/apiFetch";

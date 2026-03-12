@@ -42,6 +42,7 @@ function CarCards({ car, isInitiallySaved }) {
     setIsSaved(isInitiallySaved);
   }, [isInitiallySaved]);
 
+  //Toggle Favorite
   const handleToggleFavorite = async (e) => {
     e.stopPropagation();
     if (!token) {
