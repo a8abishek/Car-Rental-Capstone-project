@@ -51,7 +51,8 @@ function Mybooking() {
     try {
       setLoading(true);
       const data = await apiFetch("/api/bookings/my-bookings");
-      setBookings(Array.isArray(data) ? data : []);
+      setBookings(Array.isArray(data) ? [...data].reverse() : []);
+      
     } catch (error) {
       toast.error("Failed to load bookings");
     } finally {
@@ -344,7 +345,7 @@ function Mybooking() {
                                 Trip Date
                               </p>
                               <p className="font-semibold">
-                                {new Date(item.pickupDate).toLocaleDateString()}
+                                {new Date(item.pickupDate).toLocaleDateString()} — {new Date(item.dropDate).toLocaleDateString()}
                               </p>
                             </div>
                             <div>
