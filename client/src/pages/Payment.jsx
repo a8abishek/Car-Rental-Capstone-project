@@ -83,7 +83,7 @@ function PaymentPage() {
           paymentId: paymentIntentId,
         }),
       });
-      toast.success("Booking Confirmed!");
+      toast.success("Payment confirmed. Waiting for booking approval.");
       navigate("/dashboard");
     } catch (err) {
       toast.error("Payment was successful, but booking failed to save.");
